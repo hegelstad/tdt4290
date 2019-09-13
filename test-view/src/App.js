@@ -2,7 +2,7 @@ import React from "react";
 
 import GremlinView from "view";
 
-const App = (
+const App = () => (
   <div>
     <GremlinView />
   </div>
