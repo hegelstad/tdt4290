@@ -1,7 +1,7 @@
 import React from "react";
 
 import GremlinView from "view";
-import { initialize, followBranch, executeQuery } from "core";
+import { initialize, followBranch, filterQuery, executeQuery } from "core";
 
 const config = {
   org: process.env.REACT_APP_ORG,
@@ -22,6 +22,10 @@ const App = () => {
 
     console.log("Follow all Belongs To relations:");
     query = await followBranch(query, { type: "edge", value: "Belongs To" });
+    console.log(query);
+
+    console.log("Filter region on the value 'Latin America':");
+    query = await filterQuery(query, "region", "Latin America");
     console.log(query);
 
     console.log("Execute query");
