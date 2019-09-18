@@ -8,6 +8,7 @@ export const initialize = async config => {
   return {
     path: [],
     branches: response.result.map(label => ({ type: "label", value: label })),
+    properties: [], // Shoud we include all properties from the start?
     config
   };
 };
@@ -22,6 +23,9 @@ const stringifyPath = path => {
       if (step.type === "edge") {
         return `.in('${step.value}')`;
       }
+      if (step.type === "filter") {
+        return `.has('${step.property}', '${step.value}')`;
+      }
     })
     .reduce((a, b) => a + b, "");
   return baseQuery + pathQuery;
@@ -31,7 +35,18 @@ export const followBranch = async (query, target) => {
   return {
     ...query,
     path: [...query.path, target],
-    branches: await getBranches(query, target)
+    branches: await getBranches(query, target),
+    properties: await getProperties(query, target)
+  };
+};
+
+export const filterQuery = async (query, property, value) => {
+  const filter = { type: "filter", property, value };
+  return {
+    ...query,
+    path: [...query.path, filter],
+    branches: await getBranches(query, filter),
+    properties: await getProperties(query, filter)
   };
 };
 
@@ -58,9 +73,17 @@ export const getBranches = async (query, target) => {
     type: "label",
     value: label
   }));
-  const edges = response[1].result.map(label => ({
+  const edges = response[1].result.map(edge => ({
     type: "edge",
-    value: label
+    value: edge
   }));
   return [...labels, ...edges];
+};
+
+export const getProperties = async (query, target) => {
+  const baseQueryString = stringifyPath([...query.path, target]);
+  const propertiesQueryString = `${baseQueryString}.properties().label().dedup()`;
+  return (await callAPI(query.config, {
+    query: propertiesQueryString
+  })).result;
 };
