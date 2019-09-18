@@ -35,6 +35,12 @@ export const followBranch = async (query, target) => {
   };
 };
 
+export const executeQuery = async query => {
+  return (await callAPI(query.config, {
+    query: stringifyPath(query.path)
+  })).result;
+};
+
 export const getBranches = async (query, target) => {
   const baseQueryString = stringifyPath([...query.path, target]);
   const labelQueryString = `${baseQueryString}.both().label().dedup()`;
