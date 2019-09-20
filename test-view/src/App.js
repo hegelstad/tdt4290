@@ -21,7 +21,11 @@ const App = () => {
     console.log(query);
 
     console.log("Follow all Belongs To relations:");
-    query = await followBranch(query, { type: "edge", value: "Belongs To" });
+    query = await followBranch(query, {
+      type: "edge",
+      value: "Belongs To",
+      direction: "in"
+    });
     console.log(query);
 
     console.log("Filter region on the value 'Latin America':");
