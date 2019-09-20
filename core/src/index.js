@@ -21,7 +21,7 @@ const stringifyPath = path => {
         return `.hasLabel('${step.value}')`;
       }
       if (step.type === "edge") {
-        return `.in('${step.value}')`;
+        return `.${step.direction}('${step.value}')`;
       }
       if (step.type === "filter") {
         return `.has('${step.property}', '${step.value}')`;
@@ -32,21 +32,23 @@ const stringifyPath = path => {
 };
 
 export const followBranch = async (query, target) => {
+  const path = [...query.path, target];
   return {
     ...query,
-    path: [...query.path, target],
-    branches: await getBranches(query, target),
-    properties: await getProperties(query, target)
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
   };
 };
 
 export const filterQuery = async (query, property, value) => {
   const filter = { type: "filter", property, value };
+  const path = [...query.path, filter];
   return {
     ...query,
-    path: [...query.path, filter],
-    branches: await getBranches(query, filter),
-    properties: await getProperties(query, filter)
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
   };
 };
 
@@ -56,34 +58,46 @@ export const executeQuery = async query => {
   })).result;
 };
 
-export const getBranches = async (query, target) => {
-  const baseQueryString = stringifyPath([...query.path, target]);
+const getBranches = async (config, path) => {
+  const baseQueryString = stringifyPath(path);
   const labelQueryString = `${baseQueryString}.both().label().dedup()`;
-  const edgeQueryString = `${baseQueryString}.bothE().label().dedup()`;
+  const edgeInQueryString = `${baseQueryString}.inE().label().dedup()`;
+  const edgeOutQueryString = `${baseQueryString}.outE().label().dedup()`;
 
+  // Could look into combining these into one query to reduce network requests
+  // Not a huge performance issue now as they run in parallel
   const response = await Promise.all([
-    callAPI(query.config, {
+    callAPI(config, {
       query: labelQueryString
     }),
-    callAPI(query.config, {
-      query: edgeQueryString
+    callAPI(config, {
+      query: edgeInQueryString
+    }),
+    callAPI(config, {
+      query: edgeOutQueryString
     })
   ]);
   const labels = response[0].result.map(label => ({
     type: "label",
     value: label
   }));
-  const edges = response[1].result.map(edge => ({
+  const edgesIn = response[1].result.map(edge => ({
     type: "edge",
-    value: edge
+    value: edge,
+    direction: "in"
   }));
-  return [...labels, ...edges];
+  const edgesOut = response[2].result.map(edge => ({
+    type: "edge",
+    value: edge,
+    direction: "out"
+  }));
+  return [...labels, ...edgesIn, ...edgesOut];
 };
 
-export const getProperties = async (query, target) => {
-  const baseQueryString = stringifyPath([...query.path, target]);
+const getProperties = async (config, path) => {
+  const baseQueryString = stringifyPath(path);
   const propertiesQueryString = `${baseQueryString}.properties().label().dedup()`;
-  return (await callAPI(query.config, {
+  return (await callAPI(config, {
     query: propertiesQueryString
   })).result;
 };
