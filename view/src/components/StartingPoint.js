@@ -54,7 +54,6 @@ const StartingPoint = () => {
                 getSuggestionValue={getSuggestionValue}
                 renderSuggestion={renderSuggestion}
                 inputProps={inputProps}
-                theme={theme}
             />
         </div>
     )
