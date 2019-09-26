@@ -1,9 +1,14 @@
-import StartingPoint from "./components/StartingPoint"
-import React from 'react'
+import React from "react";
+import { ThemeProvider } from "styled-components";
+import StartingPoint from "./components/StartingPoint";
+import theme from "./styles/theme";
 
 const GremlinView = () => {
-    //return <h1>Hei :)</h1>;
-    return <StartingPoint />
-}
+  return (
+    <ThemeProvider theme={theme}>
+      <StartingPoint />
+    </ThemeProvider>
+  );
+};
 
 export default GremlinView;
