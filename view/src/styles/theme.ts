@@ -5,17 +5,18 @@ const offWhite = "#f7f8fa";
 const purple = "#670867";
 
 const theme = {
-  fontFamily: "sans-serif",
   colors: {
-    foreground: grayDark,
     background: white,
-    highlight: purple,
-    grayDark,
+    foreground: grayDark,
     gray,
-    white,
+    grayDark,
+    highlight: purple,
     offWhite,
-    purple
+    purple,
+    white
   },
+  fontFamily: "sans-serif",
+  roundRadius: "2px",
   spacing: [
     "0px",
     "4px",
@@ -26,8 +27,15 @@ const theme = {
     "128px",
     "256px",
     "512px"
-  ],
-  roundRadius: "2px"
+  ]
 };
 
 export default theme;
+
+type Theme = typeof theme;
+
+/* tslint:disable:no-empty-interface */
+declare module "styled-components" {
+  export interface DefaultTheme extends Theme {}
+}
+/* tslint:enable:no-empty-interface */
