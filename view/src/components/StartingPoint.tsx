@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import labels from "./labels";
 
 interface Suggestion {
   name: string;
+  count: number;
 }
 
-
 const StartingPoint = () => {
-  const [value, setValue] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
 
-  const getSuggestions = value => {
+  const [value, setValue] = useState("");
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
+  useEffect(() => {
+    setSuggestions(getSuggestions(value));
+  }, [value])
+
+  const getSuggestions = (value: string) => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
@@ -22,40 +27,24 @@ const StartingPoint = () => {
         );
   };
 
-  const getSuggestionValue = (suggestion: Suggestion) => {
-    return suggestion.name;
-  };
-
   const renderSuggestion = (suggestion: Suggestion) => {
-    return <span>{suggestion.name}</span>;
+    return <li>{suggestion.name}</li>;
   };
 
-  const onChange = (event) => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getSuggestions(value));
-  };
-
-  const onSuggestionsClearRequested = () => {
-    setSuggestions([]);
-  };
-
-  const inputProps = {
-    placeholder: "Application",
-    value,
-    onChange: onChange
-  };
 
   return (
     <div>
       <h1>Select starting point</h1>
       <AutosuggestWrap>
-        <input onChange={onChange}/>
+        <input onChange={onChange} value={value}/>
           <ul>
-            <li>Punkt 1</li>
-            <li>Punkt 2</li>
+            {suggestions.map((suggestion: Suggestion) => {
+              return renderSuggestion(suggestion);
+            })}
         </ul>
       </AutosuggestWrap>
     </div>
