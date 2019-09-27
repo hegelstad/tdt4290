@@ -1,7 +1,11 @@
-import Autosuggest from "react-autosuggest";
 import React, { useState } from "react";
 import styled from "styled-components";
 import labels from "./labels";
+
+interface Suggestion {
+  name: string;
+}
+
 
 const StartingPoint = () => {
   const [value, setValue] = useState("");
@@ -18,16 +22,16 @@ const StartingPoint = () => {
         );
   };
 
-  const getSuggestionValue = suggestion => {
+  const getSuggestionValue = (suggestion: Suggestion) => {
     return suggestion.name;
   };
 
-  const renderSuggestion = suggestion => {
+  const renderSuggestion = (suggestion: Suggestion) => {
     return <span>{suggestion.name}</span>;
   };
 
-  const onChange = (event, { newValue, method }) => {
-    setValue(newValue);
+  const onChange = (event) => {
+    setValue(event.target.value);
   };
 
   const onSuggestionsFetchRequested = ({ value }) => {
@@ -48,14 +52,11 @@ const StartingPoint = () => {
     <div>
       <h1>Select starting point</h1>
       <AutosuggestWrap>
-        <Autosuggest
-          suggestions={suggestions}
-          onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={onSuggestionsClearRequested}
-          getSuggestionValue={getSuggestionValue}
-          renderSuggestion={renderSuggestion}
-          inputProps={inputProps}
-        />
+        <input onChange={onChange}/>
+          <ul>
+            <li>Punkt 1</li>
+            <li>Punkt 2</li>
+        </ul>
       </AutosuggestWrap>
     </div>
   );
