@@ -1,7 +1,18 @@
 import { callAPI } from "./utils";
+import {
+  ConfigType,
+  BranchType,
+  AggregationType,
+  QueryType,
+  FilterType,
+  PropertyType,
+  MethodTypes,
+  LabelType,
+  EdgeType
+} from "./types";
 
-export const initialize = async config => {
-  const response = await callAPI(config, {
+export const initialize = async (config: ConfigType): Promise<QueryType> => {
+  const response: { result: string[] } = await callAPI(config, {
     query: "g.V().label().dedup()"
   });
 
@@ -9,16 +20,20 @@ export const initialize = async config => {
     path: [],
     branches: response.result.map(label => ({ type: "label", value: label })),
     properties: [], // Shoud we include all properties from the start?
+    aggregation: undefined,
     config
   };
 };
 
-const stringifyPath = path => {
+const stringifyPath = (
+  path: BranchType[],
+  aggregation?: AggregationType
+): string => {
   const baseQuery = "g.V()";
   const pathQuery = path
-    .map(step => {
+    .map((step): string => {
       if (step.type === "label") {
-        return `.hasLabel('${step.value}')`;
+        return `.both().hasLabel('${step.value}')`;
       }
       if (step.type === "edge") {
         return `.${step.direction}('${step.value}')`;
@@ -26,12 +41,21 @@ const stringifyPath = path => {
       if (step.type === "filter") {
         return `.has('${step.property}', '${step.value}')`;
       }
+      return "";
     })
     .reduce((a, b) => a + b, "");
-  return baseQuery + pathQuery;
+  const aggregationQuery = aggregation
+    ? `.properties(${aggregation.properties
+        .map(prop => `"${prop}"`)
+        .join(",")}).group().by(key).by(value().${aggregation.method}())`
+    : "";
+  return baseQuery + pathQuery + aggregationQuery;
 };
 
-export const followBranch = async (query, target) => {
+export const followBranch = async (
+  query: QueryType,
+  target: BranchType
+): Promise<QueryType> => {
   const path = [...query.path, target];
   return {
     ...query,
@@ -41,8 +65,12 @@ export const followBranch = async (query, target) => {
   };
 };
 
-export const filterQuery = async (query, property, value) => {
-  const filter = { type: "filter", property, value };
+export const filterQuery = async (
+  query: QueryType,
+  property: PropertyType,
+  value: any
+): Promise<QueryType> => {
+  const filter: FilterType = { type: "filter", property, value };
   const path = [...query.path, filter];
   return {
     ...query,
@@ -52,13 +80,30 @@ export const filterQuery = async (query, property, value) => {
   };
 };
 
-export const executeQuery = async query => {
+export const aggregateQuery = async (
+  query: QueryType,
+  properties: PropertyType[],
+  method: MethodTypes
+): Promise<QueryType> => {
+  return {
+    ...query,
+    aggregation: {
+      properties,
+      method
+    }
+  };
+};
+
+export const executeQuery = async (query: QueryType): Promise<object> => {
   return (await callAPI(query.config, {
-    query: stringifyPath(query.path)
+    query: stringifyPath(query.path, query.aggregation)
   })).result;
 };
 
-const getBranches = async (config, path) => {
+const getBranches = async (
+  config: ConfigType,
+  path: BranchType[]
+): Promise<BranchType[]> => {
   const baseQueryString = stringifyPath(path);
   const labelQueryString = `${baseQueryString}.both().label().dedup()`;
   const edgeInQueryString = `${baseQueryString}.inE().label().dedup()`;
@@ -66,7 +111,7 @@ const getBranches = async (config, path) => {
 
   // Could look into combining these into one query to reduce network requests
   // Not a huge performance issue now as they run in parallel
-  const response = await Promise.all([
+  const response: ({ result: string[] })[] = await Promise.all([
     callAPI(config, {
       query: labelQueryString
     }),
@@ -77,16 +122,16 @@ const getBranches = async (config, path) => {
       query: edgeOutQueryString
     })
   ]);
-  const labels = response[0].result.map(label => ({
+  const labels: LabelType[] = response[0].result.map(label => ({
     type: "label",
     value: label
   }));
-  const edgesIn = response[1].result.map(edge => ({
+  const edgesIn: EdgeType[] = response[1].result.map(edge => ({
     type: "edge",
     value: edge,
     direction: "in"
   }));
-  const edgesOut = response[2].result.map(edge => ({
+  const edgesOut: EdgeType[] = response[2].result.map(edge => ({
     type: "edge",
     value: edge,
     direction: "out"
@@ -94,7 +139,10 @@ const getBranches = async (config, path) => {
   return [...labels, ...edgesIn, ...edgesOut];
 };
 
-const getProperties = async (config, path) => {
+const getProperties = async (
+  config: ConfigType,
+  path: BranchType[]
+): Promise<PropertyType[]> => {
   const baseQueryString = stringifyPath(path);
   const propertiesQueryString = `${baseQueryString}.properties().label().dedup()`;
   return (await callAPI(config, {
