@@ -15,7 +15,7 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
   const response: { result: string[] } = await callAPI(config, {
     query: "g.V().label().dedup()"
   });
-
+  console.log("This is the response: " + response)
   return {
     path: [],
     branches: response.result.map(label => ({ type: "label", value: label })),

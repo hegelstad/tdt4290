@@ -43,7 +43,7 @@ const StartingPoint = () => {
   const Input = styled.input.attrs(() => ({
     type: 'text',
     onInput: onInput,
-    value: value
+    defaultValue: value
     }))`
     padding: 2px
     `
@@ -59,19 +59,18 @@ const StartingPoint = () => {
     display: block
   `;
 
-  const UnorderedList = styled.ul`
+  /*const UnorderedList = styled.ul`
     
-  `;
+  `;*/
 
 
   return (
       <AutosuggestWrap>
         <div>
           <h1>Where would you like to start?</h1>
-            <Input placeholder="Application" />
-            <ul styles="">
-              {suggestions.map(renderSuggestion)};
-              })}
+            <Input placeholder="Application" autoFocus/>
+            <ul>
+              {suggestions.map(renderSuggestion)}
             </ul>
         </div>
       </AutosuggestWrap>
