@@ -14,6 +14,11 @@ export interface LabelType {
   type: "label";
   value: string;
 }
+
+export interface SortableLabelType {
+    name: string;
+    count: number;
+}
 export interface EdgeType {
   type: "edge";
   value: string;
