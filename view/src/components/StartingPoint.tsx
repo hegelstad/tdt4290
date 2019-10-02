@@ -22,6 +22,7 @@ const StartingPoint = (props: StartingPointProps) => {
       })
   }, [config]);
 
+
   const getSuggestions = (value: string) => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
@@ -29,7 +30,7 @@ const StartingPoint = (props: StartingPointProps) => {
     return inputLength === 0
       ? []
       : labels.filter(
-          label => label.name.toLowerCase().slice(0, inputLength) === inputValue
+          label => label.name.toLowerCase().includes(inputValue)
         );
   };
 
