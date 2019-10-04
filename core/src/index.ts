@@ -31,9 +31,11 @@ const stringifyPath = (
 ): string => {
   const baseQuery = "g.V()";
   const pathQuery = path
-    .map((step): string => {
+    .map((step, i): string => {
       if (step.type === "label") {
-        return `.both().hasLabel('${step.value}')`;
+        return i === 0
+          ? `.hasLabel('${step.value}')`
+          : `.both().hasLabel('${step.value}')`;
       }
       if (step.type === "edge") {
         return `.${step.direction}('${step.value}')`;

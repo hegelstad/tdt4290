@@ -37,8 +37,8 @@ export interface AggregationType {
 export type PropertyType = string;
 export type BranchType = LabelType | EdgeType | FilterType;
 export enum MethodTypes {
-  sum = "sum",
-  mean = "mean"
+  Sum = "sum",
+  Mean = "mean"
 }
 
 
