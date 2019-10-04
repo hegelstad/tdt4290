@@ -1,4 +1,6 @@
-export const callAPI = async (config, body) => {
+import { ConfigType } from "./types";
+
+export const callAPI = async (config: ConfigType, body: object) => {
   const response = await fetch(`${config.apiURL}?org=${config.org}`, {
     method: "POST",
     headers: {
