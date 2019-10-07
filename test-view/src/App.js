@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { initialize, followBranch, filterQuery, executeQuery } from "core";
 import GremlinView from "view";
 
@@ -8,36 +8,51 @@ const config = {
   apiURL: "/api/graph-search"
 };
 
+
 const App = () => {
   console.log(config);
   const test_query = async () => {
-    console.log("Create base query object:");
+    //console.log("Create base query object:");
     let query = await initialize(config);
-    console.log(query);
+    //console.log(query);
 
-    console.log("Select all Departments:");
-    query = await followBranch(query, { type: "label", value: "Department" });
-    console.log(query);
+    //console.log("Select all Departments:");
+    query = await followBranch(query, { type: "label", value: "Department"});
+    //console.log(query);
 
-    console.log("Follow all Belongs To relations:");
+    //console.log("Follow all Belongs To relations:");
     query = await followBranch(query, {
       type: "edge",
       value: "Belongs To",
       direction: "in"
     });
-    console.log(query);
+    //console.log(query);
 
-    console.log("Filter region on the value 'Latin America':");
+    //console.log("Filter region on the value 'Latin America':");
     query = await filterQuery(query, "region", "Latin America");
-    console.log(query);
+    //console.log(query);
 
-    console.log("Execute query");
+    //console.log("Execute query");
     console.log(await executeQuery(query));
   };
   test_query();
+  
+  const [query, setQuery] = useState({});
+
+  /**
+   * Initialize the query the first time.
+   */
+  useEffect(() => {
+    initialize(config)
+      .then((query) => {
+        setQuery(query);
+      });
+  }, [])
+
   return (
     <div>
-      <GremlinView config = {config}/>
+      <GremlinView initialQuery={query} 
+                   headline={"Where would you like to start?"} />
     </div>
   );
 };

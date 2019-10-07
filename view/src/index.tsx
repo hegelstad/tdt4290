@@ -1,14 +1,17 @@
 import React from "react";
-import StartingPoint from "./components/StartingPoint";
-import { ThemeProvider } from "styled-components";
-import theme from "./styles/theme";
+import {useState} from 'react';
+import {BranchSelectorPropsType, BranchType, QueryType} from "core/dist/types";
+import BranchSelector from "./components/BranchSelector";
 
-const GremlinView = (props: StartingPointProps) => {
-  return (
-    <ThemeProvider theme={theme}>
-      <StartingPoint config = {props.config}/>
-    </ThemeProvider>
-  );
+const GremlinView = (props: BranchSelectorPropsType) => {
+
+  const [query, setQuery] = useState<QueryType>(props.initialQuery);
+
+  const userWantsToFollowBranch = (branch: BranchType) => {
+    
+  }
+
+  return (<BranchSelector initialQuery={props.initialQuery} headline={props.headline}/>);
 };
 
 export default GremlinView;

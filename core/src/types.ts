@@ -15,10 +15,11 @@ export interface LabelType {
   value: string;
 }
 
-export interface SortableLabelType {
-    name: string;
-    count: number;
+export interface LabelCountType {
+  name: string;
+  count: number;
 }
+
 export interface EdgeType {
   type: "edge";
   value: string;
@@ -39,6 +40,11 @@ export type BranchType = LabelType | EdgeType | FilterType;
 export enum MethodTypes {
   Sum = "sum",
   Mean = "mean"
+}
+
+export interface BranchSelectorPropsType {
+    initialQuery: QueryType;
+    headline: string;
 }
 
 
