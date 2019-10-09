@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { initialize, followBranch, filterQuery, executeQuery } from "core";
-import GremlinView from "view";
+import CoordinatorView from "view";
 
 const config = {
   org: process.env.REACT_APP_ORG,
@@ -37,21 +37,22 @@ const App = () => {
   };
   test_query();
   
-  const [query, setQuery] = useState({});
+  const [initialQuery, setInitialQuery] = useState({});
 
   /**
    * Initialize the query the first time.
    */
   useEffect(() => {
     initialize(config)
-      .then((query) => {
-        setQuery(query);
+      .then((initialQuery) => {
+        console.log("Promise fulfilled: ", initialQuery);
+        setInitialQuery(initialQuery);
       });
   }, [])
 
   return (
     <div>
-      <GremlinView initialQuery={query} 
+      <CoordinatorView initialQuery={initialQuery} 
                    headline={"Where would you like to start?"} />
     </div>
   );

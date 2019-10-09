@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import {getSuggestions, followBranch} from "core";
+import {getSuggestions} from "core";
 import { LabelType, BranchSelectorPropsType, EdgeType, BranchType, QueryType} from "core/dist/types";
 import  { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
+  //console.log("Props: ", props);
 
   const getBranchTypeFrom = (type: string, initialQuery: QueryType) => {
     return initialQuery.branches ? initialQuery.branches.filter(branch => { return branch.type === type}) : [];
@@ -30,8 +31,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     setLabelSuggestions(labelSuggestions);
     setEdgeSuggestions(edgeSuggestions);
 
-    console.log("Called");
-  }, [inputValue, labels, edges]);
+  }, [inputValue]);
 
 
   const renderSuggestion = (suggestion: BranchType) => {
@@ -58,9 +58,9 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   };
 
   const onClickOnLabel = (event: React.ChangeEvent<HTMLButtonElement>) => {
-    const value = event.target.firstChild as unknown as string;
-    const label = labels.find(label => { label.type === "label" && label.value === value}) as LabelType;
-    followBranch(props.initialQuery, label);
+    const value = event.target.firstChild ? event.target.firstChild.textContent : "";
+    const label = labels.find(label => { label.type === "label" && label.value === value }) as LabelType;
+    props.followBranch(label);
 
   }
 
@@ -71,7 +71,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>) => {
     const value = event.target.firstChild as unknown as string;
     const label = edges.find(label => {label.value === value}) as EdgeType;
-    followBranch(props.initialQuery, label);
+    props.followBranch(label);
   }
 
   
