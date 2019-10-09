@@ -8,14 +8,14 @@ import {
   PropertyType,
   MethodTypes,
   LabelType,
-  EdgeType
+  EdgeType,
+  SortableLabelType
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
   const response: { result: string[] } = await callAPI(config, {
     query: "g.V().label().dedup()"
   });
-
   return {
     path: [],
     branches: response.result.map(label => ({ type: "label", value: label })),
@@ -101,6 +101,17 @@ export const executeQuery = async (query: QueryType): Promise<object> => {
     query: stringifyPath(query.path, query.aggregation)
   })).result;
 };
+
+export const getAllLabels = async (
+    config: ConfigType
+  ): Promise<SortableLabelType[]> => {
+
+    const response = await callAPI(config, {
+      query: "g.V().groupCount().by(label).unfold().order().by(values, decr).project('name','count').by(keys).by(values)"
+    })
+    
+    return response.result
+}
 
 const getBranches = async (
   config: ConfigType,

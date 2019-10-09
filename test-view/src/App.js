@@ -1,7 +1,6 @@
 import React from "react";
-
-import GremlinView from "view";
 import { initialize, followBranch, filterQuery, executeQuery } from "core";
+import GremlinView from "view";
 
 const config = {
   org: process.env.REACT_APP_ORG,
@@ -38,7 +37,7 @@ const App = () => {
   test_query();
   return (
     <div>
-      <GremlinView />
+      <GremlinView config = {config}/>
     </div>
   );
 };
