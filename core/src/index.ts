@@ -9,16 +9,18 @@ import {
   MethodTypes,
   LabelType,
   EdgeType,
-  SortableLabelType
+  LabelCountType
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
-  const response: { result: string[] } = await callAPI(config, {
-    query: "g.V().label().dedup()"
+  const response: { result: LabelCountType[] } = await callAPI(config, {
+    // Let the server do the sorting
+    query: "g.V().groupCount().by(label).unfold().order().by(values, decr).project('name','count').by(keys).by(values)"
   });
+
   return {
     path: [],
-    branches: response.result.map(label => ({ type: "label", value: label })),
+    branches: response.result.map(label => ({ type: "label", value: label.name })),
     properties: [], // Shoud we include all properties from the start?
     aggregation: undefined,
     config
@@ -102,17 +104,6 @@ export const executeQuery = async (query: QueryType): Promise<object> => {
   })).result;
 };
 
-export const getAllLabels = async (
-    config: ConfigType
-  ): Promise<SortableLabelType[]> => {
-
-    const response = await callAPI(config, {
-      query: "g.V().groupCount().by(label).unfold().order().by(values, decr).project('name','count').by(keys).by(values)"
-    })
-    
-    return response.result
-}
-
 const getBranches = async (
   config: ConfigType,
   path: BranchType[]
@@ -161,4 +152,19 @@ const getProperties = async (
   return (await callAPI(config, {
     query: propertiesQueryString
   })).result;
+};
+
+/**
+ * Gets suggestions from the given source, or shows the top results
+ * based on some criteria
+ * 
+ * @param value 
+ */
+export const getSuggestions = (value: string, source: BranchType[]): BranchType[] => {
+  const inputValue = value.trim().toLowerCase();
+  const inputLength = inputValue.length;
+
+  return inputLength === 0 
+      ? source.slice(0, 6)
+      : source.filter(label => { return label.value.trim().toLowerCase().includes(inputValue)})
 };

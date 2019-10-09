@@ -23,12 +23,12 @@ test("Branches are updated correctly", async () => {
   // @ts-ignore
   let query = await initialize({});
 
-  expect(query.branches).toEqual([
-    { type: "label", value: "label1" },
-    { type: "label", value: "label2" }
+  expect(query.query.branches).toEqual([
+    { type: "label", value: "label1"},
+    { type: "label", value: "label2"}
   ]);
 
-  query = await followBranch(query, { type: "label", value: "label1" });
+  query = await followBranch(query.query, { type: "label", value: "label1" });
 
   expect(query.branches).toEqual([
     { type: "label", value: "label3" },
