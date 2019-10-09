@@ -58,7 +58,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
 
   const onClickOnLabel = (event: React.ChangeEvent<HTMLButtonElement>) => {
     const value = event.target.firstChild ? event.target.firstChild.textContent : "";
-    const label = labels.find(label => { label.type === "label" && label.value === value }) as LabelType;
+    const label = labels.find(label => { return label.value === value }) as LabelType;
     props.followBranch(label);
 
   }
@@ -68,7 +68,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
    */
   const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>) => {
     const value = event.target.firstChild as unknown as string;
-    const label = edges.find(label => {label.value === value}) as EdgeType;
+    const label = edges.find(label => {return label.value === value}) as EdgeType;
     props.followBranch(label);
   }
 
