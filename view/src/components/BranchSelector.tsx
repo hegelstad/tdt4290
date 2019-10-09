@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {getSuggestions} from "core";
-import { LabelType, BranchSelectorPropsType, EdgeType, BranchType, QueryType} from "core/dist/types";
+import { LabelType, EdgeType, BranchType, QueryType} from "core/dist/types";
 import  { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { BranchSelectorPropsType } from "../types/types";
 
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
@@ -64,7 +65,6 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
 
   /**
    * These two functions can probably be merged together. 
-   * @param event 
    */
   const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>) => {
     const value = event.target.firstChild as unknown as string;
@@ -81,7 +81,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     }))`
     padding: 2px
     margin-bottom: 8px
-    margin-left: 10px
+    margin-left: 10px;
   `;
 
   const LabelButton = styled.button.attrs(() => ({
@@ -99,7 +99,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   `;
 
   const SearchWrap = styled.div`
-    display: inline
+    display: inline;
   `;
 
   const UnorderedList = styled.ul`
@@ -112,11 +112,11 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     margin: 0 auto;
     padding-left: 10px;
     border: 1px solid black;
-    display: block
+    display: block;
   `;
 
   const Loading = styled.h2`
-    display: inline
+    display: inline;
   `;
 
 
