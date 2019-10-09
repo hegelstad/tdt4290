@@ -8,6 +8,7 @@ import {
   QueryType
 } from "core/dist/types";
 import BranchSelector from "./components/BranchSelector";
+import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
@@ -23,13 +24,21 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <BranchSelector
-        initialQuery={query}
-        headline={props.headline}
-        followBranch={userWantsToFollowBranch}
-      />
-    </ThemeProvider>
+    <div>
+      <ThemeProvider theme={theme}>
+        <BranchSelector
+          initialQuery={query}
+          headline={props.headline}
+          followBranch={userWantsToFollowBranch}
+        />
+      </ThemeProvider>
+
+      <ThemeProvider theme = {theme}>
+        <TextQuery query = {query}/>
+      </ThemeProvider>
+    </div>
+    
+
   );
 };
 

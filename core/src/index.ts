@@ -27,7 +27,7 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
   };
 };
 
-const stringifyPath = (
+export const stringifyPath = (
   path: BranchType[],
   aggregation?: AggregationType
 ): string => {
