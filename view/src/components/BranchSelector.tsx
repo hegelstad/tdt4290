@@ -7,12 +7,10 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
-  //console.log("Props: ", props);
-
+  
   const getBranchTypeFrom = (type: string, initialQuery: QueryType) => {
     return initialQuery.branches ? initialQuery.branches.filter(branch => { return branch.type === type}) : [];
   }
-
   const labels = getBranchTypeFrom("label", props.initialQuery);
   const edges = getBranchTypeFrom("edge", props.initialQuery);
 
