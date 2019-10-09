@@ -26,7 +26,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     <ThemeProvider theme={theme}>
       <BranchSelector
         initialQuery={query}
-        headline={props.headline}
+        headline={"Where would you like to start?"}
         followBranch={userWantsToFollowBranch}
       />
     </ThemeProvider>
