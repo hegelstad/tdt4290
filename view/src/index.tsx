@@ -12,7 +12,13 @@ import { BranchSelectorPropsType } from "./types/types";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
   const [query, setQuery] = useState<QueryType>(props.initialQuery);
-  if (props.initialQuery !== query) {
+  const branchSelectorHeadline = query.path && query.path.length > 0 
+                              ? query.path[query.path.length - 1].value as string
+                              : "Where would you like to start?";
+
+
+  console.log("Query on enter of CoordinatorView:", query);
+  if (!query.branches && props.initialQuery.branches) {
     setQuery(props.initialQuery);
   }
 
@@ -26,7 +32,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     <ThemeProvider theme={theme}>
       <BranchSelector
         initialQuery={query}
-        headline={"Where would you like to start?"}
+        headline={branchSelectorHeadline}
         followBranch={userWantsToFollowBranch}
       />
     </ThemeProvider>

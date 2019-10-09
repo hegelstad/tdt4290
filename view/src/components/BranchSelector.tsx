@@ -42,8 +42,8 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
       );
     } else if (suggestion.type === "edge") {
       return (
-        <li key={suggestion.value}>
-          <EdgeButton>{suggestion.value}</EdgeButton>
+        <li key={suggestion.value + " (" + suggestion.direction + ")"}>
+          <EdgeButton>{suggestion.value + " (" + suggestion.direction + ")"}</EdgeButton>
         </li>
       );
     } else {
@@ -58,8 +58,9 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
 
   const onClickOnLabel = (event: React.ChangeEvent<HTMLButtonElement>) => {
     const value = event.target.firstChild ? event.target.firstChild.textContent : "";
-    const label = labels.find(label => { return label.value === value }) as LabelType;
+    const label = labels.find(label => { return label.type === "label" && label.value === value }) as LabelType;
     props.followBranch(label);
+    setInputValue("");
 
   }
 
@@ -67,9 +68,11 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
    * These two functions can probably be merged together. 
    */
   const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>) => {
-    const value = event.target.firstChild as unknown as string;
+    const valueWithDirection = event.target.firstChild ? event.target.firstChild.textContent as string : "";
+    const value = valueWithDirection.slice(0, valueWithDirection.indexOf("(") - 1);
     const label = edges.find(label => {return label.value === value}) as EdgeType;
     props.followBranch(label);
+    setInputValue("");
   }
 
   
@@ -128,6 +131,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
           <FontAwesomeIcon icon={faSearch}/>
           <Input placeholder="Start typing..." autoFocus/>
         </SearchWrap>
+        <h3>Thing</h3>
         <UnorderedList>
           {labelSuggestions.map(renderSuggestion)}
         </UnorderedList>
