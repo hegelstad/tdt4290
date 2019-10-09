@@ -14,6 +14,12 @@ export interface LabelType {
   type: "label";
   value: string;
 }
+
+export interface LabelCountType {
+  name: string;
+  count: number;
+}
+
 export interface EdgeType {
   type: "edge";
   value: string;
@@ -35,3 +41,6 @@ export enum MethodTypes {
   Sum = "sum",
   Mean = "mean"
 }
+
+
+
