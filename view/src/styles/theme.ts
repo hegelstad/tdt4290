@@ -34,8 +34,8 @@ export default theme;
 
 type Theme = typeof theme;
 
-/* tslint:disable:no-empty-interface */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 declare module "styled-components" {
   export interface DefaultTheme extends Theme {}
 }
-/* tslint:enable:no-empty-interface */
+/* eslint-enable @typescript-eslint/no-empty-interface */
