@@ -13,9 +13,9 @@ import { BranchSelectorPropsType } from "./types/types";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
   const [query, setQuery] = useState<QueryType>(props.initialQuery);
-  const branchSelectorHeadline = query.path && query.path.length > 0 
+  /*const branchSelectorHeadline = query.path && query.path.length > 0 
                               ? query.path[query.path.length - 1].value as string
-                              : "Where would you like to start?";
+                              : "Where would you like to start?";*/
 
 
   console.log("Query on enter of CoordinatorView:", query);

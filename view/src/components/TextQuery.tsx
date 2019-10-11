@@ -1,18 +1,26 @@
-import React, { useState, } from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import {stringifyPath} from "core";
 
 
-
+//This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
 const TextQuery = (props: any) => {
-
 
 
     const [query, setQuery] = useState("");
     const [showQuery, setShowQuery] = useState(false);
     
 
-    //Show current query
+    //Listens to the query coming from props, updates visualisation of text query when it changes.
+    useEffect(() => {
+        if (props.query.path !== undefined) {
+            setQuery(stringifyPath(props.query.path, props.query.aggregation)); 
+        }
+      }, [props.query]);
+
+    
+
+    //Show/hide current query
     const OnShowButtonClick = () => {
         setShowQuery(!showQuery);
         setQuery(stringifyPath(props.query.path, props.query.aggregation));
@@ -24,6 +32,7 @@ const TextQuery = (props: any) => {
     }
 
 
+    //Styled components
     const ShowQueryButton = styled.button.attrs(() => ({
         onClick: OnShowButtonClick
         }))`
@@ -68,19 +77,16 @@ const TextQuery = (props: any) => {
                 <p>
                     {query}
                 </p>
-                
             </div>
             <div>
                 <CopyToClipBoardButton>Copy to clipboard</CopyToClipBoardButton>
             </div>
-            
         </TextQueryWrap>
       )
       : <TextQueryWrap>
             <div>
                 <ShowQueryButton>Show Gremlin query</ShowQueryButton>
-            </div>
-            
+            </div> 
         </TextQueryWrap>;
 
 
