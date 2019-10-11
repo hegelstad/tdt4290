@@ -51,7 +51,7 @@ const App = () => {
 
   return (
     <div>
-      <CoordinatorView initialQuery={initialQuery} />
+      <CoordinatorView query={initialQuery} />
     </div>
   );
 };
