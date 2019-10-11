@@ -30,7 +30,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     setLabelSuggestions(labelSuggestions);
     setEdgeSuggestions(edgeSuggestions);
 
-  }, [inputValue]);
+  }, [inputValue, props.initialQuery]);
 
 
   const renderSuggestion = (suggestion: BranchType) => {
