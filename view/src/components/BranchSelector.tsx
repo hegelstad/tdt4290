@@ -7,6 +7,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types/types";
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
+
   const getBranchTypeFrom = (type: string, initialQuery: QueryType) => {
     return initialQuery.branches
       ? initialQuery.branches.filter(branch => {
@@ -14,8 +15,8 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
         })
       : [];
   };
-  const labels = getBranchTypeFrom("label", props.initialQuery);
-  const edges = getBranchTypeFrom("edge", props.initialQuery);
+  const labels = getBranchTypeFrom("label", props.query);
+  const edges = getBranchTypeFrom("edge", props.query);
 
   const [inputValue, setInputValue] = useState("");
   const [edgeSuggestions, setEdgeSuggestions] = useState<EdgeType[]>([]);
@@ -36,7 +37,10 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
 
     setLabelSuggestions(labelSuggestions);
     setEdgeSuggestions(edgeSuggestions);
-  }, [inputValue]);
+
+  }, [inputValue, props.query]);
+
+
 
   const renderSuggestion = (suggestion: BranchType) => {
     if (suggestion.type === "label") {

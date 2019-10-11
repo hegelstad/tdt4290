@@ -1,5 +1,11 @@
 export interface BranchSelectorPropsType {
-  initialQuery: QueryType;
-  headline: string;
-  followBranch: (branch: BranchType) => void;
+
+    query: QueryType;
+    headline: string;
+    followBranch: (branch: BranchType) => void;
 }
+
+export interface TextQueryType {
+    query: QueryType;
+}
+
