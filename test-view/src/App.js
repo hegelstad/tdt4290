@@ -45,15 +45,13 @@ const App = () => {
   useEffect(() => {
     initialize(config)
       .then((initialQuery) => {
-        console.log("Promise fulfilled: ", initialQuery);
         setInitialQuery(initialQuery);
       });
   }, [])
 
   return (
     <div>
-      <CoordinatorView initialQuery={initialQuery} 
-                   headline={"Where would you like to start?"} />
+      <CoordinatorView initialQuery={initialQuery} />
     </div>
   );
 };

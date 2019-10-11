@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {getSuggestions} from "core";
-import { LabelType, BranchSelectorPropsType, EdgeType, BranchType, QueryType} from "core/dist/types";
+import { LabelType, EdgeType, BranchType, QueryType} from "core/dist/types";
 import  { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { BranchSelectorPropsType } from "../types/types";
 
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
@@ -41,8 +42,8 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
       );
     } else if (suggestion.type === "edge") {
       return (
-        <li key={suggestion.value}>
-          <EdgeButton>{suggestion.value}</EdgeButton>
+        <li key={suggestion.value + " (" + suggestion.direction + ")"}>
+          <EdgeButton>{suggestion.value + " (" + suggestion.direction + ")"}</EdgeButton>
         </li>
       );
     } else {
@@ -57,19 +58,21 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
 
   const onClickOnLabel = (event: React.ChangeEvent<HTMLButtonElement>) => {
     const value = event.target.firstChild ? event.target.firstChild.textContent : "";
-    const label = labels.find(label => { label.type === "label" && label.value === value }) as LabelType;
+    const label = labels.find(label => { return label.type === "label" && label.value === value }) as LabelType;
     props.followBranch(label);
+    setInputValue("");
 
   }
 
   /**
    * These two functions can probably be merged together. 
-   * @param event 
    */
   const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>) => {
-    const value = event.target.firstChild as unknown as string;
-    const label = edges.find(label => {label.value === value}) as EdgeType;
+    const valueWithDirection = event.target.firstChild ? event.target.firstChild.textContent as string : "";
+    const value = valueWithDirection.slice(0, valueWithDirection.indexOf("(") - 1);
+    const label = edges.find(label => {return label.value === value}) as EdgeType;
     props.followBranch(label);
+    setInputValue("");
   }
 
   
@@ -81,7 +84,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     }))`
     padding: 2px
     margin-bottom: 8px
-    margin-left: 10px
+    margin-left: 10px;
   `;
 
   const LabelButton = styled.button.attrs(() => ({
@@ -99,7 +102,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   `;
 
   const SearchWrap = styled.div`
-    display: inline
+    display: inline;
   `;
 
   const UnorderedList = styled.ul`
@@ -112,11 +115,11 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     margin: 0 auto;
     padding-left: 10px;
     border: 1px solid black;
-    display: block
+    display: block;
   `;
 
   const Loading = styled.h2`
-    display: inline
+    display: inline;
   `;
 
 
@@ -128,6 +131,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
           <FontAwesomeIcon icon={faSearch}/>
           <Input placeholder="Start typing..." autoFocus/>
         </SearchWrap>
+        <h3>Thing</h3>
         <UnorderedList>
           {labelSuggestions.map(renderSuggestion)}
         </UnorderedList>

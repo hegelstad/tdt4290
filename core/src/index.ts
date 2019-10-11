@@ -13,6 +13,20 @@ import {
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
+  if (config.org == undefined) {
+    // Used in testing
+    const response: { result: string[] } = await callAPI(config, {
+      query: "g.V().label().dedup()"
+    });
+
+    return {
+      path: [],
+      branches: response.result.map(label => ({ type: "label", value: label })),
+      properties: [], // Shoud we include all properties from the start?
+      aggregation: undefined,
+      config
+    };
+  }
   const response: { result: LabelCountType[] } = await callAPI(config, {
     // Let the server do the sorting
     query: "g.V().groupCount().by(label).unfold().order().by(values, decr).project('name','count').by(keys).by(values)"
@@ -157,8 +171,6 @@ const getProperties = async (
 /**
  * Gets suggestions from the given source, or shows the top results
  * based on some criteria
- * 
- * @param value 
  */
 export const getSuggestions = (value: string, source: BranchType[]): BranchType[] => {
   const inputValue = value.trim().toLowerCase();
