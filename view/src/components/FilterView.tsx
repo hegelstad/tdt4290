@@ -3,7 +3,7 @@ import { initialize, followBranch } from "core";
 //import styled from "styled-components";
 
 
-
+/*
 const FilterChecklist = ({properties, callback}: {properties: string[], callback: any}) => {
   const [checked, setChecked] = useState<{[prop: string]: boolean}>({});
   const [value, setValue] = useState("");
@@ -18,7 +18,7 @@ const FilterChecklist = ({properties, callback}: {properties: string[], callback
     <button onClick={() => callback(Object.keys(checked).filter(key => checked[key]), value)}>Filter</button>
     </div>
   )
-}
+}*/
 
 const FilterView = (props: FilterProps) =>{
 /*
