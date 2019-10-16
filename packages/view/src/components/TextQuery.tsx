@@ -16,13 +16,13 @@ const TextQuery = (props: TextQueryType) => {
   }, [props.query]);
 
   //Show/hide current query
-  const OnShowButtonClick = () => {
+  const OnShowButtonClick = (): void => {
     setShowQuery(!showQuery);
     setQuery(stringifyPath(props.query.path, props.query.aggregation));
   };
 
   //Copy current query to clipboard
-  const OnCopyButtonClick = () => {
+  const OnCopyButtonClick = (): void => {
     navigator.clipboard.writeText(query);
   };
 
