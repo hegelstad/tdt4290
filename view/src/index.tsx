@@ -9,14 +9,11 @@ import theme from "./styles/theme";
 import { BranchSelectorPropsType } from "./types/types";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
-
   const [query, setQuery] = useState<QueryType>(props.query);
-  const branchSelectorHeadline = query.path && query.path.length > 0 
-                              ? query.path[query.path.length - 1].value as string
-                              : "Where would you like to start?";
-
-
-  
+  const branchSelectorHeadline =
+    query.path && query.path.length > 0
+      ? (query.path[query.path.length - 1].value as string)
+      : "Where would you like to start?";
 
   console.log("Query on enter of CoordinatorView:", query);
   if (!query.branches && props.query.branches) {
@@ -30,20 +27,17 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
   };
 
   return (
-
     <div>
       <ThemeProvider theme={theme}>
         <BranchSelector
-        
           query={query}
-
           headline={branchSelectorHeadline}
           followBranch={userWantsToFollowBranch}
         />
       </ThemeProvider>
 
-      <ThemeProvider theme = {theme}>
-        <TextQuery query = {query}/>
+      <ThemeProvider theme={theme}>
+        <TextQuery query={query} />
       </ThemeProvider>
     </div>
   );
