@@ -28,9 +28,19 @@ const TextQuery = (props: TextQueryType) => {
     }
 
     //Copy current query to clipboard
-    const OnCopyButtonClick = () => {
-        navigator.clipboard.writeText(query);
+    const OnCopyClipBoardButtonClick = () => {
+        navigator.clipboard.writeText(query).then(function() {
+            console.log("Copied.")
+            }, function() {
+            console.log("Error copying.")
+            });
     }
+
+    //Used to send the query to another component suitable for editing it. 
+    const OnEditButtonClick = () => {
+        props.editFunction(query);
+    }
+
 
 
     //Styled components
@@ -43,9 +53,20 @@ const TextQuery = (props: TextQueryType) => {
         border: 2px solid;
         border-radius: 3px;
       `;
+      
 
       const CopyToClipBoardButton = styled.button.attrs(() => ({
-        onClick: OnCopyButtonClick
+        onClick: OnCopyClipBoardButtonClick
+        }))`
+        font-size: 0.8em;
+        margin: 0.8em;
+        padding: 0.25em 1em;
+        border: 2px solid;
+        border-radius: 3px;
+      `;
+
+      const EditQueryButton = styled.button.attrs(() => ({
+        onClick: OnEditButtonClick
         }))`
         font-size: 0.8em;
         margin: 0.8em;
@@ -81,6 +102,7 @@ const TextQuery = (props: TextQueryType) => {
             </div>
             <div>
                 <CopyToClipBoardButton>Copy to clipboard</CopyToClipBoardButton>
+                <EditQueryButton>Edit query</EditQueryButton>
             </div>
         </TextQueryWrap>
       )
