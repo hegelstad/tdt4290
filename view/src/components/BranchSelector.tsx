@@ -131,10 +131,6 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   `;
 
   const BranchSelectorWrap = styled.div`
-    max-width: 400px;
-    margin: 0 auto;
-    padding-left: 10px;
-    border: 1px solid black;
     display: block;
   `;
 

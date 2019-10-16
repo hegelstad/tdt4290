@@ -4,8 +4,10 @@ import { ThemeProvider } from "styled-components";
 import { followBranch } from "core";
 import { BranchType, QueryType } from "core/dist/types";
 import BranchSelector from "./components/BranchSelector";
+import AggregationView from "./components/AggregationView";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
+import styled from "styled-components";
 import { BranchSelectorPropsType } from "./types/types";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
@@ -26,8 +28,19 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
+  /**
+   * STYLED COMPONENTS
+   */
+  const MainWrap = styled.div`
+    max-width: 400px;
+    margin: 0 auto;
+    padding-left: 10px;
+    border: 1px solid black;
+    display: block;
+  `;
+
   return (
-    <div>
+    <MainWrap>
       <ThemeProvider theme={theme}>
         <BranchSelector
           query={query}
@@ -39,7 +52,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       <ThemeProvider theme={theme}>
         <TextQuery query={query} />
       </ThemeProvider>
-    </div>
+    </MainWrap>
   );
 };
 
