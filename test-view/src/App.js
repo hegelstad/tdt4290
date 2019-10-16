@@ -9,6 +9,7 @@ const config = {
 };
 
 const App = () => {
+  /*
   console.log(config);
   const test_query = async () => {
     console.log("Create base query object:");
@@ -34,7 +35,7 @@ const App = () => {
     console.log("Execute query");
     console.log(await executeQuery(query));
   };
-  test_query();
+  test_query();*/
   return (
     <div>
       <GremlinView config = {config}/>
