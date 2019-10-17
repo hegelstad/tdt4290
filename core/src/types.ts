@@ -41,6 +41,3 @@ export enum MethodTypes {
   Sum = "sum",
   Mean = "mean"
 }
-
-
-
