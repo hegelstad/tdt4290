@@ -1,4 +1,3 @@
-
 interface FilterProps {
-    config: ConfigType;
+  config: ConfigType;
 }

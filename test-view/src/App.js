@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { initialize, followBranch, filterQuery, executeQuery } from "core";
-import GremlinView from "view";
+import CoordinatorView from "view";
 
 const config = {
   org: process.env.REACT_APP_ORG,
@@ -8,8 +8,9 @@ const config = {
   apiURL: "/api/graph-search"
 };
 
+
 const App = () => {
-  /*
+  
   console.log(config);
   const test_query = async () => {
     console.log("Create base query object:");
@@ -17,7 +18,7 @@ const App = () => {
     console.log(query);
 
     console.log("Select all Departments:");
-    query = await followBranch(query, { type: "label", value: "Department" });
+    query = await followBranch(query, { type: "label", value: "Department"});
     console.log(query);
 
     console.log("Follow all Belongs To relations:");
@@ -35,10 +36,23 @@ const App = () => {
     console.log("Execute query");
     console.log(await executeQuery(query));
   };
-  test_query();*/
+  test_query();
+  
+  const [initialQuery, setInitialQuery] = useState({});
+
+  /**
+   * Initialize the query the first time.
+   */
+  useEffect(() => {
+    initialize(config)
+      .then((initialQuery) => {
+        setInitialQuery(initialQuery);
+      });
+  }, [])
+
   return (
     <div>
-      <GremlinView config = {config}/>
+      <CoordinatorView query={initialQuery} />
     </div>
   );
 };

@@ -5,7 +5,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,json,md} *.md"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,json,md}": [
+      "eslint src --ext .ts,.tsx",
+      "prettier --write",
+      "git add"
+    ]
   },
   "license": "MIT",
   "devDependencies": {
@@ -13,13 +28,21 @@
     "@types/react": "^16.9.3",
     "@types/react-dom": "^16.9.1",
     "@types/styled-components": "^4.1.19",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-json": "^1.4.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.15.1",
+    "husky": "^3.0.8",
+    "lint-staged": "^9.4.1",
     "prettier": "^1.18.2",
     "react": "^16.9.0",
     "react-autosuggest": "^9.4.3",
     "react-dom": "^16.9.0",
     "styled-components": "^4.4.0",
-    "tslint": "^5.20.0",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.3"
   },
   "peerDependencies": {
@@ -27,5 +50,10 @@
     "react-autosuggest": "^9.4.3",
     "react-dom": "^16.9.0",
     "styled-components": "^4.4.0"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.5"
   }
 }

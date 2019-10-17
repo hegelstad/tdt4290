@@ -24,8 +24,8 @@ test("Branches are updated correctly", async () => {
   let query = await initialize({});
 
   expect(query.branches).toEqual([
-    { type: "label", value: "label1" },
-    { type: "label", value: "label2" }
+    { type: "label", value: "label1"},
+    { type: "label", value: "label2"}
   ]);
 
   query = await followBranch(query, { type: "label", value: "label1" });
