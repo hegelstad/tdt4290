@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-//import { initialize, followBranch } from "core";
-//import styled from "styled-components";
-//import { QueryType } from "core/dist/types";
 
 const FilterView = ({
   properties,
@@ -41,26 +38,4 @@ const FilterView = ({
   );
 };
 
-/*const FilterView = ({properties, callback}: {properties: string[], callback: any}) => {
-  const [checked, setChecked] = useState<{[prop: string]: boolean}>({});
-  const [value, setValue] = useState("");
-  
-  
-  
-  console.log("properties: " + properties);
-  return (
-    <div>{
-      properties.map(prop  => (
-        <label key={prop}>
-          <input key={prop || ""} type="checkbox" name={prop} checked={checked[prop] || false} onChange={e => setChecked({...checked, [prop]: e.target.checked})} />
-          {prop}
-          </label>
-        ))
-      
-    }
-    <input type="text" value={value} onChange={e => setValue(e.target.value)} />
-    <button onClick={() => callback(Object.keys(checked).filter(key => checked[key]), value)}>Filter</button>
-    </div>
-  )
-}*/
 export default FilterView;
