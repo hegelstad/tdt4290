@@ -19,6 +19,12 @@ const FilterView = ({
     setFieldValue(event.target.value);
   };
 
+  const handleSubmit = (callback: any) => {
+    if (filterKey !== "" && fieldValue !== "") {
+      callback(filterKey, fieldValue);
+    }
+  };
+
   const componentHasFilter = (filters: string[]) => {
     if (filters.length > 0) {
       return true;
@@ -33,16 +39,22 @@ const FilterView = ({
         <div>
           <h3>Filter</h3>
           <select value={filterKey} onChange={handleDropDownChange}>
+            <option key={"default"} value="">
+              --Choose field--
+            </option>
             {properties.map(prop => (
               <option key={prop} value={prop}>
                 {prop}
               </option>
             ))}
           </select>
-          <input type="text" value={fieldValue} onChange={handleInputChange} />
-          <button onClick={() => callback(filterKey, fieldValue)}>
-            Filter
-          </button>
+          <input
+            type="text"
+            value={fieldValue}
+            onChange={handleInputChange}
+            placeholder="Select a value..."
+          />
+          <button onClick={() => handleSubmit(callback)}>Filter</button>
         </div>
       ) : null}
     </div>
