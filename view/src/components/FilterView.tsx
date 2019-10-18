@@ -19,21 +19,32 @@ const FilterView = ({
     setFieldValue(event.target.value);
   };
 
+  const componentHasFilter = (filters: string[]) => {
+    if (filters.length > 0) {
+      return true;
+    }
+    return false;
+  };
+
   console.log("properties: " + properties);
   return (
     <div>
-      <label>
-        Select a property to filter on:{" "}
-        <select value={filterKey} onChange={handleDropDownChange}>
-          {properties.map(prop => (
-            <option key={prop} value={prop}>
-              {prop}
-            </option>
-          ))}
-        </select>
-      </label>
-      <input type="text" value={fieldValue} onChange={handleInputChange} />
-      <button onClick={() => callback(filterKey, fieldValue)}>Filter</button>
+      {componentHasFilter(properties) ? (
+        <div>
+          <h3>Filter</h3>
+          <select value={filterKey} onChange={handleDropDownChange}>
+            {properties.map(prop => (
+              <option key={prop} value={prop}>
+                {prop}
+              </option>
+            ))}
+          </select>
+          <input type="text" value={fieldValue} onChange={handleInputChange} />
+          <button onClick={() => callback(filterKey, fieldValue)}>
+            Filter
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };
