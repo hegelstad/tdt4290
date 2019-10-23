@@ -4,7 +4,6 @@ import { ThemeProvider } from "styled-components";
 import { filterQuery, followBranch } from "core";
 import { BranchType, QueryType } from "core/dist/types";
 import BranchSelector from "./components/BranchSelector";
-//import AggregationView from "./components/AggregationView";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
 import styled from "styled-components";
@@ -30,8 +29,6 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
   };
 
   const userWantsToFilterQuery = (properties: any, value: string) => {
-    console.log("userWantsToFilterQuery :");
-    console.log("property: " + properties + ", value: " + value);
     filterQuery(query, properties, value).then(newQuery => {
       setQuery(newQuery);
     });
