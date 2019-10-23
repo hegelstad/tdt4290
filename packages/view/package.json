@@ -4,16 +4,12 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "bili src/index.tsx --config ../../bili.config.ts",
+    "watch": "bili src/index.tsx --watch --config ../../bili.config.ts",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "format": "prettier --write src/**/*.{ts,tsx,json,md} *.md"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "format": "prettier --write src/**/*.{ts,tsx,json,md} *.md",
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,json,md}": [
@@ -24,6 +20,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "core": "^1.0.0",
     "@types/node": "^12.7.8",
     "@types/react": "^16.9.3",
     "@types/react-dom": "^16.9.1",
@@ -36,7 +33,6 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.15.1",
-    "husky": "^3.0.8",
     "lint-staged": "^9.4.1",
     "prettier": "^1.18.2",
     "styled-components": "^4.4.0",
