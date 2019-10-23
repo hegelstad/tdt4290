@@ -29,10 +29,7 @@ const FilterView = ({
   };
 
   const componentHasFilter = (filters: string[]) => {
-    if (filters.length > 0) {
-      return true;
-    }
-    return false;
+    return filters.length > 0;
   };
 
   // styled components
@@ -66,7 +63,7 @@ const FilterView = ({
 
   return (
     <div>
-      {componentHasFilter(properties) ? (
+      {componentHasFilter(properties) && (
         <div>
           <h3>Filter</h3>
           <FieldSelect>
@@ -82,7 +79,7 @@ const FilterView = ({
           <ValueInput placeholder="Select a value..." autoFocus />
           <FilterButton>Filter</FilterButton>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
