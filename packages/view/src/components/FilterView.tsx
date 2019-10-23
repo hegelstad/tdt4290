@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { FilterQueryPropsType } from "../types/types";
+import { FilterCallbackType } from "../types/types";
 
 const FilterView = ({
   properties,
   callback
 }: {
   properties: string[];
-  callback: (props: FilterQueryPropsType) => void;
+  callback: FilterCallbackType;
 }) => {
   const [fieldKey, setFieldKey] = useState("");
   const [fieldValue, setFieldValue] = useState("");
@@ -25,7 +25,7 @@ const FilterView = ({
 
   const handleSubmit = () => {
     if (fieldKey !== "" && fieldValue !== "") {
-      callback({ field: fieldKey, value: fieldValue });
+      callback(fieldKey, fieldValue);
     }
   };
 

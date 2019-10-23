@@ -8,7 +8,4 @@ export interface TextQueryType {
   query: QueryType;
 }
 
-export interface FilterQueryPropsType {
-  field: string;
-  value: string;
-}
+export type FilterCallbackType = (field: string, value: string) => void;

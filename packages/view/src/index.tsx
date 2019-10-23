@@ -7,7 +7,7 @@ import BranchSelector from "./components/BranchSelector";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
 import styled from "styled-components";
-import { BranchSelectorPropsType, FilterQueryPropsType } from "./types/types";
+import { BranchSelectorPropsType, FilterCallbackType } from "./types/types";
 import FilterView from "./components/FilterView";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
@@ -28,8 +28,8 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
-  const userWantsToFilterQuery = (props: FilterQueryPropsType) => {
-    filterQuery(query, props.field, props.value).then(newQuery => {
+  const userWantsToFilterQuery: FilterCallbackType = (field, value) => {
+    filterQuery(query, field, value).then(newQuery => {
       setQuery(newQuery);
     });
   };
