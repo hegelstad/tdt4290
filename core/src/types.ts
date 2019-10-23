@@ -28,16 +28,29 @@ export interface EdgeType {
 export interface FilterType {
   type: "filter";
   value: any;
-  property: string;
+  property: PropertyType;
 }
 export interface AggregationType {
   properties: PropertyType[];
   method: MethodTypes;
 }
 
-export type PropertyType = string;
+export interface PropertyType {
+  label: string;
+  type: PropertyTypes
+}
 export type BranchType = LabelType | EdgeType | FilterType;
+
+
+export enum PropertyTypes {
+  String,
+  StringArray,
+  Number, 
+  Boolean,
+  Undefined
+}
+
 export enum MethodTypes {
   Sum = "sum",
-  Mean = "mean"
+  Mean = "mean",
 }

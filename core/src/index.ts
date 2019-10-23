@@ -6,6 +6,7 @@ import {
   QueryType,
   FilterType,
   PropertyType,
+  PropertyTypes,
   MethodTypes,
   LabelType,
   EdgeType,
@@ -92,7 +93,7 @@ export const filterQuery = async (
   property: PropertyType,
   value: any
 ): Promise<QueryType> => {
-  const filter: FilterType = { type: "filter", property, value };
+  const filter: FilterType = { type: "filter", property: property, value };
   const path = [...query.path, filter];
   return {
     ...query,
@@ -166,10 +167,33 @@ const getProperties = async (
   path: BranchType[]
 ): Promise<PropertyType[]> => {
   const baseQueryString = stringifyPath(path);
-  const propertiesQueryString = `${baseQueryString}.properties().label().dedup()`;
-  return (await callAPI(config, {
+  const propertiesQueryString = `${baseQueryString}.properties().dedup().by(label()).project("label", "value").by(label()).by(value())`;
+  const tempResult: [any] = (await callAPI(config, {
     query: propertiesQueryString
   })).result;
+  return tempResult.map((property) => {
+    var newProperty = {
+      label: property.label as string,
+      type: PropertyTypes.Undefined
+    }
+    if (property.value) {
+      // Logic to figure out what type the property is. This information is used in aggregation
+      const isNumber = !isNaN(Number(property.value));
+      const isBoolean = property.value === "true" || property.value === "false";
+      const isStringArray = property.value.length;  // If the length of the value isn't undefined, it is an Array..?
+      const isString = String(property.value);
+      if (isNumber) {
+        newProperty.type = PropertyTypes.Number;
+      } else if (isBoolean) {
+        newProperty.type = PropertyTypes.Boolean;
+      } else if (isStringArray) {
+        newProperty.type = PropertyTypes.StringArray;
+      } else if (isString) {
+        newProperty.type = PropertyTypes.String;
+      }
+    }
+    return newProperty;
+  })
 };
 
 /**

@@ -32,25 +32,34 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
    * STYLED COMPONENTS
    */
   const MainWrap = styled.div`
-    max-width: 400px;
+    max-width: 600px;
     margin: 0 auto;
     padding-left: 10px;
     border: 1px solid black;
-    display: block;
+    display: flex;
+  `;
+
+  const Column = styled.div`
+    flex: 50%;
+    padding: 10px;
   `;
 
   return (
     <MainWrap>
       <ThemeProvider theme={theme}>
-        <BranchSelector
-          query={query}
-          headline={branchSelectorHeadline}
-          followBranch={userWantsToFollowBranch}
-        />
+        <Column>
+          <BranchSelector
+            query={query}
+            headline={branchSelectorHeadline}
+            followBranch={userWantsToFollowBranch}
+          />
+        </Column>
       </ThemeProvider>
-
       <ThemeProvider theme={theme}>
-        <TextQuery query={query} />
+        <Column>
+          <AggregationView query={query} />
+          <TextQuery query={query} />
+        </Column>
       </ThemeProvider>
     </MainWrap>
   );
