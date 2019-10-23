@@ -1,0 +1,39 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest --config jestconfig.json src/*",
+    "build": "bili src/index.ts --config ../../bili.config.ts",
+    "watch": "bili src/index.ts --watch --config ../../bili.config.ts",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,json,md} *.md",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,json,md}": [
+      "eslint src --ext .ts,.tsx",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "isomorphic-fetch": "^2.2.1",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "@types/node": "^12.7.8"
+  }
+}
