@@ -1,30 +1,31 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { FilterQueryPropsType } from "../types/types";
 
 const FilterView = ({
   properties,
   callback
 }: {
   properties: string[];
-  callback: any;
+  callback: (props: FilterQueryPropsType) => void;
 }) => {
-  const [filterKey, setFilterKey] = useState("");
+  const [fieldKey, setFieldKey] = useState("");
   const [fieldValue, setFieldValue] = useState("");
 
   const handleDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setFilterKey(event.target.value);
-    console.log("FilterKey: " + filterKey);
+    setFieldKey(event.target.value);
+    console.log("FieldKey: " + fieldKey);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFieldValue(event.target.value);
   };
 
-  const handleSubmit = (callback: any) => {
-    if (filterKey !== "" && fieldValue !== "") {
-      callback(filterKey, fieldValue);
+  const handleSubmit = () => {
+    if (fieldKey !== "" && fieldValue !== "") {
+      callback({ field: fieldKey, value: fieldValue });
     }
   };
 
@@ -39,30 +40,30 @@ const FilterView = ({
     defaultValue: fieldValue,
     onInput: handleInputChange
   }))`
-  padding: 2px
-    margin-bottom: 8px
+    padding: 2px;
+    margin-bottom: 8px;
     margin-left: 10px;
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
-    defaultValue: filterKey,
+    defaultValue: fieldKey,
     onChange: handleDropDownChange
   }))`
-  padding: 2px
-    margin-bottom: 8px
+    padding: 2px;
+    margin-bottom: 8px;
     margin-left: 18px;
   `;
 
   const FilterButton = styled.button.attrs(() => ({
-    onClick: () => handleSubmit(callback)
+    onClick: () => handleSubmit()
   }))`
-  padding: 2px 5px
-    margin-bottom: 8px
+    padding: 2px 5px;
+    margin-bottom: 8px;
     margin-left: 10px;
   `;
 
   return (
-    <div>
+    <>
       {componentHasFilter(properties) && (
         <div>
           <h3>Filter</h3>
@@ -80,7 +81,7 @@ const FilterView = ({
           <FilterButton>Filter</FilterButton>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -7,3 +7,8 @@ export interface BranchSelectorPropsType {
 export interface TextQueryType {
   query: QueryType;
 }
+
+export interface FilterQueryPropsType {
+  field: string;
+  value: string;
+}
