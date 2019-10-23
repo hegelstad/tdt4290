@@ -5,10 +5,12 @@ import { initialize, followBranch } from "./index";
 test("Branches are updated correctly", async () => {
   // Mock api responses
   callAPI
+    /*eslint-disable*/
     // @ts-ignore
     .mockImplementationOnce(async a => ({
       result: ["label1", "label2"] // Initial labels from initialize
-    }))
+    })) /* eslint-enable*/
+    /*eslint-disable*/
     // @ts-ignore
     .mockImplementation(async (config, body) => ({
       result: body.query.endsWith(".both().label().dedup()")
@@ -18,15 +20,16 @@ test("Branches are updated correctly", async () => {
         : body.query.endsWith(".outE().label().dedup()")
         ? ["edgeOut1", "edgeOut2"] // requesting edges out
         : [] // anything else (like properties)
-    }));
+    })); /* eslint-enable*/
 
+  /*eslint-disable*/
   // @ts-ignore
   let query = await initialize({});
 
   expect(query.branches).toEqual([
     { type: "label", value: "label1" },
     { type: "label", value: "label2" }
-  ]);
+  ]); /* eslint-enable*/
 
   query = await followBranch(query, { type: "label", value: "label1" });
 

@@ -29,16 +29,13 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
-const userWantsToFilterQuery = (properties: any, value: string) => {
+  const userWantsToFilterQuery = (properties: any, value: string) => {
     console.log("userWantsToFilterQuery :");
     console.log("property: " + properties + ", value: " + value);
     filterQuery(query, properties, value).then(newQuery => {
       setQuery(newQuery);
     });
   };
-  
-  
-  
   /**
    * STYLED COMPONENTS
    */
@@ -49,7 +46,6 @@ const userWantsToFilterQuery = (properties: any, value: string) => {
     border: 1px solid black;
     display: block;
   `;
-
   return (
     <MainWrap>
       <ThemeProvider theme={theme}>

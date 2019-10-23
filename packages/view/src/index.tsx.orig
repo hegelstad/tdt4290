@@ -36,19 +36,9 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       setQuery(newQuery);
     });
   };
-  /**
-   * STYLED COMPONENTS
-   */
-  const MainWrap = styled.div`
-    max-width: 400px;
-    margin: 0 auto;
-    padding-left: 10px;
-    border: 1px solid black;
-    display: block;
-  `;
 
   return (
-    <MainWrap>
+    <div>
       <ThemeProvider theme={theme}>
         <BranchSelector
           query={query}
