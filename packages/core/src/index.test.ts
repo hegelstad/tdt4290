@@ -9,8 +9,7 @@ test("Branches are updated correctly", async () => {
     // @ts-ignore
     .mockImplementationOnce(async a => ({
       result: ["label1", "label2"] // Initial labels from initialize
-    })) /* eslint-enable*/
-    /*eslint-disable*/
+    }))
     // @ts-ignore
     .mockImplementation(async (config, body) => ({
       result: body.query.endsWith(".both().label().dedup()")
@@ -20,9 +19,8 @@ test("Branches are updated correctly", async () => {
         : body.query.endsWith(".outE().label().dedup()")
         ? ["edgeOut1", "edgeOut2"] // requesting edges out
         : [] // anything else (like properties)
-    })); /* eslint-enable*/
+    }));
 
-  /*eslint-disable*/
   // @ts-ignore
   let query = await initialize({});
 
