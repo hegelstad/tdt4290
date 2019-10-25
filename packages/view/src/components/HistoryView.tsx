@@ -1,5 +1,5 @@
 import React from "react";
-import { BranchType, LabelType, EdgeType, FilterType } from "core/dist/types";
+import { BranchType, LabelType, EdgeType, FilterType } from "core";
 
 const LabelBranch = ({
   index,
