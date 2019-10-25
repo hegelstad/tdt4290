@@ -9,3 +9,5 @@ export interface BranchSelectorPropsType {
 export interface TextQueryType {
   query: QueryType;
 }
+
+export type FilterCallbackType = (field: string, value: string) => void;

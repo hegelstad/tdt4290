@@ -1,13 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
-import { followBranch, filterQuery } from "core";
-import { BranchType, QueryType } from "core/dist/types";
+import { filterQuery,followBranch, QueryType, BranchType } from "core";
 import BranchSelector from "./components/BranchSelector";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
 import { BranchSelectorPropsType, FilterCallbackType } from "./types";
-import FilterView from "./components/FilterView";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -32,9 +30,18 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       setQuery(newQuery);
     });
   };
-
+  /**
+   * STYLED COMPONENTS
+   */
+  const MainWrap = styled.div`
+    max-width: 400px;
+    margin: 0 auto;
+    padding-left: 10px;
+    border: 1px solid black;
+    display: block;
+  `;
   return (
-    <div>
+    <MainWrap>
       <ThemeProvider theme={theme}>
         <BranchSelector
           query={query}
@@ -50,7 +57,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       <ThemeProvider theme={theme}>
         <TextQuery query={query} />
       </ThemeProvider>
-    </div>
+    </MainWrap>
   );
 };
 

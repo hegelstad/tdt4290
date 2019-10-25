@@ -74,34 +74,6 @@ export const stringifyPath = (
   return baseQuery + pathQuery + aggregationQuery;
 };
 
-export const followBranch = async (
-  query: QueryType,
-  target: BranchType
-): Promise<QueryType> => {
-  const path = [...query.path, target];
-  return {
-    ...query,
-    path,
-    branches: await getBranches(query.config, path),
-    properties: await getProperties(query.config, path)
-  };
-};
-
-export const filterQuery = async (
-  query: QueryType,
-  property: PropertyType,
-  value: any
-): Promise<QueryType> => {
-  const filter: FilterType = { type: "filter", property, value };
-  const path = [...query.path, filter];
-  return {
-    ...query,
-    path,
-    branches: await getBranches(query.config, path),
-    properties: await getProperties(query.config, path)
-  };
-};
-
 export const aggregateQuery = async (
   query: QueryType,
   properties: PropertyType[],
@@ -170,6 +142,34 @@ const getProperties = async (
   return (await callAPI(config, {
     query: propertiesQueryString
   })).result;
+};
+
+export const followBranch = async (
+  query: QueryType,
+  target: BranchType
+): Promise<QueryType> => {
+  const path = [...query.path, target];
+  return {
+    ...query,
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
+  };
+};
+
+export const filterQuery = async (
+  query: QueryType,
+  property: PropertyType,
+  value: any
+): Promise<QueryType> => {
+  const filter: FilterType = { type: "filter", property, value };
+  const path = [...query.path, filter];
+  return {
+    ...query,
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
+  };
 };
 
 /**
