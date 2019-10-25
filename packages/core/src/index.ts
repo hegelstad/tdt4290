@@ -180,6 +180,7 @@ export const popPath = async (query: QueryType): Promise<QueryType> => {
   return {
     ...query,
     path,
+    aggregation: undefined,
     branches: await getBranches(query.config, path),
     properties: await getProperties(query.config, path)
   };
