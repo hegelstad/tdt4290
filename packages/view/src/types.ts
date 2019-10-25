@@ -1,3 +1,5 @@
+import { QueryType, BranchType } from "core";
+
 export interface BranchSelectorPropsType {
   query: QueryType;
   headline: string;

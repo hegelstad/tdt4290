@@ -4,7 +4,7 @@ import { getSuggestions } from "core";
 import { LabelType, EdgeType, BranchType, QueryType } from "core/dist/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { BranchSelectorPropsType } from "../types/types";
+import { BranchSelectorPropsType } from "../types";
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
   const getBranchTypeFrom = (type: string, initialQuery: QueryType) => {
@@ -97,8 +97,8 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     onInput: onInput,
     defaultValue: inputValue
   }))`
-    padding: 2px
-    margin-bottom: 8px
+    padding: 2px;
+    margin-bottom: 8px;
     margin-left: 10px;
   `;
 

@@ -1,12 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
-import { followBranch } from "core";
-import { BranchType, QueryType } from "core/dist/types";
+import { followBranch, QueryType, BranchType } from "core";
 import BranchSelector from "./components/BranchSelector";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
-import { BranchSelectorPropsType } from "./types/types";
+import { BranchSelectorPropsType } from "./types";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -44,3 +43,5 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
 };
 
 export default CoordinatorView;
+
+export * from "./types";
