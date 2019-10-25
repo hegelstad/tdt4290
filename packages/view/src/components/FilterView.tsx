@@ -33,6 +33,13 @@ const FilterView = ({
     return filters.length > 0;
   };
 
+  const formatFieldName = (fieldName: string) => {
+    let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-/).join(" ");
+    formatedFieldName =
+      formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
+    return formatedFieldName;
+  };
+
   // styled components
 
   const ValueInput = styled.input.attrs(() => ({
@@ -41,8 +48,8 @@ const FilterView = ({
     onInput: handleInputChange
   }))`
     padding: 2px;
-    margin-bottom: 8px;
-    margin-left: 10px;
+    margin: 0 19% 8px 17%;
+    width: 60%;
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
@@ -50,16 +57,16 @@ const FilterView = ({
     onChange: handleDropDownChange
   }))`
     padding: 2px;
-    margin-bottom: 8px;
-    margin-left: 18px;
+    margin: 0 18% 8px 17%;
+    width: 62%;
   `;
 
   const FilterButton = styled.button.attrs(() => ({
     onClick: () => handleSubmit()
   }))`
     padding: 2px 5px;
-    margin-bottom: 8px;
-    margin-left: 10px;
+    margin: 0 39% 8px 37%;
+    width: 20%;
   `;
 
   return (
@@ -71,9 +78,9 @@ const FilterView = ({
             <option key={"default"} value="" disabled selected>
               --Choose field--
             </option>
-            {properties.map(prop => (
+            {properties.sort().map(prop => (
               <option key={prop} value={prop}>
-                {prop}
+                {formatFieldName(prop)}
               </option>
             ))}
           </FieldSelect>
