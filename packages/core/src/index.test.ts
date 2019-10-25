@@ -5,6 +5,7 @@ import { initialize, followBranch } from "./index";
 test("Branches are updated correctly", async () => {
   // Mock api responses
   callAPI
+    /*eslint-disable*/
     // @ts-ignore
     .mockImplementationOnce(async a => ({
       result: ["label1", "label2"] // Initial labels from initialize
@@ -26,7 +27,7 @@ test("Branches are updated correctly", async () => {
   expect(query.branches).toEqual([
     { type: "label", value: "label1" },
     { type: "label", value: "label2" }
-  ]);
+  ]); /* eslint-enable*/
 
   query = await followBranch(query, { type: "label", value: "label1" });
 

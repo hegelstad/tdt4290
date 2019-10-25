@@ -4,9 +4,9 @@ import { getSuggestions } from "core";
 import { LabelType, EdgeType, BranchType, QueryType } from "core/dist/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { BranchSelectorPropsType } from "../types/types";
+import { BranchSelectorPropsType } from "../types";
 
-const BranchSelector = (props: BranchSelectorPropsType) => {
+const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const getBranchTypeFrom = (
     type: string,
     initialQuery: QueryType
@@ -41,7 +41,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     setEdgeSuggestions(edgeSuggestions);
   }, [inputValue, props.query]);
 
-  const renderSuggestion = (suggestion: BranchType) => {
+  const renderSuggestion = (suggestion: BranchType): JSX.Element => {
     if (suggestion.type === "label") {
       return (
         <li key={suggestion.value}>
@@ -102,8 +102,8 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     onInput: onInput,
     defaultValue: inputValue
   }))`
-    padding: 2px
-    margin-bottom: 8px
+    padding: 2px;
+    margin-bottom: 8px;
     margin-left: 10px;
   `;
 

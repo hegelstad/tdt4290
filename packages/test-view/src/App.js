@@ -10,6 +10,7 @@ const config = {
 
 
 const App = () => {
+  
   console.log(config);
   const test_query = async () => {
     console.log("Create base query object:");

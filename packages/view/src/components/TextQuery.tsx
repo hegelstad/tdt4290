@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { stringifyPath } from "core";
-import { TextQueryType } from "../types/types";
+import { TextQueryType } from "../types";
 
 //This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
-const TextQuery = (props: TextQueryType) => {
+const TextQuery = (props: TextQueryType): JSX.Element => {
   const [query, setQuery] = useState("");
   const [showQuery, setShowQuery] = useState(false);
 
@@ -48,14 +48,14 @@ const TextQuery = (props: TextQueryType) => {
   `;
 
   const TextQueryWrap = styled.div`
-        max-width: 400px;
-        margin: 0 auto;
-        
-        padding: 20px;
-        display: flex
-        flex-direction: column;
-        text-align: center
-    `;
+    max-width: 400px;
+    margin: 0 auto;
+
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  `;
 
   return showQuery ? (
     <TextQueryWrap>

@@ -10,7 +10,8 @@ import {
   MethodTypes,
   LabelType,
   EdgeType,
-  LabelCountType
+  LabelCountType,
+  PropertyRawType
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -73,34 +74,6 @@ export const stringifyPath = (
         .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
   return baseQuery + pathQuery + aggregationQuery;
-};
-
-export const followBranch = async (
-  query: QueryType,
-  target: BranchType
-): Promise<QueryType> => {
-  const path = [...query.path, target];
-  return {
-    ...query,
-    path,
-    branches: await getBranches(query.config, path),
-    properties: await getProperties(query.config, path)
-  };
-};
-
-export const filterQuery = async (
-  query: QueryType,
-  property: PropertyType,
-  value: any
-): Promise<QueryType> => {
-  const filter: FilterType = { type: "filter", property: property, value };
-  const path = [...query.path, filter];
-  return {
-    ...query,
-    path,
-    branches: await getBranches(query.config, path),
-    properties: await getProperties(query.config, path)
-  };
 };
 
 export const aggregateQuery = async (
@@ -168,19 +141,20 @@ const getProperties = async (
 ): Promise<PropertyType[]> => {
   const baseQueryString = stringifyPath(path);
   const propertiesQueryString = `${baseQueryString}.properties().dedup().by(label()).project("label", "value").by(label()).by(value())`;
-  const tempResult: [any] = (await callAPI(config, {
+  const tempResult: [PropertyRawType] = (await callAPI(config, {
     query: propertiesQueryString
   })).result;
-  return tempResult.map((property) => {
+  return tempResult.map(property => {
+    // eslint-disable-next-line no-var
     var newProperty = {
       label: property.label as string,
       type: PropertyTypes.Undefined
-    }
+    };
     if (property.value) {
       // Logic to figure out what type the property is. This information is used in aggregation
       const isNumber = !isNaN(Number(property.value));
       const isBoolean = property.value === "true" || property.value === "false";
-      const isStringArray = property.value.length;  // If the length of the value isn't undefined, it is an Array..?
+      const isStringArray = property.value.length; // If the length of the value isn't undefined, it is an Array..?
       const isString = String(property.value);
       if (isNumber) {
         newProperty.type = PropertyTypes.Number;
@@ -193,7 +167,36 @@ const getProperties = async (
       }
     }
     return newProperty;
-  })
+  });
+};
+
+export const followBranch = async (
+  query: QueryType,
+  target: BranchType
+): Promise<QueryType> => {
+  const path = [...query.path, target];
+  return {
+    ...query,
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
+  };
+};
+
+export const filterQuery = async (
+  query: QueryType,
+  property: PropertyType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any
+): Promise<QueryType> => {
+  const filter: FilterType = { type: "filter", property, value };
+  const path = [...query.path, filter];
+  return {
+    ...query,
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
+  };
 };
 
 /**
@@ -216,3 +219,5 @@ export const getSuggestions = (
           .includes(inputValue);
       });
 };
+
+export * from "./types";

@@ -1,33 +1,21 @@
 import React, { /*useReducer,*/ useEffect } from "react";
 import styled from "styled-components";
-import {
-  AggregationReducerState,
-  AggregationReducerAction
-} from "../types/types";
+import { AggregationViewPropsType } from "../types";
+import { MethodTypes, AggregationType } from "core";
 
-const AggregationView = (props: any) => {
+const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     console.log(event);
     console.log("Properties: ", props.query.properties);
   };
 
-  const renderOption = (methodType: any) => {
+  const renderOption = (methodType: MethodTypes): JSX.Element => {
     return (
       <option value={methodType} key={methodType}>
         {methodType}
       </option>
     );
   };
-
-  const reducer = (
-    state: AggregationReducerState,
-    action: AggregationReducerAction
-  ) => {
-    console.log(state);
-    console.log(action);
-  };
-
-  console.log(reducer);
 
   //const [aggregations, dispatch] = useReducer(reducer);*/
 
@@ -51,7 +39,7 @@ const AggregationView = (props: any) => {
   const aggregations = { aggregations: [] };
   return (
     <Dropdown onChange={handleChange}>
-      {aggregations.aggregations.map((option: any) => {
+      {aggregations.aggregations.map((option: AggregationType) => {
         return renderOption(option.method);
       })}
     </Dropdown>

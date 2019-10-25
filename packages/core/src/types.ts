@@ -25,11 +25,14 @@ export interface EdgeType {
   value: string;
   direction: "in" | "out";
 }
+
 export interface FilterType {
   type: "filter";
+  // eslint-disable-next-line
   value: any;
   property: PropertyType;
 }
+
 export interface AggregationType {
   properties: PropertyType[];
   method: MethodTypes;
@@ -37,20 +40,25 @@ export interface AggregationType {
 
 export interface PropertyType {
   label: string;
-  type: PropertyTypes
+  type: PropertyTypes;
 }
-export type BranchType = LabelType | EdgeType | FilterType;
 
+export interface PropertyRawType {
+  label: string;
+  value: string;
+}
+
+export type BranchType = LabelType | EdgeType | FilterType;
 
 export enum PropertyTypes {
   String,
   StringArray,
-  Number, 
+  Number,
   Boolean,
   Undefined
 }
 
 export enum MethodTypes {
   Sum = "sum",
-  Mean = "mean",
+  Mean = "mean"
 }
