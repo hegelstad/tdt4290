@@ -1,9 +1,15 @@
 import React from "react";
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
-import { followBranch, filterQuery } from "core";
-import { BranchType, QueryType } from "core/dist/types";
+import {
+  followBranch,
+  filterQuery,
+  popPath,
+  QueryType,
+  BranchType
+} from "core";
 import BranchSelector from "./components/BranchSelector";
+import HistoryView from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
 import { BranchSelectorPropsType, FilterCallbackType } from "./types";
@@ -33,24 +39,31 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
-  return (
-    <div>
-      <ThemeProvider theme={theme}>
-        <BranchSelector
-          query={query}
-          headline={branchSelectorHeadline}
-          followBranch={userWantsToFollowBranch}
-        />
-      </ThemeProvider>
-      <FilterView
-        properties={query.properties || []}
-        callback={userWantsToFilterQuery}
-      />
+  const handleStepBack = async () => {
+    const newQuery = await popPath(query);
+    setQuery(newQuery);
+  };
 
-      <ThemeProvider theme={theme}>
-        <TextQuery query={query} editFunction={() => {}} />
-      </ThemeProvider>
-    </div>
+  return (
+    <ThemeProvider theme={theme}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div>
+          <HistoryView history={query.path} handleStepBack={handleStepBack} />
+        </div>
+        <div>
+          <BranchSelector
+            query={query}
+            headline={branchSelectorHeadline}
+            followBranch={userWantsToFollowBranch}
+          />
+          <FilterView
+            properties={query.properties || []}
+            callback={userWantsToFilterQuery}
+          />
+          <TextQuery query={query} editFunction={() => {}} />
+        </div>
+      </div>
+    </ThemeProvider>
   );
 };
 

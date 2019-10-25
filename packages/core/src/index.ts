@@ -172,6 +172,19 @@ export const filterQuery = async (
   };
 };
 
+export const popPath = async (query: QueryType): Promise<QueryType> => {
+  if (query.path.length === 0) {
+    return query;
+  }
+  const path = query.path.slice(0, query.path.length - 1);
+  return {
+    ...query,
+    path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
+  };
+};
+
 /**
  * Gets suggestions from the given source, or shows the top results
  * based on some criteria
