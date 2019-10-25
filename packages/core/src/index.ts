@@ -192,3 +192,5 @@ export const getSuggestions = (
           .includes(inputValue);
       });
 };
+
+export * from "./types";
