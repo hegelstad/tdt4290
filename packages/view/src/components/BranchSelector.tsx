@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { getSuggestions } from "core";
-import { LabelType, EdgeType, BranchType, QueryType } from "core/dist/types";
+import { LabelType, EdgeType, BranchType, QueryType } from "core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";

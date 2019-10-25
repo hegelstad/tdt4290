@@ -7,7 +7,6 @@ import {
   FilterType,
   PropertyType,
   PropertyTypes,
-  MethodTypes,
   LabelType,
   EdgeType,
   LabelCountType,
@@ -78,15 +77,11 @@ export const stringifyPath = (
 
 export const aggregateQuery = async (
   query: QueryType,
-  properties: PropertyType[],
-  method: MethodTypes
+  aggregation: AggregationType
 ): Promise<QueryType> => {
   return {
     ...query,
-    aggregation: {
-      properties,
-      method
-    }
+    aggregation: aggregation
   };
 };
 
@@ -145,8 +140,7 @@ const getProperties = async (
     query: propertiesQueryString
   })).result;
   return tempResult.map(property => {
-    // eslint-disable-next-line no-var
-    var newProperty = {
+    const newProperty = {
       label: property.label as string,
       type: PropertyTypes.Undefined
     };

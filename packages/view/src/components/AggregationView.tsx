@@ -1,48 +1,119 @@
-import React, { /*useReducer,*/ useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { PropertyType, PropertyTypes, MethodTypes } from "core";
 import { AggregationViewPropsType } from "../types";
-import { MethodTypes, AggregationType } from "core";
 
-const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    console.log(event);
-    console.log("Properties: ", props.query.properties);
+const AggregationView = (props: AggregationViewPropsType) => {
+  const [numericalProperties, setNumericalProperties] = useState<
+    PropertyType[]
+  >([]);
+  const [selectedMethod, setSelectedMethod] = useState<MethodTypes>(
+    MethodTypes.Mean
+  );
+
+  const handleRadioButtonSelect = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const value = event.target.value;
+    console.log("Event: ", event);
+    console.log("Checkbox value: ", value);
+    switch (value) {
+      case MethodTypes.Mean: {
+        setSelectedMethod(MethodTypes.Mean);
+        break;
+      }
+      case MethodTypes.Sum: {
+        setSelectedMethod(MethodTypes.Sum);
+        break;
+      }
+      default: {
+        throw new Error("Unknown methodtype. Can't aggregate on " + value);
+      }
+    }
   };
 
-  const renderOption = (methodType: MethodTypes): JSX.Element => {
+  const handleCheckboxSelect = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    console.log(event);
+  };
+
+  const renderRadioButton = (text: string) => {
     return (
-      <option value={methodType} key={methodType}>
-        {methodType}
-      </option>
+      <div>
+        <RadioButton
+          onChange={handleRadioButtonSelect}
+          value={text}
+          key={text}
+          checked={selectedMethod === text}
+        />
+        {" " + text}
+        <br />
+      </div>
     );
   };
 
-  //const [aggregations, dispatch] = useReducer(reducer);*/
+  const renderCheckbox = (text: string) => {
+    return (
+      <div key={text}>
+        <Checkbox onChange={handleCheckboxSelect} value={text} />
+        {" " + text}
+        <br />
+      </div>
+    );
+  };
 
-  useEffect(() => {}, [props.query]);
-
-  /*
   useEffect(() => {
-    console.log("Aggregations changed: ", aggregations);
-  }, [aggregations]);*/
+    if (props.query.properties) {
+      setNumericalProperties(
+        props.query.properties.filter(property => {
+          return property.type === PropertyTypes.Number;
+        })
+      );
+    }
+  }, [props.query]);
 
   /*
    * STYLED COMPONENTS
    */
-  const Dropdown = styled.select`
-    max-width: 100px;
+  const RadioButton = styled.input.attrs(() => ({
+    type: "radio"
+  }))`
+    border-radius: 3px;
+    border: 1px solid palevioletred;
     display: inline;
-    margin: 0 auto;
-    border: 1px solid black;
+    margin: 0 0 1em;
+    padding: 5px;
   `;
 
-  const aggregations = { aggregations: [] };
+  const Checkbox = styled.input.attrs(() => ({
+    type: "checkbox"
+  }))`
+    border: 1px solid palevioletred;
+    display: inline;
+    margin 3px
+  `;
+
+  const Row = styled.div`
+    display: flex;
+  `;
+
+  const Column = styled.div`
+    flex: 50%;
+  `;
+
   return (
-    <Dropdown onChange={handleChange}>
-      {aggregations.aggregations.map((option: AggregationType) => {
-        return renderOption(option.method);
-      })}
-    </Dropdown>
+    <Row>
+      <Column>
+        {renderRadioButton(MethodTypes.Sum)}
+        {renderRadioButton(MethodTypes.Mean)}
+      </Column>
+      <Column>
+        {numericalProperties.map(property => {
+          return renderCheckbox(property.label);
+        })}
+      </Column>
+    </Row>
   );
 };
 

@@ -1,15 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { ThemeProvider } from "styled-components";
-import { followBranch, filterQuery } from "core";
-import { BranchType, QueryType } from "core/dist/types";
+import styled, { ThemeProvider } from "styled-components";
+import { followBranch, QueryType, BranchType } from "core";
 import BranchSelector from "./components/BranchSelector";
 import AggregationView from "./components/AggregationView";
 import TextQuery from "./components/TextQuery";
-import theme from "./styles/theme";
-import styled from "styled-components";
-import { BranchSelectorPropsType, FilterCallbackType } from "./types";
 import FilterView from "./components/FilterView";
+import theme from "./styles/theme";
+import { BranchSelectorPropsType, FilterCallbackType } from "./types";
+import { filterQuery } from "core";
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -24,7 +23,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   }
 
   const userWantsToFollowBranch = (branch: BranchType): void => {
-    followBranch(query, branch).then(newQuery => {
+    followBranch(query, branch).then((newQuery: QueryType) => {
       setQuery(newQuery);
     });
   };
