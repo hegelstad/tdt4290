@@ -1,22 +1,64 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { PropertyType, PropertyTypes, MethodTypes } from "core";
+import {
+  PropertyType,
+  PropertyTypes,
+  MethodTypes,
+  AggregationType
+} from "core";
 import { AggregationViewPropsType } from "../types";
 
-const AggregationView = (props: AggregationViewPropsType) => {
+const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
+  /**
+   * HOOKS
+   */
+
   const [numericalProperties, setNumericalProperties] = useState<
     PropertyType[]
   >([]);
   const [selectedMethod, setSelectedMethod] = useState<MethodTypes>(
     MethodTypes.Mean
   );
+  const [selectedProperties, setSelectedProperties] = useState<PropertyType[]>(
+    []
+  );
 
-  const handleRadioButtonSelect = (
+  useEffect(() => {
+    if (props.query.properties) {
+      setNumericalProperties(
+        props.query.properties.filter(property => {
+          return property.type === PropertyTypes.Number;
+        })
+      );
+    }
+  }, [props.query]);
+
+  /**
+   * PRIVATE METHODS
+   */
+
+  const __methodIsSelected = (methodName: string): boolean => {
+    return selectedMethod === methodName;
+  };
+
+  const __propertyIsChecked = (propertyName: string): boolean => {
+    return (
+      selectedProperties.find(selectedProperty => {
+        return selectedProperty.label === propertyName;
+      }) !== undefined
+    );
+  };
+
+  /**
+   * HANDLERS
+   */
+
+  const handleMethodChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const value = event.target.value;
     console.log("Event: ", event);
-    console.log("Checkbox value: ", value);
+    console.log("Radio button value: ", value);
     switch (value) {
       case MethodTypes.Mean: {
         setSelectedMethod(MethodTypes.Mean);
@@ -32,20 +74,68 @@ const AggregationView = (props: AggregationViewPropsType) => {
     }
   };
 
-  const handleCheckboxSelect = (
+  const handlePropertyChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    console.log(event);
+    const value = event.target.value;
+    console.log("Selected Properties: ", selectedProperties);
+    console.log("Value: ", value);
+
+    // Find the property that the checkbox was build from
+    const property = numericalProperties.find(property => {
+      return property.label === value;
+    });
+    console.log("Property: ", property);
+
+    // Find the index in the array of the property found above
+    const i = selectedProperties.indexOf(
+      property ? property : { label: "", type: PropertyTypes.Undefined },
+      0
+    );
+
+    console.log("i: ", i);
+
+    if (property && i === -1) {
+      // If the unwrapping was successful, and it does not
+      // exist already in selected, add the property
+      setSelectedProperties([...selectedProperties, property]);
+    } else if (property && i !== -1) {
+      // If the unwrapping was successful, and it does exist
+      // already in selected, delete the property
+      setSelectedProperties(
+        selectedProperties.filter(selectedProperty => {
+          return selectedProperty !== property;
+        })
+      );
+    }
   };
 
-  const renderRadioButton = (text: string) => {
+  const handleClickDone = (): void => {
+    if (selectedProperties.length > 0) {
+      const aggregation: AggregationType = {
+        method: selectedMethod,
+        properties: selectedProperties
+      };
+      console.log("Aggregation: ", aggregation);
+      props.callback(aggregation);
+    }
+  };
+
+  /**
+   * RENDERERS
+   */
+
+  const renderRadioButton = (
+    text: string,
+    handler: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    isSelected: (text: string) => boolean
+  ): JSX.Element => {
     return (
-      <div>
+      <div key={text}>
         <RadioButton
-          onChange={handleRadioButtonSelect}
+          onChange={handler}
           value={text}
-          key={text}
-          checked={selectedMethod === text}
+          checked={isSelected(text)}
         />
         {" " + text}
         <br />
@@ -53,45 +143,62 @@ const AggregationView = (props: AggregationViewPropsType) => {
     );
   };
 
-  const renderCheckbox = (text: string) => {
+  const renderCheckbox = (
+    text: string,
+    handler: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    isChecked: (text: string) => boolean
+  ): JSX.Element => {
     return (
       <div key={text}>
-        <Checkbox onChange={handleCheckboxSelect} value={text} />
-        {" " + text}
-        <br />
+        <div key={text}>
+          <CheckBox onChange={handler} value={text} checked={isChecked(text)} />
+          {" " + text}
+          <br />
+        </div>
       </div>
     );
   };
 
-  useEffect(() => {
-    if (props.query.properties) {
-      setNumericalProperties(
-        props.query.properties.filter(property => {
-          return property.type === PropertyTypes.Number;
-        })
-      );
-    }
-  }, [props.query]);
-
   /*
    * STYLED COMPONENTS
    */
-  const RadioButton = styled.input.attrs(() => ({
-    type: "radio"
+  const RadioButton = styled.input.attrs(props => ({
+    type: "radio",
+    onClick: props.onClick
   }))`
     border-radius: 3px;
-    border: 1px solid palevioletred;
+    border: 1px solid black;
     display: inline;
     margin: 0 0 1em;
     padding: 5px;
   `;
 
-  const Checkbox = styled.input.attrs(() => ({
+  const CheckBox = styled.input.attrs(() => ({
     type: "checkbox"
   }))`
     border: 1px solid palevioletred;
     display: inline;
     margin 3px
+  `;
+
+  const Button = styled.button.attrs(props => ({
+    onClick: props.onClick
+  }))`
+    display: inline-block;
+    border-radius: 3px;
+    padding: 3px 8px
+    margin-left: auto;
+    margin-bottom: 10px
+    background: light-grey;
+    color: black;
+    border: 2px solid black;
+  `;
+
+  const VerticalLine = styled.div`
+    border-left: 2px solid black;
+    height: 500px;
+    margin-left: 5px;
+    margin-right: 5px;
   `;
 
   const Row = styled.div`
@@ -102,19 +209,38 @@ const AggregationView = (props: AggregationViewPropsType) => {
     flex: 50%;
   `;
 
-  return (
-    <Row>
-      <Column>
-        {renderRadioButton(MethodTypes.Sum)}
-        {renderRadioButton(MethodTypes.Mean)}
-      </Column>
-      <Column>
-        {numericalProperties.map(property => {
-          return renderCheckbox(property.label);
-        })}
-      </Column>
-    </Row>
-  );
+  return numericalProperties.length > 0 ? (
+    <div>
+      <Row>
+        <h3>Aggregations</h3>
+        <Button onClick={handleClickDone}>Done</Button>
+      </Row>
+      <Row>
+        <Column>
+          {renderRadioButton(
+            MethodTypes.Sum,
+            handleMethodChange,
+            __methodIsSelected
+          )}
+          {renderRadioButton(
+            MethodTypes.Mean,
+            handleMethodChange,
+            __methodIsSelected
+          )}
+        </Column>
+        <VerticalLine />
+        <Column>
+          {numericalProperties.map(property => {
+            return renderCheckbox(
+              property.label,
+              handlePropertyChange,
+              __propertyIsChecked
+            );
+          })}
+        </Column>
+      </Row>
+    </div>
+  ) : null;
 };
 
 export default AggregationView;

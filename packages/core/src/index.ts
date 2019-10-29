@@ -69,7 +69,7 @@ export const stringifyPath = (
     .reduce((a, b) => a + b, "");
   const aggregationQuery = aggregation
     ? `.properties(${aggregation.properties
-        .map(prop => `"${prop}"`)
+        .map(prop => `"${prop.label}"`)
         .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
   return baseQuery + pathQuery + aggregationQuery;

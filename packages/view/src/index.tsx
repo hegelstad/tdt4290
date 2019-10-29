@@ -8,7 +8,7 @@ import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
 import theme from "./styles/theme";
 import { BranchSelectorPropsType, FilterCallbackType } from "./types";
-import { filterQuery } from "core";
+import { filterQuery, aggregateQuery, AggregationType } from "core";
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -32,7 +32,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
    * STYLED COMPONENTS
    */
   const MainWrap = styled.div`
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
     padding-left: 10px;
     border: 1px solid black;
@@ -49,6 +49,11 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     });
   };
 
+  const userWantsToAggregateQuery = (aggregation: AggregationType): void => {
+    aggregateQuery(query, aggregation).then((newQuery: QueryType) => {
+      setQuery(newQuery);
+    });
+  };
   return (
     <MainWrap>
       <ThemeProvider theme={theme}>
@@ -58,16 +63,16 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
             headline={branchSelectorHeadline}
             followBranch={userWantsToFollowBranch}
           />
+          <FilterView
+            properties={query.properties || []}
+            callback={userWantsToFilterQuery}
+          />
         </Column>
       </ThemeProvider>
-      <FilterView
-        properties={query.properties || []}
-        callback={userWantsToFilterQuery}
-      />
 
       <ThemeProvider theme={theme}>
         <Column>
-          <AggregationView query={query} />
+          <AggregationView query={query} callback={userWantsToAggregateQuery} />
           <TextQuery query={query} />
         </Column>
       </ThemeProvider>

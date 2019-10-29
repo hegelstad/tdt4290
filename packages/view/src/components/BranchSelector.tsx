@@ -57,7 +57,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         </li>
       );
     } else {
-      return "Error: Suggestion not of valid type";
+      throw new Error("Suggestion not of valid type");
     }
   };
 

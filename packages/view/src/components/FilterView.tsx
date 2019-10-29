@@ -81,7 +81,7 @@ const FilterView = ({
         <div>
           <h3>Filter</h3>
           <FieldSelect>
-            <option key={"default"} value="" disabled selected>
+            <option key={"default"} value="" disabled>
               --Choose field--
             </option>
             {properties.sort().map(prop => (
