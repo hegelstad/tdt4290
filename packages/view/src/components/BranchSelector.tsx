@@ -7,7 +7,10 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";
 
 const BranchSelector = (props: BranchSelectorPropsType) => {
-  const getBranchTypeFrom = (type: string, initialQuery: QueryType) => {
+  const getBranchTypeFrom = (
+    type: string,
+    initialQuery: QueryType
+  ): BranchType[] => {
     return initialQuery.branches
       ? initialQuery.branches.filter(branch => {
           return branch.type === type;
@@ -58,11 +61,13 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     }
   };
 
-  const onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setInputValue(event.target.value);
   };
 
-  const onClickOnLabel = (event: React.ChangeEvent<HTMLButtonElement>) => {
+  const onClickOnLabel = (
+    event: React.ChangeEvent<HTMLButtonElement>
+  ): void => {
     const value = event.target.firstChild
       ? event.target.firstChild.textContent
       : "";
@@ -76,7 +81,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   /**
    * These two functions can probably be merged together.
    */
-  const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>) => {
+  const onClickOnEdge = (event: React.ChangeEvent<HTMLButtonElement>): void => {
     const valueWithDirection = event.target.firstChild
       ? (event.target.firstChild.textContent as string)
       : "";
@@ -133,6 +138,10 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     display: inline;
   `;
 
+  const H3 = styled.h3`
+    display: inline;
+  `;
+
   return edges.length > 0 || labels.length > 0 ? (
     <BranchSelectorWrap>
       <h1>{props.headline}</h1>
@@ -140,9 +149,10 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
         <FontAwesomeIcon icon={faSearch} />
         <Input placeholder="Start typing..." autoFocus />
       </SearchWrap>
-      <h3>Thing</h3>
+      <br />
+      <H3>Components</H3>
       <UnorderedList>{labelSuggestions.map(renderSuggestion)}</UnorderedList>
-      {edgeSuggestions.length > 0 ? <h3>Relationships</h3> : null}
+      {edgeSuggestions.length > 0 ? <H3>References</H3> : null}
       <UnorderedList>{edgeSuggestions.map(renderSuggestion)}</UnorderedList>
     </BranchSelectorWrap>
   ) : (
