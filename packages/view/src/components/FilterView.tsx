@@ -52,7 +52,14 @@ const FilterView = ({
       callback(fieldKey, fieldValues, valueRange);
     }
   };
+  /*
+  const handleAddValueInputField = () => {
 
+  }
+
+  const handleRemoveValueInputField = () => {
+    
+  }*/
   const componentHasFilter = (filters: string[]) => {
     return filters.length > 0;
   };
@@ -138,20 +145,15 @@ const FilterView = ({
               Outside range of values
             </option>
           </ValueRangeSelect>
-          <ValueInput
-            key={0}
-            defaultValue={fieldValues[0]}
-            onChange={e => handleInputChange(e, 0)}
-            placeholder="Select a value..."
-            autoFocus
-          />
-          <ValueInput
-            key={1}
-            defaultValue={fieldValues[1]}
-            onChange={e => handleInputChange(e, 1)}
-            placeholder="Select a value..."
-            autoFocus
-          />
+          {fieldValues.map((value, index) => (
+            <ValueInput
+              key={index}
+              defaultValue={value}
+              onChange={e => handleInputChange(e, index)}
+              placeholder="Select a value..."
+              autoFocus={index === 0}
+            />
+          ))}
           <FilterButton>Filter</FilterButton>
         </div>
       )}
