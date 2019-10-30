@@ -1,0 +1,37 @@
+{
+  "name": "tdt4290",
+  "version": "1.0.0",
+  "repository": "git@github.com:strandlie/tdt4290.git",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/babel-jest",
+      "**/jest",
+      "**/webpack-dev-server",
+      "**/webpack-cli"
+    ]
+  },
+  "scripts": {
+    "build": "lerna run build --stream",
+    "watch": "lerna run watch --parallel",
+    "start": "lerna run start --parallel",
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
+    "format": "lerna run format"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lerna run --concurrency 1 --stream precommit"
+    }
+  },
+  "devDependencies": {
+    "bili": "^4.8.1",
+    "husky": "^3.0.9",
+    "lerna": "^3.18.1",
+    "rollup-plugin-typescript2": "^0.24.3",
+    "typescript": "^3.6.4"
+  }
+}
