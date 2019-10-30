@@ -70,10 +70,16 @@ export const stringifyPath = (
         } else if (step.valueRange === "not") {
           //console.log("core filterQuery: entered not ");
           return `.not(has('${step.property}', '${step.value[0]}'))`;
-        } else if (step.valueRange === "within") {
-          return `.has('${step.property}', within('${step.value[0]}', '${step.value[1]}'))`;
-        } else if (step.valueRange === "without") {
-          return `.has('${step.property}', without('${step.value[0]}', '${step.value[1]}'))`;
+        } else if (
+          step.valueRange === "within" ||
+          step.valueRange === "without"
+        ) {
+          let filterPart = `.has('${step.property}', ${step.valueRange}(`;
+          for (i = 0; i < step.value.length; i++) {
+            filterPart += `'${step.value[i].toString()}', `;
+          }
+          filterPart = filterPart.substring(0, filterPart.length - 2) + `))`;
+          return filterPart;
         } else if (step.valueRange === "inside") {
           return `.has('${step.property}', inside(${step.value[0]}, ${step.value[1]}))`;
         } else if (step.valueRange === "outside") {
