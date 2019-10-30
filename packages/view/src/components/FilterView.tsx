@@ -62,14 +62,27 @@ const FilterView = ({
       callback(fieldKey, fieldValues, valueRange);
     }
   };
-  /*
-  const handleAddValueInputField = () => {
 
-  }
+  const handleAddValueInputField = () => {
+    let newFieldValues: Array<any> = [];
+    if (fieldValues.length < 5) {
+      newFieldValues = fieldValues.concat("");
+      setfieldValues(newFieldValues);
+    }
+    console.log("after -> fieldValues: " + fieldValues);
+  };
 
   const handleRemoveValueInputField = () => {
-    
-  }*/
+    if (fieldValues.length > 1) {
+      const newFieldValues: Array<any> = fieldValues.filter(
+        (item, j) => j !== fieldValues.length - 1 && item !== null
+      );
+      console.log(
+        "handleRemoveValueInputField -> newFieldValues: " + newFieldValues
+      );
+      setfieldValues(newFieldValues);
+    }
+  };
   const componentHasFilter = (filters: string[]) => {
     return filters.length > 0;
   };
@@ -164,6 +177,22 @@ const FilterView = ({
               autoFocus={index === 0}
             />
           ))}
+          {(valueRange === "within" || valueRange === "without") && (
+            <>
+              <button
+                onClick={handleAddValueInputField}
+                disabled={fieldValues.length === 5}
+              >
+                +
+              </button>
+              <button
+                onClick={handleRemoveValueInputField}
+                disabled={fieldValues.length <= 1}
+              >
+                -
+              </button>
+            </>
+          )}
           <FilterButton>Filter</FilterButton>
         </div>
       )}
