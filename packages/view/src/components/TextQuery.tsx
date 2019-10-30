@@ -16,19 +16,33 @@ const TextQuery = (props: TextQueryType) => {
   }, [props.query]);
 
   //Show/hide current query
-  const OnShowButtonClick = (): void => {
+  const onShowButtonClick = () => {
     setShowQuery(!showQuery);
     setQuery(stringifyPath(props.query.path, props.query.aggregation));
   };
 
   //Copy current query to clipboard
-  const OnCopyButtonClick = (): void => {
-    navigator.clipboard.writeText(query);
+  const onCopyClipBoardButtonClick = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(query).then(
+        () => {
+          console.log("Copied.");
+        },
+        () => {
+          console.log("Error copying.");
+        }
+      );
+    }
+  };
+
+  //Used to send the query to another component suitable for editing it.
+  const onEditButtonClick = () => {
+    props.editFunction(query);
   };
 
   //Styled components
   const ShowQueryButton = styled.button.attrs(() => ({
-    onClick: OnShowButtonClick
+    onClick: onShowButtonClick
   }))`
     font-size: 0.8em;
     margin: 0.8em;
@@ -38,7 +52,17 @@ const TextQuery = (props: TextQueryType) => {
   `;
 
   const CopyToClipBoardButton = styled.button.attrs(() => ({
-    onClick: OnCopyButtonClick
+    onClick: onCopyClipBoardButtonClick
+  }))`
+    font-size: 0.8em;
+    margin: 0.8em;
+    padding: 0.25em 1em;
+    border: 2px solid;
+    border-radius: 3px;
+  `;
+
+  const EditQueryButton = styled.button.attrs(() => ({
+    onClick: onEditButtonClick
   }))`
     font-size: 0.8em;
     margin: 0.8em;
@@ -48,14 +72,14 @@ const TextQuery = (props: TextQueryType) => {
   `;
 
   const TextQueryWrap = styled.div`
-    max-width: 400px;
-    margin: 0 auto;
-
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-  `;
+        max-width: 400px;
+        margin: 0 auto;
+        
+        padding: 20px;
+        display: flex
+        flex-direction: column;
+        text-align: center
+    `;
 
   return showQuery ? (
     <TextQueryWrap>
@@ -67,6 +91,7 @@ const TextQuery = (props: TextQueryType) => {
       </div>
       <div>
         <CopyToClipBoardButton>Copy to clipboard</CopyToClipBoardButton>
+        <EditQueryButton>Edit query</EditQueryButton>
       </div>
     </TextQueryWrap>
   ) : (

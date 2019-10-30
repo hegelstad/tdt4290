@@ -48,7 +48,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       />
 
       <ThemeProvider theme={theme}>
-        <TextQuery query={query} />
+        <TextQuery query={query} editFunction={() => {}} />
       </ThemeProvider>
     </div>
   );
