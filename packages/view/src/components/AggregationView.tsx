@@ -7,6 +7,21 @@ import {
   AggregationType
 } from "core";
 import { AggregationViewPropsType } from "../types";
+import CheckBox from "./elements/Checkbox";
+import RadioButton from "./elements/RadioButton";
+import Button from "./elements/Button";
+import { Row, Column } from "./elements/Layout";
+
+/*
+ * STYLED COMPONENTS
+ */
+
+const VerticalLine = styled.div`
+  border-left: 2px solid black;
+  height: 500px;
+  margin-left: 5px;
+  margin-right: 5px;
+`;
 
 const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   /**
@@ -37,11 +52,11 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
    * PRIVATE METHODS
    */
 
-  const __methodIsSelected = (methodName: string): boolean => {
+  const methodIsSelected = (methodName: string): boolean => {
     return selectedMethod === methodName;
   };
 
-  const __propertyIsChecked = (propertyName: string): boolean => {
+  const propertyIsChecked = (propertyName: string): boolean => {
     return (
       selectedProperties.find(selectedProperty => {
         return selectedProperty.label === propertyName;
@@ -113,120 +128,35 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     }
   };
 
-  /**
-   * RENDERERS
-   */
-
-  const renderRadioButton = (
-    text: string,
-    handler: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    isSelected: (text: string) => boolean
-  ): JSX.Element => {
-    return (
-      <div key={text}>
-        <RadioButton
-          onChange={handler}
-          value={text}
-          checked={isSelected(text)}
-        />
-        {" " + text}
-        <br />
-      </div>
-    );
-  };
-
-  const renderCheckbox = (
-    text: string,
-    handler: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    isChecked: (text: string) => boolean
-  ): JSX.Element => {
-    return (
-      <div key={text}>
-        <div key={text}>
-          <CheckBox onChange={handler} value={text} checked={isChecked(text)} />
-          {" " + text}
-          <br />
-        </div>
-      </div>
-    );
-  };
-
-  /*
-   * STYLED COMPONENTS
-   */
-  const RadioButton = styled.input.attrs(props => ({
-    type: "radio",
-    onClick: props.onClick
-  }))`
-    border-radius: 3px;
-    border: 1px solid black;
-    display: inline;
-    margin: 0 0 1em;
-    padding: 5px;
-  `;
-
-  const CheckBox = styled.input.attrs(() => ({
-    type: "checkbox"
-  }))`
-    border: 1px solid palevioletred;
-    display: inline;
-    margin 3px
-  `;
-
-  const Button = styled.button.attrs(props => ({
-    onClick: props.onClick
-  }))`
-    display: inline-block;
-    border-radius: 3px;
-    padding: 3px 8px
-    margin-left: auto;
-    margin-bottom: 10px
-    background: light-grey;
-    color: black;
-    border: 2px solid black;
-  `;
-
-  const VerticalLine = styled.div`
-    border-left: 2px solid black;
-    height: 500px;
-    margin-left: 5px;
-    margin-right: 5px;
-  `;
-
-  const Row = styled.div`
-    display: flex;
-  `;
-
-  const Column = styled.div`
-    flex: 50%;
-  `;
-
   return numericalProperties.length > 0 ? (
     <div>
       <Row>
         <h3>Aggregations</h3>
-        <Button onClick={handleClickDone}>Done</Button>
+        <Button text={"Done"} onClick={handleClickDone} floatRight />
       </Row>
       <Row>
         <Column>
-          {renderRadioButton(
-            MethodTypes.Sum,
-            handleMethodChange,
-            __methodIsSelected
-          )}
-          {renderRadioButton(
-            MethodTypes.Mean,
-            handleMethodChange,
-            __methodIsSelected
-          )}
+          <RadioButton
+            text={MethodTypes.Mean}
+            handler={handleMethodChange}
+            isSelected={methodIsSelected}
+          />
+          <RadioButton
+            text={MethodTypes.Sum}
+            handler={handleMethodChange}
+            isSelected={methodIsSelected}
+          />
         </Column>
         <VerticalLine />
         <Column>
           {numericalProperties.map(property => {
-            return renderCheckbox(
-              property.label,
-              handlePropertyChange,
-              __propertyIsChecked
+            return (
+              <CheckBox
+                key={property.label}
+                text={property.label}
+                handler={handlePropertyChange}
+                isChecked={propertyIsChecked}
+              />
             );
           })}
         </Column>

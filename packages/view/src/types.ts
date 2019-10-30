@@ -11,6 +11,11 @@ export interface AggregationViewPropsType {
   callback: (aggregation: AggregationType) => void;
 }
 
+export interface ButtonPropsType {
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  floatRight?: boolean;
+}
+
 export interface TextQueryType {
   query: QueryType;
 }

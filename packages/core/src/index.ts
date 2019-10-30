@@ -147,10 +147,13 @@ const getProperties = async (
     if (property.value) {
       // Logic to figure out what type the property is. This information is used in aggregation and filtering
       // eslint-disable-next-line no-var
-      var isNumber = !isNaN(Number(property.value));
+      let isNumber = !isNaN(Number(property.value));
       try {
-        // Numbers does not have the includes()-method
-        property.value.includes("a");
+        /**
+        Number-type does not have the includes()-method, i.e. if property.value is a number
+        the codeline below will crash, and then we know it is a number
+        */
+        property.value.includes("");
         isNumber = false;
       } catch {
         isNumber = true;
