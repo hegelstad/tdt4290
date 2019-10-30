@@ -23,14 +23,16 @@ const TextQuery = (props: TextQueryType) => {
 
   //Copy current query to clipboard
   const onCopyClipBoardButtonClick = () => {
-    navigator.clipboard.writeText(query).then(
-      () => {
-        console.log("Copied.");
-      },
-      () => {
-        console.log("Error copying.");
-      }
-    );
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(query).then(
+        () => {
+          console.log("Copied.");
+        },
+        () => {
+          console.log("Error copying.");
+        }
+      );
+    }
   };
 
   //Used to send the query to another component suitable for editing it.
