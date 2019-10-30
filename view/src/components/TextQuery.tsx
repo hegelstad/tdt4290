@@ -22,22 +22,22 @@ const TextQuery = (props: TextQueryType) => {
     
 
     //Show/hide current query
-    const OnShowButtonClick = () => {
+    const onShowButtonClick = () => {
         setShowQuery(!showQuery);
         setQuery(stringifyPath(props.query.path, props.query.aggregation));
     }
 
     //Copy current query to clipboard
-    const OnCopyClipBoardButtonClick = () => {
-        navigator.clipboard.writeText(query).then(function() {
+    const onCopyClipBoardButtonClick = () => {
+        navigator.clipboard.writeText(query).then(() => {
             console.log("Copied.")
-            }, function() {
+            },() => {
             console.log("Error copying.")
             });
     }
 
     //Used to send the query to another component suitable for editing it. 
-    const OnEditButtonClick = () => {
+    const onEditButtonClick = () => {
         props.editFunction(query);
     }
 
@@ -45,7 +45,7 @@ const TextQuery = (props: TextQueryType) => {
 
     //Styled components
     const ShowQueryButton = styled.button.attrs(() => ({
-        onClick: OnShowButtonClick
+        onClick: onShowButtonClick
         }))`
         font-size: 0.8em;
         margin: 0.8em;
@@ -56,7 +56,7 @@ const TextQuery = (props: TextQueryType) => {
       
 
       const CopyToClipBoardButton = styled.button.attrs(() => ({
-        onClick: OnCopyClipBoardButtonClick
+        onClick: onCopyClipBoardButtonClick
         }))`
         font-size: 0.8em;
         margin: 0.8em;
@@ -66,7 +66,7 @@ const TextQuery = (props: TextQueryType) => {
       `;
 
       const EditQueryButton = styled.button.attrs(() => ({
-        onClick: OnEditButtonClick
+        onClick: onEditButtonClick
         }))`
         font-size: 0.8em;
         margin: 0.8em;
