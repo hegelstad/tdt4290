@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
 
@@ -10,34 +10,44 @@ const FilterView = ({
   callback: FilterCallbackType;
 }) => {
   const [fieldKey, setFieldKey] = useState("");
-  const [fieldValues, setfieldValues] = useState<Array<any>>(["", ""]);
+  const [fieldValues, setfieldValues] = useState<Array<any>>([]);
   const [valueRange, setValueRange] = useState<string>("");
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setFieldKey(event.target.value);
-    console.log("FieldKey: " + fieldKey);
   };
 
   const handleValueRangeDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setValueRange(event.target.value);
-    console.log("ValueRange: " + valueRange);
   };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     key: number
   ) => {
-    console.log("id: " + key);
     const newFieldValues: Array<any> = fieldValues;
-    console.log("newFieldValues before change: " + newFieldValues);
     newFieldValues[key] = event.target.value;
-    console.log("newFieldValues after change: " + newFieldValues);
     setfieldValues(newFieldValues);
   };
+
+  useEffect(() => {
+    let newFieldValues: Array<any> = [];
+    if (
+      valueRange === "normal" ||
+      valueRange === "not" ||
+      valueRange === "within" ||
+      valueRange === "without"
+    ) {
+      newFieldValues = [""];
+    } else if (valueRange === "inside" || valueRange === "outside") {
+      newFieldValues = ["", ""];
+    }
+    setfieldValues(newFieldValues);
+  }, [valueRange, fieldKey]);
 
   const handleSubmit = () => {
     //let value;
