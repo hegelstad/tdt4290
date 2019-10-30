@@ -149,23 +149,23 @@ const FilterView = ({
             <option key={"default"} value="" disabled selected>
               --Choose value range--
             </option>
-            <option key={"normal"} value={"normal"}>
-              Value
+            <option key={"inside"} value={"inside"}>
+              In range of values
             </option>
             <option key={"not"} value={"not"}>
               Not value
+            </option>
+            <option key={"outside"} value={"outside"}>
+              Outside range of values
+            </option>
+            <option key={"normal"} value={"normal"}>
+              Value
             </option>
             <option key={"within"} value={"within"}>
               Within values
             </option>
             <option key={"without"} value={"without"}>
               Without values
-            </option>
-            <option key={"inside"} value={"inside"}>
-              In range of values
-            </option>
-            <option key={"outside"} value={"outside"}>
-              Outside range of values
             </option>
           </ValueRangeSelect>
           {fieldValues.map((value, index) => (
