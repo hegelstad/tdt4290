@@ -193,7 +193,7 @@ const FilterView = ({
               </button>
             </>
           )}
-          <FilterButton>Filter</FilterButton>
+          <FilterButton disabled={fieldValues.length < 1}>Filter</FilterButton>
         </div>
       )}
     </>
