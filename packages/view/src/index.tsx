@@ -17,7 +17,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
       ? (query.path[query.path.length - 1].value as string)
       : "Where would you like to start?";
 
-  console.log("Query on enter of CoordinatorView:", query);
   if (!query.branches && props.query.branches) {
     setQuery(props.query);
   }

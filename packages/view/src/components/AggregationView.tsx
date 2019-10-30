@@ -57,8 +57,6 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const value = event.target.value;
-    console.log("Event: ", event);
-    console.log("Radio button value: ", value);
     switch (value) {
       case MethodTypes.Mean: {
         setSelectedMethod(MethodTypes.Mean);
@@ -78,22 +76,17 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const value = event.target.value;
-    console.log("Selected Properties: ", selectedProperties);
-    console.log("Value: ", value);
 
     // Find the property that the checkbox was build from
     const property = numericalProperties.find(property => {
       return property.label === value;
     });
-    console.log("Property: ", property);
 
     // Find the index in the array of the property found above
     const i = selectedProperties.indexOf(
       property ? property : { label: "", type: PropertyTypes.Undefined },
       0
     );
-
-    console.log("i: ", i);
 
     if (property && i === -1) {
       // If the unwrapping was successful, and it does not
@@ -116,7 +109,6 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
         method: selectedMethod,
         properties: selectedProperties
       };
-      console.log("Aggregation: ", aggregation);
       props.callback(aggregation);
     }
   };
