@@ -240,7 +240,9 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
         </Column>
       </Row>
     </div>
-  ) : null;
+  ) : (
+    <div />
+  );
 };
 
 export default AggregationView;

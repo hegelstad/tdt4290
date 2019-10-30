@@ -145,8 +145,16 @@ const getProperties = async (
       type: PropertyTypes.Undefined
     };
     if (property.value) {
-      // Logic to figure out what type the property is. This information is used in aggregation
-      const isNumber = !isNaN(Number(property.value));
+      // Logic to figure out what type the property is. This information is used in aggregation and filtering
+      // eslint-disable-next-line no-var
+      var isNumber = !isNaN(Number(property.value));
+      try {
+        // Numbers does not have the includes()-method
+        property.value.includes("a");
+        isNumber = false;
+      } catch {
+        isNumber = true;
+      }
       const isBoolean = property.value === "true" || property.value === "false";
       const isStringArray = property.value.length; // If the length of the value isn't undefined, it is an Array..?
       const isString = String(property.value);
