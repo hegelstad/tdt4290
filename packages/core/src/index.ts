@@ -50,7 +50,7 @@ export const stringifyPath = (
   path: BranchType[],
   aggregation?: AggregationType
 ): string => {
-  console.log("core filterQuery: entered method ");
+  //console.log("core filterQuery: entered method ");
   const baseQuery = "g.V()";
   const pathQuery = path
     .map((step, i): string => {
@@ -63,17 +63,17 @@ export const stringifyPath = (
         return `.${step.direction}('${step.value}')`;
       }
       if (step.type === "filter") {
-        console.log("core filterQuery valueRange: " + step.valueRange);
+        //console.log("core filterQuery valueRange: " + step.valueRange);
         if (step.valueRange === "normal") {
-          console.log("core filterQuery: entered normal ");
-          return `.has('${step.property}', '${step.value}')`;
+          //console.log("core filterQuery: entered normal ");
+          return `.has('${step.property}', '${step.value[0]}')`;
         } else if (step.valueRange === "not") {
-          console.log("core filterQuery: entered not ");
-          return `.not(has('${step.property}', '${step.value}'))`;
+          //console.log("core filterQuery: entered not ");
+          return `.not(has('${step.property}', '${step.value[0]}'))`;
         } else if (step.valueRange === "within") {
-          return `.has('${step.property}', within('${step.value}'))`;
+          return `.has('${step.property}', within('${step.value[0]}', '${step.value[1]}'))`;
         } else if (step.valueRange === "without") {
-          return `.has('${step.property}', without('${step.value}'))`;
+          return `.has('${step.property}', without('${step.value[0]}', '${step.value[1]}'))`;
         } /*else if (step.valueRange === "inside"){
           return `.has('${step.property}', ${step.value})`;
         }else if (step.valueRange === "outside"){
@@ -182,7 +182,7 @@ export const filterQuery = async (
 ): Promise<QueryType> => {
   const filter: FilterType = { type: "filter", property, value, valueRange };
   const path = [...query.path, filter];
-  console.log("core filterQuery value: " + value);
+  //console.log("core filterQuery value: " + value);
   return {
     ...query,
     path,

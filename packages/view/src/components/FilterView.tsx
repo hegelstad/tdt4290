@@ -10,7 +10,7 @@ const FilterView = ({
   callback: FilterCallbackType;
 }) => {
   const [fieldKey, setFieldKey] = useState("");
-  const [fieldValue, setFieldValue] = useState<any>("");
+  const [fieldValues, setfieldValues] = useState<Array<any>>(["", ""]);
   const [valueRange, setValueRange] = useState<string>("");
 
   const handleFieldDropDownChange = (
@@ -27,21 +27,29 @@ const FilterView = ({
     console.log("ValueRange: " + valueRange);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFieldValue(event.target.value);
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: number
+  ) => {
+    console.log("id: " + key);
+    const newFieldValues: Array<any> = fieldValues;
+    console.log("newFieldValues before change: " + newFieldValues);
+    newFieldValues[key] = event.target.value;
+    console.log("newFieldValues after change: " + newFieldValues);
+    setfieldValues(newFieldValues);
   };
 
   const handleSubmit = () => {
-    let value;
-    if (fieldKey !== "" && fieldValue !== "" && valueRange !== "") {
-      if (!isNaN(fieldValue) && fieldValue.toString().indexOf(".") != -1) {
-        value = parseFloat(fieldValue);
+    //let value;
+    if (fieldKey !== "" && fieldValues[0] !== "" && valueRange !== "") {
+      /*if (!isNaN(fieldValues) && fieldValues.toString().indexOf(".") != -1) {
+        value = parseFloat(fieldValues);
       } else {
-        value = fieldValue;
-      }
-      console.log("fieldValue type: " + typeof value);
+        value = fieldValues;
+      }*/
+      //console.log("fieldValues type: " + typeof value);
       console.log("ValueRange: " + valueRange);
-      callback(fieldKey, value, valueRange);
+      callback(fieldKey, fieldValues, valueRange);
     }
   };
 
@@ -59,9 +67,7 @@ const FilterView = ({
   // styled components
 
   const ValueInput = styled.input.attrs(() => ({
-    type: "text",
-    defaultValue: fieldValue,
-    onInput: handleInputChange
+    type: "text"
   }))`
     padding: 2px;
     margin: 0 19% 8px 17%;
@@ -126,7 +132,20 @@ const FilterView = ({
               Without values
             </option>
           </ValueRangeSelect>
-          <ValueInput placeholder="Select a value..." autoFocus />
+          <ValueInput
+            key={0}
+            defaultValue={fieldValues[0]}
+            onChange={e => handleInputChange(e, 0)}
+            placeholder="Select a value..."
+            autoFocus
+          />
+          <ValueInput
+            key={1}
+            defaultValue={fieldValues[1]}
+            onChange={e => handleInputChange(e, 1)}
+            placeholder="Select a value..."
+            autoFocus
+          />
           <FilterButton>Filter</FilterButton>
         </div>
       )}
