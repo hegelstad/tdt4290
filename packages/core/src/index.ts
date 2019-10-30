@@ -74,11 +74,11 @@ export const stringifyPath = (
           return `.has('${step.property}', within('${step.value[0]}', '${step.value[1]}'))`;
         } else if (step.valueRange === "without") {
           return `.has('${step.property}', without('${step.value[0]}', '${step.value[1]}'))`;
-        } /*else if (step.valueRange === "inside"){
-          return `.has('${step.property}', ${step.value})`;
-        }else if (step.valueRange === "outside"){
-          return `.has('${step.property}', ${step.value})`;
-        }*/
+        } else if (step.valueRange === "inside") {
+          return `.has('${step.property}', inside(${step.value[0]}, ${step.value[1]}))`;
+        } else if (step.valueRange === "outside") {
+          return `.has('${step.property}', outside(${step.value[0]}, ${step.value[1]}))`;
+        }
       }
       return "";
     })

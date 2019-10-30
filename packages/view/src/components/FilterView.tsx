@@ -131,6 +131,12 @@ const FilterView = ({
             <option key={"without"} value={"without"}>
               Without values
             </option>
+            <option key={"inside"} value={"inside"}>
+              In range of values
+            </option>
+            <option key={"outside"} value={"outside"}>
+              Outside range of values
+            </option>
           </ValueRangeSelect>
           <ValueInput
             key={0}
