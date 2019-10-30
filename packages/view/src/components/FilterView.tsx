@@ -10,13 +10,21 @@ const FilterView = ({
   callback: FilterCallbackType;
 }) => {
   const [fieldKey, setFieldKey] = useState("");
-  const [fieldValue, setFieldValue] = useState("");
+  const [fieldValue, setFieldValue] = useState<any>("");
+  const [valueRange, setValueRange] = useState<string>("");
 
-  const handleDropDownChange = (
+  const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setFieldKey(event.target.value);
     console.log("FieldKey: " + fieldKey);
+  };
+
+  const handleValueRangeDropDownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setValueRange(event.target.value);
+    console.log("ValueRange: " + valueRange);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,8 +32,16 @@ const FilterView = ({
   };
 
   const handleSubmit = () => {
-    if (fieldKey !== "" && fieldValue !== "") {
-      callback(fieldKey, fieldValue);
+    let value;
+    if (fieldKey !== "" && fieldValue !== "" && valueRange !== "") {
+      if (!isNaN(fieldValue) && fieldValue.toString().indexOf(".") != -1) {
+        value = parseFloat(fieldValue);
+      } else {
+        value = fieldValue;
+      }
+      console.log("fieldValue type: " + typeof value);
+      console.log("ValueRange: " + valueRange);
+      callback(fieldKey, value, valueRange);
     }
   };
 
@@ -34,7 +50,7 @@ const FilterView = ({
   };
 
   const formatFieldName = (fieldName: string) => {
-    let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-/).join(" ");
+    let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
     formatedFieldName =
       formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
     return formatedFieldName;
@@ -54,7 +70,16 @@ const FilterView = ({
 
   const FieldSelect = styled.select.attrs(() => ({
     defaultValue: fieldKey,
-    onChange: handleDropDownChange
+    onChange: handleFieldDropDownChange
+  }))`
+    padding: 2px;
+    margin: 0 18% 8px 17%;
+    width: 62%;
+  `;
+
+  const ValueRangeSelect = styled.select.attrs(() => ({
+    defaultValue: valueRange,
+    onChange: handleValueRangeDropDownChange
   }))`
     padding: 2px;
     margin: 0 18% 8px 17%;
@@ -84,6 +109,17 @@ const FilterView = ({
               </option>
             ))}
           </FieldSelect>
+          <ValueRangeSelect>
+            <option key={"default"} value="" disabled selected>
+              --Choose value range--
+            </option>
+            <option key={"normal"} value={"normal"}>
+              Value
+            </option>
+            <option key={"not"} value={"not"}>
+              Not value
+            </option>
+          </ValueRangeSelect>
           <ValueInput placeholder="Select a value..." autoFocus />
           <FilterButton>Filter</FilterButton>
         </div>

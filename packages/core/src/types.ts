@@ -28,8 +28,9 @@ export interface EdgeType {
 
 export interface FilterType {
   type: "filter";
-  value: any;
   property: string;
+  value: any;
+  valueRange: string;
 }
 
 export interface AggregationType {
@@ -38,6 +39,7 @@ export interface AggregationType {
 }
 
 export type PropertyType = string;
+export type ValueRangeType = string;
 
 export type BranchType = LabelType | EdgeType | FilterType;
 

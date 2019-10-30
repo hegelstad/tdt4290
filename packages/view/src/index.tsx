@@ -27,8 +27,12 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
-  const userWantsToFilterQuery: FilterCallbackType = (field, value) => {
-    filterQuery(query, field, value).then(newQuery => {
+  const userWantsToFilterQuery: FilterCallbackType = (
+    field,
+    value,
+    valueRange
+  ) => {
+    filterQuery(query, field, value, valueRange).then(newQuery => {
       setQuery(newQuery);
     });
   };

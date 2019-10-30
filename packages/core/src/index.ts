@@ -9,7 +9,8 @@ import {
   MethodTypes,
   LabelType,
   EdgeType,
-  LabelCountType
+  LabelCountType,
+  ValueRangeType
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -49,6 +50,7 @@ export const stringifyPath = (
   path: BranchType[],
   aggregation?: AggregationType
 ): string => {
+  console.log("core filterQuery: entered method ");
   const baseQuery = "g.V()";
   const pathQuery = path
     .map((step, i): string => {
@@ -61,7 +63,24 @@ export const stringifyPath = (
         return `.${step.direction}('${step.value}')`;
       }
       if (step.type === "filter") {
-        return `.has('${step.property}', '${step.value}')`;
+        console.log("core filterQuery valueRange: " + step.valueRange);
+        if (step.valueRange === "normal") {
+          console.log("core filterQuery: entered normal ");
+          return `.has('${step.property}', '${step.value}')`;
+        } else if (step.valueRange === "not") {
+          console.log("core filterQuery: entered not ");
+          return `.not(has('${step.property}', '${step.value}'))`;
+        }
+        /*
+        else if (step.valueRange === "within"){
+          return `.has('${step.property}', ${step.value})`;
+        }else if (step.valueRange === "without"){
+          return `.has('${step.property}', ${step.value})`;
+        }else if (step.valueRange === "inside"){
+          return `.has('${step.property}', ${step.value})`;
+        }else if (step.valueRange === "outside"){
+          return `.has('${step.property}', ${step.value})`;
+        }*/
       }
       return "";
     })
@@ -160,10 +179,12 @@ export const followBranch = async (
 export const filterQuery = async (
   query: QueryType,
   property: PropertyType,
-  value: any
+  value: any,
+  valueRange: ValueRangeType
 ): Promise<QueryType> => {
-  const filter: FilterType = { type: "filter", property, value };
+  const filter: FilterType = { type: "filter", property, value, valueRange };
   const path = [...query.path, filter];
+  console.log("core filterQuery value: " + value);
   return {
     ...query,
     path,
