@@ -119,6 +119,12 @@ const FilterView = ({
             <option key={"not"} value={"not"}>
               Not value
             </option>
+            <option key={"within"} value={"within"}>
+              Within values
+            </option>
+            <option key={"without"} value={"without"}>
+              Without values
+            </option>
           </ValueRangeSelect>
           <ValueInput placeholder="Select a value..." autoFocus />
           <FilterButton>Filter</FilterButton>
