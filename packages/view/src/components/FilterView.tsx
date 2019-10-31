@@ -137,7 +137,6 @@ const FilterView = ({
   }))`
     width: 9%;
     margin: 0 1% 0 37%;
-    background-color: #d1ffcf;
   `;
 
   const RemoveValueInputButton = styled.button.attrs(() => ({
@@ -145,7 +144,6 @@ const FilterView = ({
   }))`
     width: 9%;
     margin: 0 37% 0 1%;
-    background-color: #ffcfcf;
   `;
 
   const FilterLabel = styled.div`
@@ -174,14 +172,20 @@ const FilterView = ({
             <option key={"default"} value="" disabled selected>
               --Choose value range--
             </option>
+            <option key={"within"} value={"within"}>
+              Among values
+            </option>
             <option key={"gt"} value={"gt"}>
               Greater than value
             </option>
             <option key={"inside"} value={"inside"}>
-              In range of values
+              Inside range of values
             </option>
             <option key={"lt"} value={"lt"}>
               Less than value
+            </option>
+            <option key={"without"} value={"without"}>
+              Not among values
             </option>
             <option key={"not"} value={"not"}>
               Not value
@@ -191,12 +195,6 @@ const FilterView = ({
             </option>
             <option key={"normal"} value={"normal"}>
               Value
-            </option>
-            <option key={"within"} value={"within"}>
-              Within values
-            </option>
-            <option key={"without"} value={"without"}>
-              Without values
             </option>
           </ValueRangeSelect>
           <FilterLabel>Value(s):</FilterLabel>
