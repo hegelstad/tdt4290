@@ -102,7 +102,7 @@ const FilterView = ({
     type: "text"
   }))`
     padding: 2px;
-    margin: 0 29% 8px 27%;
+    margin: 0 28% 8px 27%;
     width: 41%;
   `;
 
@@ -117,12 +117,11 @@ const FilterView = ({
 
   const ValueRangeSelect = styled.select.attrs(() => ({
     defaultValue: valueRange,
-    onChange: handleValueRangeDropDownChange
+    onChange: handleValueRangeDropDownChange // 0 28% 8px 27%;
   }))`
     padding: 2px;
     margin: 0 28% 8px 27%;
     width: 42%;
-    display: block;
   `;
 
   const FilterButton = styled.button.attrs(() => ({
@@ -149,11 +148,17 @@ const FilterView = ({
     background-color: #ffcfcf;
   `;
 
+  const FilterLabel = styled.div`
+    width: 20%;
+    margin: 0 0 8px 27%;
+  `;
+
   return (
     <>
       {componentHasFilter(properties) && (
         <div>
           <h3>Filter</h3>
+          <FilterLabel>Field:</FilterLabel>
           <FieldSelect>
             <option key={"default"} value="" disabled selected>
               --Choose field--
@@ -164,6 +169,7 @@ const FilterView = ({
               </option>
             ))}
           </FieldSelect>
+          <FilterLabel>Value Range:</FilterLabel>
           <ValueRangeSelect>
             <option key={"default"} value="" disabled selected>
               --Choose value range--
@@ -193,6 +199,7 @@ const FilterView = ({
               Without values
             </option>
           </ValueRangeSelect>
+          <FilterLabel>Value(s):</FilterLabel>
           {fieldValues.map((value, index) => (
             <ValueInput
               key={index}
