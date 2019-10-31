@@ -102,8 +102,8 @@ const FilterView = ({
     type: "text"
   }))`
     padding: 2px;
-    margin: 0 19% 8px 17%;
-    width: 60%;
+    margin: 0 29% 8px 27%;
+    width: 41%;
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
@@ -111,8 +111,8 @@ const FilterView = ({
     onChange: handleFieldDropDownChange
   }))`
     padding: 2px;
-    margin: 0 18% 8px 17%;
-    width: 62%;
+    margin: 0 28% 8px 27%;
+    width: 42%;
   `;
 
   const ValueRangeSelect = styled.select.attrs(() => ({
@@ -120,16 +120,31 @@ const FilterView = ({
     onChange: handleValueRangeDropDownChange
   }))`
     padding: 2px;
-    margin: 0 18% 8px 17%;
-    width: 62%;
+    margin: 0 28% 8px 27%;
+    width: 42%;
+    display: block;
   `;
 
   const FilterButton = styled.button.attrs(() => ({
     onClick: () => handleSubmit()
   }))`
     padding: 2px 5px;
-    margin: 0 39% 8px 37%;
+    margin: 5px 39% 8px 37%;
     width: 20%;
+  `;
+
+  const AddValueInputButton = styled.button.attrs(() => ({
+    onClick: () => handleAddValueInputField()
+  }))`
+    width: 9%;
+    margin: 0 1% 0 37%;
+  `;
+
+  const RemoveValueInputButton = styled.button.attrs(() => ({
+    onClick: () => handleRemoveValueInputField()
+  }))`
+    width: 9%;
+    margin: 0 37% 0 1%;
   `;
 
   return (
@@ -187,18 +202,12 @@ const FilterView = ({
           ))}
           {(valueRange === "within" || valueRange === "without") && (
             <>
-              <button
-                onClick={handleAddValueInputField}
-                disabled={fieldValues.length === 5}
-              >
+              <AddValueInputButton disabled={fieldValues.length === 5}>
                 +
-              </button>
-              <button
-                onClick={handleRemoveValueInputField}
-                disabled={fieldValues.length <= 1}
-              >
+              </AddValueInputButton>
+              <RemoveValueInputButton disabled={fieldValues.length <= 1}>
                 -
-              </button>
+              </RemoveValueInputButton>
             </>
           )}
           <FilterButton disabled={fieldValues.length < 1}>Filter</FilterButton>
