@@ -50,7 +50,6 @@ export const stringifyPath = (
   path: BranchType[],
   aggregation?: AggregationType
 ): string => {
-  //console.log("core filterQuery: entered method ");
   const baseQuery = "g.V()";
   const pathQuery = path
     .map((step, i): string => {
@@ -63,12 +62,9 @@ export const stringifyPath = (
         return `.${step.direction}('${step.value}')`;
       }
       if (step.type === "filter") {
-        //console.log("core filterQuery valueRange: " + step.valueRange);
         if (step.valueRange === "normal") {
-          //console.log("core filterQuery: entered normal ");
           return `.has('${step.property}', '${step.value[0]}')`;
         } else if (step.valueRange === "not") {
-          //console.log("core filterQuery: entered not ");
           return `.not(has('${step.property}', '${step.value[0]}'))`;
         } else if (
           step.valueRange === "within" ||
@@ -191,7 +187,6 @@ export const filterQuery = async (
 ): Promise<QueryType> => {
   const filter: FilterType = { type: "filter", property, value, valueRange };
   const path = [...query.path, filter];
-  //console.log("core filterQuery value: " + value);
   return {
     ...query,
     path,
