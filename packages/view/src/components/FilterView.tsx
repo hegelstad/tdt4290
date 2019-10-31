@@ -150,6 +150,11 @@ const FilterView = ({
     width: 20%;
     margin: 0 0 8px 27%;
   `;
+  const InsideText = styled.div`
+    width: 10%;
+    margin: -2px 44% 6px 42%;
+    text-align: center;
+  `;
 
   return (
     <>
@@ -199,13 +204,17 @@ const FilterView = ({
           </ValueRangeSelect>
           <FilterLabel>Value(s):</FilterLabel>
           {fieldValues.map((value, index) => (
-            <ValueInput
-              key={index}
-              defaultValue={value}
-              onChange={e => handleInputChange(e, index)}
-              placeholder="Select a value..."
-              autoFocus={index === 0}
-            />
+            <>
+              <ValueInput
+                key={index}
+                defaultValue={value}
+                onChange={e => handleInputChange(e, index)}
+                placeholder="Select a value..."
+                autoFocus={index === 0}
+              />
+              {(valueRange === "inside" || valueRange === "outside") &&
+                index === 0 && <InsideText>-</InsideText>}
+            </>
           ))}
           {(valueRange === "within" || valueRange === "without") && (
             <>
