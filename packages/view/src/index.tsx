@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { followBranch, filterQuery } from "core";
 import { BranchType, QueryType } from "core/dist/types";
 import BranchSelector from "./components/BranchSelector";
@@ -37,8 +37,16 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
+  const MainWrap = styled.div`
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 10px;
+    border: 1px solid black;
+    display: block;
+  `;
+
   return (
-    <div>
+    <MainWrap>
       <ThemeProvider theme={theme}>
         <BranchSelector
           query={query}
@@ -54,7 +62,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       <ThemeProvider theme={theme}>
         <TextQuery query={query} />
       </ThemeProvider>
-    </div>
+    </MainWrap>
   );
 };
 
