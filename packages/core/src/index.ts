@@ -80,10 +80,13 @@ export const stringifyPath = (
           }
           filterPart = filterPart.substring(0, filterPart.length - 2) + `))`;
           return filterPart;
-        } else if (step.valueRange === "inside") {
-          return `.has('${step.property}', inside(${step.value[0]}, ${step.value[1]}))`;
-        } else if (step.valueRange === "outside") {
-          return `.has('${step.property}', outside(${step.value[0]}, ${step.value[1]}))`;
+        } else if (
+          step.valueRange === "inside" ||
+          step.valueRange === "outside"
+        ) {
+          return `.has('${step.property}', ${step.valueRange}(${step.value[0]}, ${step.value[1]}))`;
+        } else if (step.valueRange === "lt" || step.valueRange === "gt") {
+          return `.where(values('${step.property}').is(${step.valueRange}(${step.value[0]})))`;
         }
       }
       return "";

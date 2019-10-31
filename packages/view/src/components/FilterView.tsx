@@ -40,7 +40,9 @@ const FilterView = ({
       valueRange === "normal" ||
       valueRange === "not" ||
       valueRange === "within" ||
-      valueRange === "without"
+      valueRange === "without" ||
+      valueRange === "gt" ||
+      valueRange === "lt"
     ) {
       newFieldValues = [""];
     } else if (valueRange === "inside" || valueRange === "outside") {
@@ -149,8 +151,14 @@ const FilterView = ({
             <option key={"default"} value="" disabled selected>
               --Choose value range--
             </option>
+            <option key={"gt"} value={"gt"}>
+              Greater than value
+            </option>
             <option key={"inside"} value={"inside"}>
               In range of values
+            </option>
+            <option key={"lt"} value={"lt"}>
+              Less than value
             </option>
             <option key={"not"} value={"not"}>
               Not value
