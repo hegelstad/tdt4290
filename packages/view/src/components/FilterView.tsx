@@ -138,6 +138,7 @@ const FilterView = ({
   }))`
     width: 9%;
     margin: 0 1% 0 37%;
+    background-color: #d1ffcf;
   `;
 
   const RemoveValueInputButton = styled.button.attrs(() => ({
@@ -145,6 +146,7 @@ const FilterView = ({
   }))`
     width: 9%;
     margin: 0 37% 0 1%;
+    background-color: #ffcfcf;
   `;
 
   return (
