@@ -202,7 +202,7 @@ const FilterView = ({
               Value
             </option>
           </ValueRangeSelect>
-          <FilterLabel>Value(s):</FilterLabel>
+          {fieldValues.length > 0 && <FilterLabel>Value(s):</FilterLabel>}
           {fieldValues.map((value, index) => (
             <>
               <ValueInput
