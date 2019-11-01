@@ -60,5 +60,6 @@ export enum PropertyTypes {
 
 export enum MethodTypes {
   Sum = "sum",
-  Mean = "mean"
+  Mean = "mean",
+  Count = "count"
 }

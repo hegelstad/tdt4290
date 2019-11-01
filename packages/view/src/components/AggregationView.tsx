@@ -81,6 +81,10 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
         setSelectedMethod(MethodTypes.Sum);
         break;
       }
+      case MethodTypes.Count: {
+        setSelectedMethod(MethodTypes.Count);
+        break;
+      }
       default: {
         throw new Error("Unknown methodtype. Can't aggregate on " + value);
       }
@@ -119,7 +123,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   };
 
   const handleClickDone = (): void => {
-    if (selectedProperties.length > 0) {
+    if (selectedProperties.length > 0 || selectedMethod === MethodTypes.Count) {
       const aggregation: AggregationType = {
         method: selectedMethod,
         properties: selectedProperties
@@ -146,19 +150,28 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
             handler={handleMethodChange}
             isSelected={methodIsSelected}
           />
+          <RadioButton
+            text={MethodTypes.Count}
+            handler={handleMethodChange}
+            isSelected={methodIsSelected}
+          />
         </Column>
         <VerticalLine />
         <Column>
-          {numericalProperties.map(property => {
-            return (
-              <CheckBox
-                key={property.label}
-                text={property.label}
-                handler={handlePropertyChange}
-                isChecked={propertyIsChecked}
-              />
-            );
-          })}
+          {selectedMethod != MethodTypes.Count ? (
+            numericalProperties.map(property => {
+              return (
+                <CheckBox
+                  key={property.label}
+                  text={property.label}
+                  handler={handlePropertyChange}
+                  isChecked={propertyIsChecked}
+                />
+              );
+            })
+          ) : (
+            <div />
+          )}
         </Column>
       </Row>
     </div>
