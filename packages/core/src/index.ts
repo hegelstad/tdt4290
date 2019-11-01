@@ -63,7 +63,7 @@ export const stringifyPath = (
         return `.${step.direction}('${step.value}')`;
       }
       if (step.type === "filter") {
-        return `.has('${step.property}', '${step.value}')`;
+        return `.has('${step.property.label}', '${step.value}')`;
       }
       return "";
     })

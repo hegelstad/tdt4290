@@ -132,7 +132,27 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     }
   };
 
-  return numericalProperties.length > 0 ? (
+  /**
+   * Count is always shown, but all other methods are only shown when
+   * the number of numerical properties are higher than 0
+   */
+  const nonCountMethods =
+    numericalProperties.length > 0 ? (
+      <div>
+        <RadioButton
+          text={MethodTypes.Mean}
+          handler={handleMethodChange}
+          isSelected={methodIsSelected}
+        />
+        <RadioButton
+          text={MethodTypes.Sum}
+          handler={handleMethodChange}
+          isSelected={methodIsSelected}
+        />
+      </div>
+    ) : null;
+
+  return props.query && props.query.path && props.query.path.length > 0 ? (
     <div>
       <Row>
         <h3>Aggregations</h3>
@@ -140,16 +160,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
       </Row>
       <Row>
         <Column>
-          <RadioButton
-            text={MethodTypes.Mean}
-            handler={handleMethodChange}
-            isSelected={methodIsSelected}
-          />
-          <RadioButton
-            text={MethodTypes.Sum}
-            handler={handleMethodChange}
-            isSelected={methodIsSelected}
-          />
+          {nonCountMethods}
           <RadioButton
             text={MethodTypes.Count}
             handler={handleMethodChange}
