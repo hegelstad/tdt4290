@@ -21,6 +21,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   const edges = getBranchTypeFrom("edge", props.query);
 
   const [inputValue, setInputValue] = useState("");
+  const [notValue, setNot] = useState(false);
   const [edgeSuggestions, setEdgeSuggestions] = useState<EdgeType[]>([]);
   const [labelSuggestions, setLabelSuggestions] = useState<LabelType[]>([]);
 
@@ -74,8 +75,10 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     const label = labels.find(label => {
       return label.type === "label" && label.value === value;
     }) as LabelType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+    setNot(false);
   };
 
   /**
@@ -92,8 +95,10 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     const label = edges.find(label => {
       return label.value === value;
     }) as EdgeType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+    setNot(false);
   };
 
   // Styled Components

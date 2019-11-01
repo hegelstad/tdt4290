@@ -21,7 +21,11 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
 
     return {
       path: [],
-      branches: response.result.map(label => ({ type: "label", value: label })),
+      branches: response.result.map(label => ({
+        type: "label",
+        value: label,
+        notValue: false
+      })),
       properties: [], // Shoud we include all properties from the start?
       aggregation: undefined,
       config
@@ -37,7 +41,8 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
     path: [],
     branches: response.result.map(label => ({
       type: "label",
-      value: label.name
+      value: label.name,
+      notValue: false
     })),
     properties: [], // Shoud we include all properties from the start?
     aggregation: undefined,
@@ -53,12 +58,22 @@ export const stringifyPath = (
   const pathQuery = path
     .map((step, i): string => {
       if (step.type === "label") {
-        return i === 0
-          ? `.hasLabel('${step.value}')`
-          : `.both().hasLabel('${step.value}')`;
+        if (step.notValue) {
+          return i === 0
+            ? `.not(hasLabel('${step.value}'))`
+            : `.not(both().hasLabel('${step.value}'))`;
+        } else {
+          return i === 0
+            ? `.hasLabel('${step.value}')`
+            : `.both().hasLabel('${step.value}')`;
+        }
       }
       if (step.type === "edge") {
-        return `.${step.direction}('${step.value}')`;
+        if (step.notValue) {
+          return `.not(${step.direction}('${step.value}'))`;
+        } else {
+          return `.${step.direction}('${step.value}')`;
+        }
       }
       if (step.type === "filter") {
         return `.has('${step.property}', '${step.value}')`;
@@ -118,17 +133,20 @@ const getBranches = async (
   ]);
   const labels: LabelType[] = response[0].result.map(label => ({
     type: "label",
-    value: label
+    value: label,
+    notValue: false
   }));
   const edgesIn: EdgeType[] = response[1].result.map(edge => ({
     type: "edge",
     value: edge,
-    direction: "in"
+    direction: "in",
+    notValue: false
   }));
   const edgesOut: EdgeType[] = response[2].result.map(edge => ({
     type: "edge",
     value: edge,
-    direction: "out"
+    direction: "out",
+    notValue: false
   }));
   return [...labels, ...edgesIn, ...edgesOut];
 };
