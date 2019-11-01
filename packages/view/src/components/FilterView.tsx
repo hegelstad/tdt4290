@@ -117,7 +117,7 @@ const FilterView = ({
 
   const ValueRangeSelect = styled.select.attrs(() => ({
     defaultValue: valueRange,
-    onChange: handleValueRangeDropDownChange // 0 28% 8px 27%;
+    onChange: handleValueRangeDropDownChange
   }))`
     padding: 2px;
     margin: 0 28% 8px 27%;
@@ -157,6 +157,7 @@ const FilterView = ({
   `;
 
   return (
+    // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
       {componentHasFilter(properties) && (
         <div>
@@ -202,7 +203,8 @@ const FilterView = ({
               Value
             </option>
           </ValueRangeSelect>
-          {fieldValues.length > 0 && <FilterLabel>Value(s):</FilterLabel>}
+          {fieldValues.length === 1 && <FilterLabel>Value:</FilterLabel>}
+          {fieldValues.length > 1 && <FilterLabel>Values:</FilterLabel>}
           {fieldValues.map((value, index) => (
             <>
               <ValueInput
