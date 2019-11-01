@@ -39,7 +39,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
-  const handleStepBack = async () => {
+  const userWantsToStepBack = async () => {
     const newQuery = await popPath(query);
     setQuery(newQuery);
   };
@@ -48,7 +48,10 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     <ThemeProvider theme={theme}>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div>
-          <HistoryView history={query.path} handleStepBack={handleStepBack} />
+          <HistoryView
+            history={query.path}
+            handleStepBack={userWantsToStepBack}
+          />
         </div>
         <div>
           <BranchSelector

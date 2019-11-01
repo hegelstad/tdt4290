@@ -20,7 +20,7 @@ const EdgeBranch = ({ index, branch }: { index: number; branch: EdgeType }) => {
   return (
     <div>
       <div>Step: {index}</div>
-      <div>All components related by reference: {branch.value}</div>
+      <div>Follow reference: {branch.value}</div>
     </div>
   );
 };

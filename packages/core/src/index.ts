@@ -176,7 +176,7 @@ export const popPath = async (query: QueryType): Promise<QueryType> => {
   if (query.path.length === 0) {
     return query;
   }
-  const path = query.path.slice(0, query.path.length - 1);
+  const path = query.path.slice(0, -1);
   return {
     ...query,
     path,
