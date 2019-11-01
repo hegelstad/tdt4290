@@ -15,6 +15,12 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     query.path && query.path.length > 0
       ? (query.path[query.path.length - 1].value as string)
       : "Where would you like to start?";
+  const branchSelectorHeadlinePrefix =
+    query.path &&
+    query.path.length > 0 &&
+    query.path[query.path.length - 1].notValue
+      ? "Everything but "
+      : "";
 
   console.log("Query on enter of CoordinatorView:", query);
   if (!query.branches && props.query.branches) {
@@ -38,7 +44,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       <ThemeProvider theme={theme}>
         <BranchSelector
           query={query}
-          headline={branchSelectorHeadline}
+          headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
           followBranch={userWantsToFollowBranch}
         />
       </ThemeProvider>

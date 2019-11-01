@@ -101,6 +101,16 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     setNot(false);
   };
 
+  const handleDropDownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (event.target.value === "with") {
+      setNot(false);
+    } else if (event.target.value === "without") {
+      setNot(true);
+    }
+  };
+
   // Styled Components
   const Input = styled.input.attrs(() => ({
     type: "text",
@@ -147,6 +157,13 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     display: inline;
   `;
 
+  const FieldSelect = styled.select.attrs(() => ({
+    onChange: handleDropDownChange
+  }))`
+    padding: 2px;
+    width: 200px;
+  `;
+
   return edges.length > 0 || labels.length > 0 ? (
     <BranchSelectorWrap>
       <h1>{props.headline}</h1>
@@ -154,6 +171,15 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
         <FontAwesomeIcon icon={faSearch} />
         <Input placeholder="Start typing..." autoFocus />
       </SearchWrap>
+      <br />
+      <FieldSelect>
+        <option key={"default"} value="with">
+          Choose with label
+        </option>
+        <option key={"without"} value="without">
+          Choose without label
+        </option>
+      </FieldSelect>
       <br />
       <H3>Components</H3>
       <UnorderedList>{labelSuggestions.map(renderSuggestion)}</UnorderedList>
