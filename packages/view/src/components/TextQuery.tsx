@@ -4,7 +4,7 @@ import { stringifyPath } from "core";
 import { TextQueryType } from "../types";
 
 //This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
-const TextQuery = (props: TextQueryType) => {
+const TextQuery = (props: TextQueryType): JSX.Element => {
   const [query, setQuery] = useState("");
   const [showQuery, setShowQuery] = useState(false);
 

@@ -1,4 +1,4 @@
-import { QueryType, BranchType } from "core";
+import { QueryType, BranchType, PropertyType, AggregationType } from "core";
 
 export interface BranchSelectorPropsType {
   query: QueryType;
@@ -6,9 +6,18 @@ export interface BranchSelectorPropsType {
   followBranch: (branch: BranchType) => void;
 }
 
+export interface AggregationViewPropsType {
+  query: QueryType;
+  callback: (aggregation: AggregationType) => void;
+}
+
+export interface ButtonPropsType {
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  floatRight?: boolean;
+}
+
 export interface TextQueryType {
   query: QueryType;
   editFunction: Function; //This function should take the query as a string as argument and send it to a component suitable for editing the query.
 }
-
-export type FilterCallbackType = (field: string, value: string) => void;
+export type FilterCallbackType = (field: PropertyType, value: string) => void;
