@@ -1,39 +1,45 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
+import { PropertyType } from "core";
 
 const FilterView = ({
   properties,
   callback
 }: {
-  properties: string[];
+  properties: PropertyType[];
   callback: FilterCallbackType;
-}) => {
+}): JSX.Element => {
   const [fieldKey, setFieldKey] = useState("");
   const [fieldValue, setFieldValue] = useState("");
 
   const handleDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  ): void => {
     setFieldKey(event.target.value);
     console.log("FieldKey: " + fieldKey);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setFieldValue(event.target.value);
   };
 
-  const handleSubmit = () => {
-    if (fieldKey !== "" && fieldValue !== "") {
-      callback(fieldKey, fieldValue);
+  const handleSubmit = (): void => {
+    const property = properties.find(property => {
+      return property.label === fieldKey;
+    });
+    if (property && fieldValue !== "") {
+      callback(property, fieldValue);
     }
   };
 
-  const componentHasFilter = (filters: string[]) => {
+  const componentHasFilter = (filters: string[]): boolean => {
     return filters.length > 0;
   };
 
-  const formatFieldName = (fieldName: string) => {
+  const formatFieldName = (fieldName: string): string => {
     let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-/).join(" ");
     formatedFieldName =
       formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
@@ -62,7 +68,7 @@ const FilterView = ({
   `;
 
   const FilterButton = styled.button.attrs(() => ({
-    onClick: () => handleSubmit()
+    onClick: (): void => handleSubmit()
   }))`
     padding: 2px 5px;
     margin: 0 39% 8px 37%;
@@ -71,16 +77,16 @@ const FilterView = ({
 
   return (
     <>
-      {componentHasFilter(properties) && (
+      {componentHasFilter(properties.map(property => property.label)) && (
         <div>
           <h3>Filter</h3>
           <FieldSelect>
-            <option key={"default"} value="" disabled selected>
+            <option key={"default"} value="" disabled>
               --Choose field--
             </option>
             {properties.sort().map(prop => (
-              <option key={prop} value={prop}>
-                {formatFieldName(prop)}
+              <option key={prop.label} value={prop.label}>
+                {formatFieldName(prop.label)}
               </option>
             ))}
           </FieldSelect>

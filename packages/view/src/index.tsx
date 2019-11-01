@@ -1,40 +1,63 @@
 import React from "react";
 import { useState } from "react";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import {
   followBranch,
   filterQuery,
+  aggregateQuery,
   popPath,
+  AggregationType,
   QueryType,
   BranchType
 } from "core";
 import BranchSelector from "./components/BranchSelector";
+import AggregationView from "./components/AggregationView";
 import HistoryView from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
+import FilterView from "./components/FilterView";
 import theme from "./styles/theme";
 import { BranchSelectorPropsType, FilterCallbackType } from "./types";
-import FilterView from "./components/FilterView";
 
-const CoordinatorView = (props: BranchSelectorPropsType) => {
+const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
   const branchSelectorHeadline =
     query.path && query.path.length > 0
       ? (query.path[query.path.length - 1].value as string)
       : "Where would you like to start?";
 
-  console.log("Query on enter of CoordinatorView:", query);
   if (!query.branches && props.query.branches) {
     setQuery(props.query);
   }
 
   const userWantsToFollowBranch = (branch: BranchType): void => {
-    followBranch(query, branch).then(newQuery => {
+    followBranch(query, branch).then((newQuery: QueryType) => {
       setQuery(newQuery);
     });
   };
 
+  /**
+   * STYLED COMPONENTS
+   */
+  const MainWrap = styled.div`
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 10px;
+    border: 1px solid black;
+    display: flex;
+  `;
+
+  const Column = styled.div`
+    flex: 50%;
+    padding: 10px;
+  `;
   const userWantsToFilterQuery: FilterCallbackType = (field, value) => {
     filterQuery(query, field, value).then(newQuery => {
+      setQuery(newQuery);
+    });
+  };
+
+  const userWantsToAggregateQuery = (aggregation: AggregationType): void => {
+    aggregateQuery(query, aggregation).then((newQuery: QueryType) => {
       setQuery(newQuery);
     });
   };
@@ -45,15 +68,17 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <div>
+    <MainWrap>
+      <ThemeProvider theme={theme}>
+        <Column>
           <HistoryView
             history={query.path}
             handleStepBack={userWantsToStepBack}
           />
-        </div>
-        <div>
+        </Column>
+      </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Column>
           <BranchSelector
             query={query}
             headline={branchSelectorHeadline}
@@ -63,10 +88,15 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
             properties={query.properties || []}
             callback={userWantsToFilterQuery}
           />
+        </Column>
+      </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Column>
+          <AggregationView query={query} callback={userWantsToAggregateQuery} />
           <TextQuery query={query} editFunction={() => {}} />
-        </div>
-      </div>
-    </ThemeProvider>
+        </Column>
+      </ThemeProvider>
+    </MainWrap>
   );
 };
 
