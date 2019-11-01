@@ -52,14 +52,7 @@ const FilterView = ({
   }, [valueRange, fieldKey]);
 
   const handleSubmit = () => {
-    //let value;
     if (fieldKey !== "" && fieldValues[0] !== "" && valueRange !== "") {
-      /*if (!isNaN(fieldValues) && fieldValues.toString().indexOf(".") != -1) {
-        value = parseFloat(fieldValues);
-      } else {
-        value = fieldValues;
-      }*/
-      //console.log("fieldValues type: " + typeof value);
       console.log("ValueRange: " + valueRange);
       callback(fieldKey, fieldValues, valueRange);
     }
