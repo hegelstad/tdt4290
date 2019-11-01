@@ -163,6 +163,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
               return (
                 <CheckBox
                   key={property.label}
+                  unformated-text={property.label}
                   text={property.label}
                   handler={handlePropertyChange}
                   isChecked={propertyIsChecked}

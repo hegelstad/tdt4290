@@ -72,7 +72,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
       <ThemeProvider theme={theme}>
         <Column>
           <AggregationView query={query} callback={userWantsToAggregateQuery} />
-          <TextQuery query={query} />
+          <TextQuery query={query} editFunction={() => {}} />
         </Column>
       </ThemeProvider>
     </MainWrap>

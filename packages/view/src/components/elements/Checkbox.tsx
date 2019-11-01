@@ -9,6 +9,13 @@ display: inline;
 margin 5px;
 `;
 
+const formatFieldName = (fieldName: string) => {
+  let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
+  formatedFieldName =
+    formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
+  return formatedFieldName;
+};
+
 const CheckBox = ({
   text,
   handler,
@@ -27,7 +34,7 @@ const CheckBox = ({
         value={text}
         checked={isChecked(text)}
       />
-      {" " + text}
+      {" " + formatFieldName(text)}
       <br />
     </div>
   );

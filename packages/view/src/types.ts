@@ -18,5 +18,6 @@ export interface ButtonPropsType {
 
 export interface TextQueryType {
   query: QueryType;
+  editFunction: Function; //This function should take the query as a string as argument and send it to a component suitable for editing the query.
 }
 export type FilterCallbackType = (field: PropertyType, value: string) => void;
