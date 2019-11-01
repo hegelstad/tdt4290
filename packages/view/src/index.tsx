@@ -21,7 +21,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     setQuery(props.query);
   }
 
-  const userWantsToFollowBranch = (branch: BranchType) => {
+  const userWantsToFollowBranch = (branch: BranchType): void => {
     followBranch(query, branch).then(newQuery => {
       setQuery(newQuery);
     });
@@ -60,7 +60,7 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       />
 
       <ThemeProvider theme={theme}>
-        <TextQuery query={query} />
+        <TextQuery query={query} editFunction={() => {}} />
       </ThemeProvider>
     </MainWrap>
   );
