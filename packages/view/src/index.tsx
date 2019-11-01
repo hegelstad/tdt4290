@@ -1,14 +1,22 @@
 import React from "react";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { followBranch, QueryType, BranchType } from "core";
+import {
+  followBranch,
+  filterQuery,
+  aggregateQuery,
+  popPath,
+  AggregationType,
+  QueryType,
+  BranchType
+} from "core";
 import BranchSelector from "./components/BranchSelector";
 import AggregationView from "./components/AggregationView";
+import HistoryView from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
 import theme from "./styles/theme";
 import { BranchSelectorPropsType, FilterCallbackType } from "./types";
-import { filterQuery, aggregateQuery, AggregationType } from "core";
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -53,8 +61,22 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
       setQuery(newQuery);
     });
   };
+
+  const userWantsToStepBack = async () => {
+    const newQuery = await popPath(query);
+    setQuery(newQuery);
+  };
+
   return (
     <MainWrap>
+      <ThemeProvider theme={theme}>
+        <Column>
+          <HistoryView
+            history={query.path}
+            handleStepBack={userWantsToStepBack}
+          />
+        </Column>
+      </ThemeProvider>
       <ThemeProvider theme={theme}>
         <Column>
           <BranchSelector
@@ -68,7 +90,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
           />
         </Column>
       </ThemeProvider>
-
       <ThemeProvider theme={theme}>
         <Column>
           <AggregationView query={query} callback={userWantsToAggregateQuery} />

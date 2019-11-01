@@ -5,4 +5,5 @@ export const Row = styled.div`
 
 export const Column = styled.div`
   flex: 50%;
+  justify-content: center;
 `;
