@@ -6,10 +6,12 @@ import {
   QueryType,
   FilterType,
   PropertyType,
-  MethodTypes,
+  PropertyTypes,
   LabelType,
   EdgeType,
-  LabelCountType
+  LabelCountType,
+  PropertyRawType,
+  MethodTypes
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -76,30 +78,28 @@ export const stringifyPath = (
         }
       }
       if (step.type === "filter") {
-        return `.has('${step.property}', '${step.value}')`;
+        return `.has('${step.property.label}', '${step.value}')`;
       }
       return "";
     })
     .reduce((a, b) => a + b, "");
   const aggregationQuery = aggregation
-    ? `.properties(${aggregation.properties
-        .map(prop => `"${prop}"`)
-        .join(",")}).group().by(key).by(value().${aggregation.method}())`
+    ? aggregation.method === MethodTypes.Count
+      ? ".count()"
+      : `.properties(${aggregation.properties
+          .map(prop => `"${prop.label}"`)
+          .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
   return baseQuery + pathQuery + aggregationQuery;
 };
 
 export const aggregateQuery = async (
   query: QueryType,
-  properties: PropertyType[],
-  method: MethodTypes
+  aggregation: AggregationType
 ): Promise<QueryType> => {
   return {
     ...query,
-    aggregation: {
-      properties,
-      method
-    }
+    aggregation: aggregation
   };
 };
 
@@ -156,10 +156,44 @@ const getProperties = async (
   path: BranchType[]
 ): Promise<PropertyType[]> => {
   const baseQueryString = stringifyPath(path);
-  const propertiesQueryString = `${baseQueryString}.properties().label().dedup()`;
-  return (await callAPI(config, {
+  const propertiesQueryString = `${baseQueryString}.properties().dedup().by(label()).project("label", "value").by(label()).by(value())`;
+  const tempResult: [PropertyRawType] = (await callAPI(config, {
     query: propertiesQueryString
   })).result;
+  return tempResult.map(property => {
+    const newProperty = {
+      label: property.label as string,
+      type: PropertyTypes.Undefined
+    };
+    if (property.value) {
+      // Logic to figure out what type the property is. This information is used in aggregation and filtering
+      // eslint-disable-next-line no-var
+      let isNumber = !isNaN(Number(property.value));
+      try {
+        /**
+        Number-type does not have the includes()-method, i.e. if property.value is a number
+        the codeline below will crash, and then we know it is a number
+        */
+        property.value.includes("");
+        isNumber = false;
+      } catch {
+        isNumber = true;
+      }
+      const isBoolean = property.value === "true" || property.value === "false";
+      const isStringArray = property.value.length; // If the length of the value isn't undefined, it is an Array..?
+      const isString = String(property.value);
+      if (isNumber) {
+        newProperty.type = PropertyTypes.Number;
+      } else if (isBoolean) {
+        newProperty.type = PropertyTypes.Boolean;
+      } else if (isStringArray) {
+        newProperty.type = PropertyTypes.StringArray;
+      } else if (isString) {
+        newProperty.type = PropertyTypes.String;
+      }
+    }
+    return newProperty;
+  });
 };
 
 export const followBranch = async (
@@ -178,6 +212,7 @@ export const followBranch = async (
 export const filterQuery = async (
   query: QueryType,
   property: PropertyType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any
 ): Promise<QueryType> => {
   const filter: FilterType = { type: "filter", property, value };
@@ -185,6 +220,20 @@ export const filterQuery = async (
   return {
     ...query,
     path,
+    branches: await getBranches(query.config, path),
+    properties: await getProperties(query.config, path)
+  };
+};
+
+export const popPath = async (query: QueryType): Promise<QueryType> => {
+  if (query.path.length === 0) {
+    return query;
+  }
+  const path = query.path.slice(0, -1);
+  return {
+    ...query,
+    path,
+    aggregation: undefined,
     branches: await getBranches(query.config, path),
     properties: await getProperties(query.config, path)
   };
