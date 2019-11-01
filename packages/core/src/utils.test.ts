@@ -1,3 +1,4 @@
+/* eslint-disable */
 import "isomorphic-fetch";
 import { ConfigType } from "./types";
 import { callAPI } from "./utils";
