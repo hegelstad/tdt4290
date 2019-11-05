@@ -83,6 +83,10 @@ const TableView = ({
   const componentHasProperties = (properties: string[]) => {
     return properties.length > 0;
   };
+
+  const fieldIsSelected = (field: string) => {
+    return fieldKeys.includes(field);
+  };
   const ColumnNameInput = styled.input.attrs(() => ({
     type: "text"
   }))`
@@ -166,7 +170,11 @@ const TableView = ({
                       --Choose field--
                     </option>
                     {properties.sort().map(prop => (
-                      <option key={prop} value={prop}>
+                      <option
+                        key={prop}
+                        value={prop}
+                        disabled={fieldIsSelected(prop)}
+                      >
                         {formatFieldName(prop)}
                       </option>
                     ))}
