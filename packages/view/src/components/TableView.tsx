@@ -118,14 +118,14 @@ const TableView = ({
     type: "text"
   }))`
     padding: 2px;
-    margin: 0 28% 8px 27%;
-    width: 41%;
+    margin: 0 28% 8px 10%;
+    width: 65%;
   `;
 
   const FieldSelect = styled.select`
     padding: 2px;
-    margin: 0 28% 8px 27%;
-    width: 42%;
+    margin: 0 7% 8px 27%;
+    width: 65%;
   `;
 
   const TableButton = styled.button.attrs(() => ({}))`
@@ -148,9 +148,31 @@ const TableView = ({
     margin: 0 37% 0 1%;
   `;
 
-  const TableLabel = styled.div`
-    width: 20%;
+  const FieldLabel = styled.div`
+    width: 30%;
     margin: 0 0 8px 27%;
+  `;
+
+  const ColumnNameLabel = styled.div`
+    width: 30%;
+    margin: 0 0 8px 10%;
+  `;
+  const FieldWrapper = styled.div`
+    /*border-style: dotted;
+  border-color: #0030F0;*/
+    width: 46%;
+    margin-bottom: 20px;
+  `;
+  const ColumnNameWrapper = styled.div`
+    /*border-style: dotted;
+  border-color: #50FF00;*/
+    width: 48%;
+    float: right;
+    margin-bottom: 20px;
+  `;
+
+  const TableWrapper = styled.div`
+    display: flex;
   `;
 
   return (
@@ -159,42 +181,54 @@ const TableView = ({
       {componentHasProperties(properties) && (
         <div>
           <h3>Table:</h3>
-          {fieldKeys.map((value, index) => (
-            <>
-              <TableLabel>Field:</TableLabel>
-              <FieldSelect
-                key={index}
-                defaultValue={fieldKeys[index]}
-                onChange={e => handleFieldDropDownChange(e, index)}
-              >
-                <option key={value} value="" disabled selected>
-                  --Choose field--
-                </option>
-                {properties.sort().map(prop => (
-                  <option key={prop} value={prop}>
-                    {formatFieldName(prop)}
-                  </option>
-                ))}
-              </FieldSelect>
-            </>
-          ))}
-
-          {hasColumnNames && (
-            <>
-              <TableLabel>Column name:</TableLabel>
-              {columnNames.map((value, index) => (
+          <TableWrapper>
+            <FieldWrapper>
+              <FieldLabel>
+                {fieldKeys.length === 1 ? "Field:" : "Fields:"}
+              </FieldLabel>
+              {fieldKeys.map((value, index) => (
                 <>
-                  <ColumnNameInput
+                  <FieldSelect
                     key={index}
-                    defaultValue={value}
-                    onChange={e => handleInputChange(e, index)}
-                    placeholder="Select a value..."
-                    autoFocus={index === 0}
-                  />
+                    defaultValue={fieldKeys[index]}
+                    onChange={e => handleFieldDropDownChange(e, index)}
+                  >
+                    <option key={value} value="" disabled selected>
+                      --Choose field--
+                    </option>
+                    {properties.sort().map(prop => (
+                      <option key={prop} value={prop}>
+                        {formatFieldName(prop)}
+                      </option>
+                    ))}
+                  </FieldSelect>
                 </>
               ))}
-            </>
-          )}
+            </FieldWrapper>
+
+            {hasColumnNames && (
+              <ColumnNameWrapper>
+                <>
+                  <ColumnNameLabel>
+                    {columnNames.length === 1
+                      ? "Column name:"
+                      : "Column names:"}
+                  </ColumnNameLabel>
+                  {columnNames.map((value, index) => (
+                    <>
+                      <ColumnNameInput
+                        key={index}
+                        defaultValue={value}
+                        onChange={e => handleInputChange(e, index)}
+                        placeholder="Select a value..."
+                        autoFocus={index === 0}
+                      />
+                    </>
+                  ))}
+                </>
+              </ColumnNameWrapper>
+            )}
+          </TableWrapper>
           <AddColumnNameButton disabled={fieldKeys.length === 5}>
             +
           </AddColumnNameButton>
