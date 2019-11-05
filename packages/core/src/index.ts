@@ -97,23 +97,6 @@ export const stringifyPath = (
         .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
 
-  /*const tableQuery = ((table: TableType) =>{
-      let tablePart = ``;
-      if(table.tableType==="single"){tablePart = `.values(${table.properties[0]})`}
-      else if(table.tableType==="multiple"){
-        tablePart = `.valueMap(${table.properties[0]})`
-      }
-      else{
-        tablePart = "";
-      }
-      return tablePart;
-    });
-    const tableQuery1 = table ?
-    (table.tableType==="single" ? 
-    (table.hasColumnNames ? "2" :
-    `.values(${table.properties[0]})` ):
-    `.valueMap(${table.properties[0]})`) :
-    "";*/
   const tableQuery = table
     ? table.hasColumnNames
       ? `.project(${table.columnNames.map(prop => `"${prop}"`).join(",")})

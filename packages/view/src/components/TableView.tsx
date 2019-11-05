@@ -9,7 +9,6 @@ const TableView = ({
   properties: string[];
   callback: TableCallbackType;
 }) => {
-  //const [tableType, setTableType] = useState<string>("");
   const [fieldKeys, setFieldKeys] = useState<Array<any>>([""]);
   const [columnNames, setColumnNames] = useState<Array<any>>([""]);
   const [hasColumnNames, setHasColumnNames] = useState<boolean>(false);
@@ -20,10 +19,7 @@ const TableView = ({
   ) => {
     const newFieldKeys: Array<any> = fieldKeys;
     newFieldKeys[key] = event.target.value;
-    console.log("handleFieldDropDownChange -> index:" + key);
-    console.log("handleFieldDropDownChange -> newFieldKeys:" + newFieldKeys);
     setFieldKeys(newFieldKeys);
-    console.log("handleFieldDropDownChange -> fieldKeys:" + fieldKeys);
   };
 
   const handleInputChange = (
@@ -43,31 +39,12 @@ const TableView = ({
       } else {
         tableType = "mulitple";
       }
-      console.log("handleSubmit:");
-      console.log(
-        "tableType: " +
-          tableType +
-          ", hasColumnNames: " +
-          hasColumnNames +
-          ", fieldKeys: " +
-          fieldKeys +
-          ", columnNames: " +
-          columnNames
-      );
       callback(tableType, hasColumnNames, fieldKeys, columnNames);
     }
   };
 
   const handleToggleColumnNamesInput = () => {
-    console.log(
-      "handleToggleColumnNamesInput -> before -> hasColumnNames: " +
-        hasColumnNames
-    );
     hasColumnNames ? setHasColumnNames(false) : setHasColumnNames(true);
-    console.log(
-      "handleToggleColumnNamesInput -> after -> hasColumnNames: " +
-        hasColumnNames
-    );
   };
 
   const handleAddValueInputField = () => {
@@ -79,8 +56,6 @@ const TableView = ({
       setFieldKeys(newFieldKeys);
       setColumnNames(newColumnNames);
     }
-    console.log("after -> fieldKeys: " + fieldKeys);
-    console.log("after -> columnNames: " + columnNames);
   };
 
   const handleRemoveValueInputField = () => {
@@ -90,12 +65,6 @@ const TableView = ({
       );
       const newColumnNames: Array<any> = columnNames.filter(
         (item, j) => j !== columnNames.length - 1 && item !== null
-      );
-      console.log(
-        "handleRemoveValueInputField -> newFieldKeys: " + newFieldKeys
-      );
-      console.log(
-        "handleRemoveValueInputField -> newColumnNames: " + newColumnNames
       );
       setFieldKeys(newFieldKeys);
       setColumnNames(newColumnNames);
