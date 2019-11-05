@@ -164,11 +164,13 @@ const FilterView = ({
             <option key={"default"} value="" disabled>
               --Choose field--
             </option>
-            {properties.sort().map(prop => (
-              <option key={prop.label} value={prop.label}>
-                {formatFieldName(prop.label)}
-              </option>
-            ))}
+            {properties
+              .sort((a, b) => (a.label > b.label ? 1 : -1))
+              .map(prop => (
+                <option key={prop.label} value={prop.label}>
+                  {formatFieldName(prop.label)}
+                </option>
+              ))}
           </FieldSelect>
           <FilterLabel>Value Range:</FilterLabel>
           <ValueRangeSelect>
