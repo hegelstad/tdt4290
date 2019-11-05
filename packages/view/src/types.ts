@@ -1,4 +1,4 @@
-import { QueryType, BranchType } from "core";
+import { QueryType, BranchType, TableType } from "core";
 
 export interface BranchSelectorPropsType {
   query: QueryType;
@@ -15,4 +15,11 @@ export type FilterCallbackType = (
   field: string,
   value: any,
   valueRange: string
+) => void;
+
+export type TableCallbackType = (
+  tableType: string,
+  hasColumnNames: boolean,
+  properties: string[],
+  columnNames: string[]
 ) => void;

@@ -18,7 +18,13 @@ const TextQuery = (props: TextQueryType) => {
   //Show/hide current query
   const onShowButtonClick = () => {
     setShowQuery(!showQuery);
-    setQuery(stringifyPath(props.query.path, props.query.aggregation));
+    setQuery(
+      stringifyPath(
+        props.query.path,
+        props.query.aggregation,
+        props.query.table
+      )
+    );
   };
 
   //Copy current query to clipboard

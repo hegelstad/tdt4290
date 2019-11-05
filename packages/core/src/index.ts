@@ -10,7 +10,8 @@ import {
   LabelType,
   EdgeType,
   LabelCountType,
-  ValueRangeType
+  ValueRangeType,
+  TableType
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -48,7 +49,8 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
 
 export const stringifyPath = (
   path: BranchType[],
-  aggregation?: AggregationType
+  aggregation?: AggregationType,
+  table?: TableType
 ): string => {
   const baseQuery = "g.V()";
   const pathQuery = path
@@ -85,6 +87,7 @@ export const stringifyPath = (
           return `.where(values('${step.property}').is(${step.valueRange}(${step.value[0]})))`;
         }
       }
+
       return "";
     })
     .reduce((a, b) => a + b, "");
@@ -93,7 +96,36 @@ export const stringifyPath = (
         .map(prop => `"${prop}"`)
         .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
-  return baseQuery + pathQuery + aggregationQuery;
+
+  /*const tableQuery = ((table: TableType) =>{
+      let tablePart = ``;
+      if(table.tableType==="single"){tablePart = `.values(${table.properties[0]})`}
+      else if(table.tableType==="multiple"){
+        tablePart = `.valueMap(${table.properties[0]})`
+      }
+      else{
+        tablePart = "";
+      }
+      return tablePart;
+    });
+    const tableQuery1 = table ?
+    (table.tableType==="single" ? 
+    (table.hasColumnNames ? "2" :
+    `.values(${table.properties[0]})` ):
+    `.valueMap(${table.properties[0]})`) :
+    "";*/
+  const tableQuery = table
+    ? table.hasColumnNames
+      ? `.project(${table.columnNames.map(prop => `"${prop}"`).join(",")})
+      ${table.value.map(prop => `.by("${prop}")`).join("")}`
+      : table.tableType === "single"
+      ? `.values("${table.value[0]}")`
+      : `.valueMap(${table.value.map(prop => `"${prop}"`).join(",")})`
+    : "";
+  console.log("stringifyPath -> table: " + table);
+  console.log("stringifyPath -> tableQuery: " + tableQuery);
+
+  return baseQuery + pathQuery + aggregationQuery + tableQuery;
 };
 
 export const aggregateQuery = async (
@@ -112,7 +144,7 @@ export const aggregateQuery = async (
 
 export const executeQuery = async (query: QueryType): Promise<object> => {
   return (await callAPI(query.config, {
-    query: stringifyPath(query.path, query.aggregation)
+    query: stringifyPath(query.path, query.aggregation, query.table)
   })).result;
 };
 
@@ -192,6 +224,24 @@ export const filterQuery = async (
     path,
     branches: await getBranches(query.config, path),
     properties: await getProperties(query.config, path)
+  };
+};
+
+export const createTableQuery = async (
+  query: QueryType,
+  tableType: string,
+  hasColumnNames: boolean,
+  value: string[],
+  columnNames: string[]
+): Promise<QueryType> => {
+  return {
+    ...query,
+    table: {
+      tableType,
+      hasColumnNames,
+      value,
+      columnNames
+    }
   };
 };
 

@@ -1,13 +1,18 @@
 import React from "react";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { followBranch, filterQuery } from "core";
+import { followBranch, filterQuery, createTableQuery } from "core";
 import { BranchType, QueryType } from "core/dist/types";
 import BranchSelector from "./components/BranchSelector";
 import TextQuery from "./components/TextQuery";
 import theme from "./styles/theme";
-import { BranchSelectorPropsType, FilterCallbackType } from "./types";
+import {
+  BranchSelectorPropsType,
+  FilterCallbackType,
+  TableCallbackType
+} from "./types";
 import FilterView from "./components/FilterView";
+import TableView from "./components/TableView";
 
 const CoordinatorView = (props: BranchSelectorPropsType) => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -37,6 +42,35 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
     });
   };
 
+  const userWantsToTableQuery: TableCallbackType = (
+    tableType,
+    hasColumnNames,
+    properties,
+    columnNames
+  ) => {
+    console.log("userWantsToTableQuery:");
+    console.log(
+      "tableType: " +
+        tableType +
+        ", hasColumnNames: " +
+        hasColumnNames +
+        ", properties: " +
+        properties +
+        ", columnNames: " +
+        columnNames
+    );
+
+    createTableQuery(
+      query,
+      tableType,
+      hasColumnNames,
+      properties,
+      columnNames
+    ).then(newQuery => {
+      setQuery(newQuery);
+    });
+  };
+
   const MainWrap = styled.div`
     max-width: 800px;
     margin: 0 auto;
@@ -57,6 +91,11 @@ const CoordinatorView = (props: BranchSelectorPropsType) => {
       <FilterView
         properties={query.properties || []}
         callback={userWantsToFilterQuery}
+      />
+
+      <TableView
+        properties={query.properties || []}
+        callback={userWantsToTableQuery}
       />
 
       <ThemeProvider theme={theme}>
