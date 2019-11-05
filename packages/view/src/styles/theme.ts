@@ -1,11 +1,20 @@
 const grayDark = "#373737";
+const grayLight = "light-grey";
 const gray = "#d6d9e1";
 const white = "#fff";
 const offWhite = "#f7f8fa";
 const purple = "#670867";
+const black = "#000000";
 
 const theme = {
   colors: {
+    checkbox: {
+      border: black
+    },
+    button: {
+      background: grayLight
+    },
+    radiobutton: {},
     background: white,
     foreground: grayDark,
     gray,
@@ -16,7 +25,8 @@ const theme = {
     white
   },
   fontFamily: "sans-serif",
-  roundRadius: "2px",
+  roundRadius: "5px",
+
   spacing: [
     "0px",
     "4px",

@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
+import { PropertyType } from "core";
 
 const FilterView = ({
   properties,
   callback
 }: {
-  properties: string[];
+  properties: PropertyType[];
   callback: FilterCallbackType;
-}) => {
+}): JSX.Element => {
   const [fieldKey, setFieldKey] = useState("");
   const [fieldValues, setfieldValues] = useState<Array<any>>([]);
   const [valueRange, setValueRange] = useState<string>("");
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  ): void => {
     setFieldKey(event.target.value);
   };
 
@@ -52,9 +53,12 @@ const FilterView = ({
   }, [valueRange, fieldKey]);
 
   const handleSubmit = () => {
-    if (fieldKey !== "" && fieldValues[0] !== "" && valueRange !== "") {
+    const property = properties.find(property => {
+      return property.label === fieldKey;
+    });
+    if (property && fieldValues[0] !== "" && valueRange !== "") {
       console.log("ValueRange: " + valueRange);
-      callback(fieldKey, fieldValues, valueRange);
+      callback(property, fieldValues, valueRange);
     }
   };
 
@@ -78,11 +82,11 @@ const FilterView = ({
       setfieldValues(newFieldValues);
     }
   };
-  const componentHasFilter = (filters: string[]) => {
+  const componentHasFilter = (filters: string[]): boolean => {
     return filters.length > 0;
   };
 
-  const formatFieldName = (fieldName: string) => {
+  const formatFieldName = (fieldName: string): string => {
     let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
     formatedFieldName =
       formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
@@ -118,7 +122,7 @@ const FilterView = ({
   `;
 
   const FilterButton = styled.button.attrs(() => ({
-    onClick: () => handleSubmit()
+    onClick: (): void => handleSubmit()
   }))`
     padding: 2px 5px;
     margin: 5px 39% 8px 37%;
@@ -152,17 +156,17 @@ const FilterView = ({
   return (
     // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
-      {componentHasFilter(properties) && (
+      {componentHasFilter(properties.map(property => property.label)) && (
         <div>
           <h3>Filter</h3>
           <FilterLabel>Field:</FilterLabel>
           <FieldSelect>
-            <option key={"default"} value="" disabled selected>
+            <option key={"default"} value="" disabled>
               --Choose field--
             </option>
             {properties.sort().map(prop => (
-              <option key={prop} value={prop}>
-                {formatFieldName(prop)}
+              <option key={prop.label} value={prop.label}>
+                {formatFieldName(prop.label)}
               </option>
             ))}
           </FieldSelect>

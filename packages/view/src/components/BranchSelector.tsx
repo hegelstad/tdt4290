@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { getSuggestions } from "core";
-import { LabelType, EdgeType, BranchType, QueryType } from "core/dist/types";
+import { LabelType, EdgeType, BranchType, QueryType } from "core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";
 
-const BranchSelector = (props: BranchSelectorPropsType) => {
+const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const getBranchTypeFrom = (
     type: string,
     initialQuery: QueryType
@@ -41,7 +41,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     setEdgeSuggestions(edgeSuggestions);
   }, [inputValue, props.query]);
 
-  const renderSuggestion = (suggestion: BranchType) => {
+  const renderSuggestion = (suggestion: BranchType): JSX.Element => {
     if (suggestion.type === "label") {
       return (
         <li key={suggestion.value}>
@@ -57,7 +57,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
         </li>
       );
     } else {
-      return "Error: Suggestion not of valid type";
+      throw new Error("Suggestion not of valid type");
     }
   };
 

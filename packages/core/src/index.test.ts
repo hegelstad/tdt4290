@@ -1,3 +1,4 @@
+/* eslint-disable */
 jest.mock("./utils");
 import { callAPI } from "./utils";
 import { initialize, followBranch } from "./index";
