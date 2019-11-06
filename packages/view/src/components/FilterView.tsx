@@ -14,7 +14,7 @@ const FilterView = ({
     label: "",
     type: PropertyTypes.String
   });
-  const [fieldValues, setfieldValues] = useState<Array<any>>([]);
+  const [fieldValues, setfieldValues] = useState<Array<string>>([]);
   const [valueRange, setValueRange] = useState<ValueRangeTypes>(
     ValueRangeTypes.Undefined
   );
