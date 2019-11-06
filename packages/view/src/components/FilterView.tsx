@@ -167,7 +167,6 @@ const FilterView = ({
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
-    key: "fieldSelect",
     value: fieldKey.label,
     onChange: handleFieldDropDownChange
   }))`
@@ -177,7 +176,6 @@ const FilterView = ({
   `;
 
   const ValueRangeSelect = styled.select.attrs(() => ({
-    key: "valueRangeSelect",
     value: valueRange,
     onChange: handleValueRangeDropDownChange
   }))`
