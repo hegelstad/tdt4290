@@ -57,7 +57,6 @@ const FilterView = ({
       return property.label === fieldKey;
     });
     if (property && fieldValues[0] !== "" && valueRange !== "") {
-      console.log("ValueRange: " + valueRange);
       callback(property, fieldValues, valueRange);
     }
   };
@@ -68,16 +67,12 @@ const FilterView = ({
       newFieldValues = fieldValues.concat("");
       setfieldValues(newFieldValues);
     }
-    console.log("after -> fieldValues: " + fieldValues);
   };
 
   const handleRemoveValueInputField = () => {
     if (fieldValues.length > 1) {
       const newFieldValues: Array<any> = fieldValues.filter(
         (item, j) => j !== fieldValues.length - 1 && item !== null
-      );
-      console.log(
-        "handleRemoveValueInputField -> newFieldValues: " + newFieldValues
       );
       setfieldValues(newFieldValues);
     }
