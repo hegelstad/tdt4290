@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
-import { PropertyType, PropertyTypes } from "core";
+import { PropertyType, PropertyTypes, ValueRangeTypes } from "core";
 
 const FilterView = ({
   properties,
@@ -15,7 +15,9 @@ const FilterView = ({
     type: PropertyTypes.String
   });
   const [fieldValues, setfieldValues] = useState<Array<any>>([]);
-  const [valueRange, setValueRange] = useState<string>("");
+  const [valueRange, setValueRange] = useState<ValueRangeTypes>(
+    ValueRangeTypes.Undefined
+  );
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -30,66 +32,104 @@ const FilterView = ({
 
   const handleValueRangeDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setValueRange(event.target.value);
+  ): void => {
+    let newValueRange: ValueRangeTypes;
+    switch (event.target.value) {
+      case ValueRangeTypes.Gt:
+        newValueRange = ValueRangeTypes.Gt;
+        break;
+      case ValueRangeTypes.Inside:
+        newValueRange = ValueRangeTypes.Inside;
+        break;
+      case ValueRangeTypes.Lt:
+        newValueRange = ValueRangeTypes.Lt;
+        break;
+      case ValueRangeTypes.Normal:
+        newValueRange = ValueRangeTypes.Normal;
+        break;
+      case ValueRangeTypes.Not:
+        newValueRange = ValueRangeTypes.Not;
+        break;
+      case ValueRangeTypes.Outside:
+        newValueRange = ValueRangeTypes.Outside;
+        break;
+      case ValueRangeTypes.Within:
+        newValueRange = ValueRangeTypes.Within;
+        break;
+      case ValueRangeTypes.Without:
+        newValueRange = ValueRangeTypes.Without;
+        break;
+      default:
+        newValueRange = ValueRangeTypes.Undefined;
+        break;
+    }
+    setValueRange(newValueRange);
   };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     key: number
-  ) => {
+  ): void => {
     const newFieldValues: Array<any> = fieldValues;
     newFieldValues[key] = event.target.value;
     setfieldValues(newFieldValues);
   };
 
-  const typeIsANumber = (props: PropertyType) => {
+  const typeIsANumber = (props: PropertyType): boolean => {
     return props.type === PropertyTypes.Number;
   };
-  const typeIsAString = (props: PropertyType) => {
+  const typeIsAString = (props: PropertyType): boolean => {
     return (
       props.type === PropertyTypes.String ||
       props.type === PropertyTypes.StringArray
     );
   };
 
-  useEffect(() => {
+  useEffect((): void => {
     let newFieldValues: Array<any> = [];
     if (
       !typeIsANumber(fieldKey) &&
-      (valueRange === "gt" ||
-        valueRange === "lt" ||
-        valueRange === "inside" ||
-        valueRange === "outside")
+      (valueRange === ValueRangeTypes.Gt ||
+        valueRange === ValueRangeTypes.Lt ||
+        valueRange === ValueRangeTypes.Inside ||
+        valueRange === ValueRangeTypes.Outside)
     ) {
-      setValueRange("");
+      setValueRange(ValueRangeTypes.Undefined);
     } else if (
       !typeIsAString(fieldKey) &&
-      (valueRange === "within" || valueRange === "wihtout")
+      (valueRange === ValueRangeTypes.Within ||
+        valueRange === ValueRangeTypes.Without)
     ) {
-      setValueRange("");
+      setValueRange(ValueRangeTypes.Undefined);
     } else if (
-      valueRange === "normal" ||
-      valueRange === "not" ||
-      valueRange === "within" ||
-      valueRange === "without" ||
-      valueRange === "gt" ||
-      valueRange === "lt"
+      valueRange === ValueRangeTypes.Normal ||
+      valueRange === ValueRangeTypes.Not ||
+      valueRange === ValueRangeTypes.Within ||
+      valueRange === ValueRangeTypes.Without ||
+      valueRange === ValueRangeTypes.Gt ||
+      valueRange === ValueRangeTypes.Lt
     ) {
       newFieldValues = [""];
-    } else if (valueRange === "inside" || valueRange === "outside") {
+    } else if (
+      valueRange === ValueRangeTypes.Inside ||
+      valueRange === ValueRangeTypes.Outside
+    ) {
       newFieldValues = ["", ""];
     }
     setfieldValues(newFieldValues);
   }, [valueRange, fieldKey]);
 
-  const handleSubmit = () => {
-    if (fieldKey.label !== "" && fieldValues[0] !== "" && valueRange !== "") {
+  const handleSubmit = (): void => {
+    if (
+      fieldKey.label !== "" &&
+      fieldValues[0] !== "" &&
+      valueRange !== ValueRangeTypes.Undefined
+    ) {
       callback(fieldKey, fieldValues, valueRange);
     }
   };
 
-  const handleAddValueInputField = () => {
+  const handleAddValueInputField = (): void => {
     let newFieldValues: Array<any> = [];
     if (fieldValues.length < 5) {
       newFieldValues = fieldValues.concat("");
@@ -97,7 +137,7 @@ const FilterView = ({
     }
   };
 
-  const handleRemoveValueInputField = () => {
+  const handleRemoveValueInputField = (): void => {
     if (fieldValues.length > 1) {
       const newFieldValues: Array<any> = fieldValues.filter(
         (item, j) => j !== fieldValues.length - 1 && item !== null
@@ -178,8 +218,11 @@ const FilterView = ({
     text-align: center;
   `;
 
-  const dropDownIsDisabled = (key: string) => {
-    return key !== "";
+  const fieldDropDownIsDisabled = (): boolean => {
+    return fieldKey.label !== "";
+  };
+  const valueRangeDropDownIsDisabled = (): boolean => {
+    return valueRange !== ValueRangeTypes.Undefined;
   };
 
   return (
@@ -193,7 +236,7 @@ const FilterView = ({
             <option
               key={"defaultFieldSelect"}
               value=""
-              disabled={dropDownIsDisabled(fieldKey.label)}
+              disabled={fieldDropDownIsDisabled()}
             >
               --Choose field--
             </option>
@@ -209,57 +252,57 @@ const FilterView = ({
           <ValueRangeSelect>
             <option
               key={"defaultValueRangeSelect"}
-              value=""
-              disabled={dropDownIsDisabled(valueRange)}
+              value={ValueRangeTypes.Undefined}
+              disabled={valueRangeDropDownIsDisabled()}
             >
               --Choose value range--
             </option>
             <option
               key={"valueRangeWithin"}
-              value={"within"}
+              value={ValueRangeTypes.Within}
               disabled={!typeIsAString(fieldKey)}
             >
               Among values
             </option>
             <option
               key={"valueRangeGt"}
-              value={"gt"}
+              value={ValueRangeTypes.Gt}
               disabled={!typeIsANumber(fieldKey)}
             >
               Greater than value
             </option>
             <option
               key={"valueRangeInside"}
-              value={"inside"}
+              value={ValueRangeTypes.Inside}
               disabled={!typeIsANumber(fieldKey)}
             >
               Inside range of values
             </option>
             <option
               key={"valueRangeLt"}
-              value={"lt"}
+              value={ValueRangeTypes.Lt}
               disabled={!typeIsANumber(fieldKey)}
             >
               Less than value
             </option>
             <option
               key={"valueRangeWithout"}
-              value={"without"}
+              value={ValueRangeTypes.Without}
               disabled={!typeIsAString(fieldKey)}
             >
               Not among values
             </option>
-            <option key={"valueRangeNot"} value={"not"}>
+            <option key={"valueRangeNot"} value={ValueRangeTypes.Not}>
               Not value
             </option>
             <option
               key={"valueRangeOutside"}
-              value={"outside"}
+              value={ValueRangeTypes.Outside}
               disabled={!typeIsANumber(fieldKey)}
             >
               Outside range of values
             </option>
-            <option key={"valueRangeNormal"} value={"normal"}>
+            <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
               Value
             </option>
           </ValueRangeSelect>
@@ -274,11 +317,13 @@ const FilterView = ({
                 placeholder="Select a value..."
                 autoFocus={index === 0}
               />
-              {(valueRange === "inside" || valueRange === "outside") &&
+              {(valueRange === ValueRangeTypes.Inside ||
+                valueRange === ValueRangeTypes.Outside) &&
                 index === 0 && <InsideText>-</InsideText>}
             </>
           ))}
-          {(valueRange === "within" || valueRange === "without") && (
+          {(valueRange === ValueRangeTypes.Within ||
+            valueRange === ValueRangeTypes.Without) && (
             <>
               <AddValueInputButton disabled={fieldValues.length === 5}>
                 +

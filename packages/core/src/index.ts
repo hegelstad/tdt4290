@@ -10,9 +10,9 @@ import {
   LabelType,
   EdgeType,
   LabelCountType,
-  ValueRangeType,
   PropertyRawType,
-  MethodTypes
+  MethodTypes,
+  ValueRangeTypes
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -73,21 +73,21 @@ export const stringifyPath = (
           }
           return false;
         };
-        if (step.valueRange === "normal") {
+        if (step.valueRange === ValueRangeTypes.Normal) {
           return (
             `.has('${step.property.label}', ` +
             (typeIsString() ? `'${step.value[0]}'` : `${step.value[0]}`) +
             `)`
           );
-        } else if (step.valueRange === "not") {
+        } else if (step.valueRange === ValueRangeTypes.Not) {
           return (
             `.not(has('${step.property.label}', ` +
             (typeIsString() ? `'${step.value[0]}'` : `${step.value[0]}`) +
             `))`
           );
         } else if (
-          step.valueRange === "within" ||
-          step.valueRange === "without"
+          step.valueRange === ValueRangeTypes.Within ||
+          step.valueRange === ValueRangeTypes.Without
         ) {
           let filterPart = `.has('${step.property.label}', ${step.valueRange}(`;
           for (i = 0; i < step.value.length; i++) {
@@ -96,11 +96,14 @@ export const stringifyPath = (
           filterPart = filterPart.substring(0, filterPart.length - 2) + `))`;
           return filterPart;
         } else if (
-          step.valueRange === "inside" ||
-          step.valueRange === "outside"
+          step.valueRange === ValueRangeTypes.Inside ||
+          step.valueRange === ValueRangeTypes.Outside
         ) {
           return `.has('${step.property.label}', ${step.valueRange}(${step.value[0]}, ${step.value[1]}))`;
-        } else if (step.valueRange === "lt" || step.valueRange === "gt") {
+        } else if (
+          step.valueRange === ValueRangeTypes.Lt ||
+          step.valueRange === ValueRangeTypes.Gt
+        ) {
           return `.where(values('${step.property.label}').is(${step.valueRange}(${step.value[0]})))`;
         }
       }
@@ -234,7 +237,7 @@ export const filterQuery = async (
   query: QueryType,
   property: PropertyType,
   value: any,
-  valueRange: ValueRangeType
+  valueRange: ValueRangeTypes
 ): Promise<QueryType> => {
   const filter: FilterType = { type: "filter", property, value, valueRange };
   const path = [...query.path, filter];

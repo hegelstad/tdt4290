@@ -31,7 +31,7 @@ export interface FilterType {
   // eslint-disable-next-line
   property: PropertyType;
   value: any;
-  valueRange: string;
+  valueRange: ValueRangeTypes;
 }
 
 export interface AggregationType {
@@ -39,7 +39,6 @@ export interface AggregationType {
   method: MethodTypes;
 }
 
-export type ValueRangeType = string;
 export interface PropertyType {
   label: string;
   type: PropertyTypes;
@@ -64,4 +63,16 @@ export enum MethodTypes {
   Sum = "sum",
   Mean = "mean",
   Count = "count"
+}
+
+export enum ValueRangeTypes {
+  Gt = "gt",
+  Inside = "inside",
+  Lt = "lt",
+  Normal = "normal",
+  Not = "not",
+  Outside = "outside",
+  Within = "within",
+  Without = "without",
+  Undefined = "undefined"
 }

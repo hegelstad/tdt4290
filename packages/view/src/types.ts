@@ -1,4 +1,10 @@
-import { QueryType, BranchType, PropertyType, AggregationType } from "core";
+import {
+  QueryType,
+  BranchType,
+  PropertyType,
+  AggregationType,
+  ValueRangeTypes
+} from "core";
 
 export interface BranchSelectorPropsType {
   query: QueryType;
@@ -24,5 +30,5 @@ export interface TextQueryType {
 export type FilterCallbackType = (
   field: PropertyType,
   value: any,
-  valueRange: string
+  valueRange: ValueRangeTypes
 ) => void;
