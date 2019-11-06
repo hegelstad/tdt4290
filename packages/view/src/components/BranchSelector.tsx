@@ -157,6 +157,11 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     display: inline;
   `;
 
+  const NotWrap = styled.div`
+    border: 1px solid black;
+    padding 5px;
+  `;
+
   const FieldSelect = styled.select.attrs(() => ({
     onChange: handleDropDownChange
   }))`
@@ -172,14 +177,13 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         <Input placeholder="Start typing..." autoFocus />
       </SearchWrap>
       <br />
-      <FieldSelect>
-        <option key={"default"} value="with">
-          Choose with label
-        </option>
-        <option key={"without"} value="without">
-          Choose without label
-        </option>
-      </FieldSelect>
+      <NotWrap>
+        <p>When you select components or references</p>
+        <FieldSelect defaultValue="with">
+          <option value="with">choose selected</option>
+          <option value="without">choose all other than selected</option>
+        </FieldSelect>
+      </NotWrap>
       <br />
       <H3>Components</H3>
       <UnorderedList>{labelSuggestions.map(renderSuggestion)}</UnorderedList>
