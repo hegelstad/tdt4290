@@ -24,6 +24,12 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     query.path && query.path.length > 0
       ? (query.path[query.path.length - 1].value as string)
       : "Where would you like to start?";
+  const branchSelectorHeadlinePrefix =
+    query.path &&
+    query.path.length > 0 &&
+    query.path[query.path.length - 1].notValue
+      ? "Everything but "
+      : "";
 
   if (!query.branches && props.query.branches) {
     setQuery(props.query);
@@ -81,7 +87,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
         <Column>
           <BranchSelector
             query={query}
-            headline={branchSelectorHeadline}
+            headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
             followBranch={userWantsToFollowBranch}
           />
           <FilterView

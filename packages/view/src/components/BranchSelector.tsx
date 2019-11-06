@@ -21,6 +21,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const edges = getBranchTypeFrom("edge", props.query);
 
   const [inputValue, setInputValue] = useState("");
+  const [notValue, setNot] = useState(false);
   const [edgeSuggestions, setEdgeSuggestions] = useState<EdgeType[]>([]);
   const [labelSuggestions, setLabelSuggestions] = useState<LabelType[]>([]);
 
@@ -74,8 +75,10 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     const label = labels.find(label => {
       return label.type === "label" && label.value === value;
     }) as LabelType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+    setNot(false);
   };
 
   /**
@@ -92,8 +95,20 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     const label = edges.find(label => {
       return label.value === value;
     }) as EdgeType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+    setNot(false);
+  };
+
+  const handleDropDownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (event.target.value === "with") {
+      setNot(false);
+    } else if (event.target.value === "without") {
+      setNot(true);
+    }
   };
 
   // Styled Components
@@ -142,6 +157,18 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     display: inline;
   `;
 
+  const NotWrap = styled.div`
+    border: 1px solid black;
+    padding 5px;
+  `;
+
+  const FieldSelect = styled.select.attrs(() => ({
+    onChange: handleDropDownChange
+  }))`
+    padding: 2px;
+    width: 200px;
+  `;
+
   return edges.length > 0 || labels.length > 0 ? (
     <BranchSelectorWrap>
       <h1>{props.headline}</h1>
@@ -149,6 +176,14 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         <FontAwesomeIcon icon={faSearch} />
         <Input placeholder="Start typing..." autoFocus />
       </SearchWrap>
+      <br />
+      <NotWrap>
+        <p>When you select components or references</p>
+        <FieldSelect defaultValue="with">
+          <option value="with">choose selected</option>
+          <option value="without">choose all other than selected</option>
+        </FieldSelect>
+      </NotWrap>
       <br />
       <H3>Components</H3>
       <UnorderedList>{labelSuggestions.map(renderSuggestion)}</UnorderedList>
