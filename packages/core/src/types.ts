@@ -14,6 +14,7 @@ export interface QueryType {
 export interface LabelType {
   type: "label";
   value: string;
+  notValue: boolean;
 }
 
 export interface LabelCountType {
@@ -25,19 +26,22 @@ export interface EdgeType {
   type: "edge";
   value: string;
   direction: "in" | "out";
+  notValue: boolean;
 }
 
 export interface FilterType {
   type: "filter";
-  property: string;
+  // eslint-disable-next-line
   value: any;
-  valueRange: string;
+  notValue?: boolean;
+  property: PropertyType;
+  valueRange: ValueRangeTypes;
 }
 
 export interface TableType {
   tableType: string;
   hasColumnNames: boolean;
-  value: string[];
+  value: PropertyType[];
   columnNames: string[];
 }
 
@@ -46,12 +50,40 @@ export interface AggregationType {
   method: MethodTypes;
 }
 
-export type PropertyType = string;
-export type ValueRangeType = string;
+export interface PropertyType {
+  label: string;
+  type: PropertyTypes;
+}
+
+export interface PropertyRawType {
+  label: string;
+  value: string;
+}
 
 export type BranchType = LabelType | EdgeType | FilterType;
 
+export enum PropertyTypes {
+  String,
+  StringArray,
+  Number,
+  Boolean,
+  Undefined
+}
+
 export enum MethodTypes {
   Sum = "sum",
-  Mean = "mean"
+  Mean = "mean",
+  Count = "count"
+}
+
+export enum ValueRangeTypes {
+  Gt = "gt",
+  Inside = "inside",
+  Lt = "lt",
+  Normal = "normal",
+  Not = "not",
+  Outside = "outside",
+  Within = "within",
+  Without = "without",
+  Undefined = "undefined"
 }

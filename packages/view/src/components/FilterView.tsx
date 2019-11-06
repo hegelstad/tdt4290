@@ -1,88 +1,155 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
+import { PropertyType, PropertyTypes, ValueRangeTypes } from "core";
 
 const FilterView = ({
   properties,
   callback
 }: {
-  properties: string[];
+  properties: PropertyType[];
   callback: FilterCallbackType;
-}) => {
-  const [fieldKey, setFieldKey] = useState("");
-  const [fieldValues, setfieldValues] = useState<Array<any>>([]);
-  const [valueRange, setValueRange] = useState<string>("");
+}): JSX.Element => {
+  const [fieldKey, setFieldKey] = useState<PropertyType>({
+    label: "",
+    type: PropertyTypes.String
+  });
+  const [fieldValues, setfieldValues] = useState<Array<string>>([]);
+  const [valueRange, setValueRange] = useState<ValueRangeTypes>(
+    ValueRangeTypes.Undefined
+  );
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setFieldKey(event.target.value);
+  ): void => {
+    const property = properties.find(property => {
+      return property.label === event.target.value;
+    });
+    property
+      ? setFieldKey(property)
+      : setFieldKey({ label: "", type: PropertyTypes.String });
   };
 
   const handleValueRangeDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setValueRange(event.target.value);
+  ): void => {
+    let newValueRange: ValueRangeTypes;
+    switch (event.target.value) {
+      case ValueRangeTypes.Gt:
+        newValueRange = ValueRangeTypes.Gt;
+        break;
+      case ValueRangeTypes.Inside:
+        newValueRange = ValueRangeTypes.Inside;
+        break;
+      case ValueRangeTypes.Lt:
+        newValueRange = ValueRangeTypes.Lt;
+        break;
+      case ValueRangeTypes.Normal:
+        newValueRange = ValueRangeTypes.Normal;
+        break;
+      case ValueRangeTypes.Not:
+        newValueRange = ValueRangeTypes.Not;
+        break;
+      case ValueRangeTypes.Outside:
+        newValueRange = ValueRangeTypes.Outside;
+        break;
+      case ValueRangeTypes.Within:
+        newValueRange = ValueRangeTypes.Within;
+        break;
+      case ValueRangeTypes.Without:
+        newValueRange = ValueRangeTypes.Without;
+        break;
+      default:
+        newValueRange = ValueRangeTypes.Undefined;
+        break;
+    }
+    setValueRange(newValueRange);
   };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     key: number
-  ) => {
+  ): void => {
     const newFieldValues: Array<any> = fieldValues;
     newFieldValues[key] = event.target.value;
     setfieldValues(newFieldValues);
   };
 
-  useEffect(() => {
+  const typeIsANumber = (props: PropertyType): boolean => {
+    return props.type === PropertyTypes.Number;
+  };
+  const typeIsAString = (props: PropertyType): boolean => {
+    return (
+      props.type === PropertyTypes.String ||
+      props.type === PropertyTypes.StringArray
+    );
+  };
+
+  useEffect((): void => {
     let newFieldValues: Array<any> = [];
     if (
-      valueRange === "normal" ||
-      valueRange === "not" ||
-      valueRange === "within" ||
-      valueRange === "without" ||
-      valueRange === "gt" ||
-      valueRange === "lt"
+      !typeIsANumber(fieldKey) &&
+      (valueRange === ValueRangeTypes.Gt ||
+        valueRange === ValueRangeTypes.Lt ||
+        valueRange === ValueRangeTypes.Inside ||
+        valueRange === ValueRangeTypes.Outside)
+    ) {
+      setValueRange(ValueRangeTypes.Undefined);
+    } else if (
+      !typeIsAString(fieldKey) &&
+      (valueRange === ValueRangeTypes.Within ||
+        valueRange === ValueRangeTypes.Without)
+    ) {
+      setValueRange(ValueRangeTypes.Undefined);
+    } else if (
+      valueRange === ValueRangeTypes.Normal ||
+      valueRange === ValueRangeTypes.Not ||
+      valueRange === ValueRangeTypes.Within ||
+      valueRange === ValueRangeTypes.Without ||
+      valueRange === ValueRangeTypes.Gt ||
+      valueRange === ValueRangeTypes.Lt
     ) {
       newFieldValues = [""];
-    } else if (valueRange === "inside" || valueRange === "outside") {
+    } else if (
+      valueRange === ValueRangeTypes.Inside ||
+      valueRange === ValueRangeTypes.Outside
+    ) {
       newFieldValues = ["", ""];
     }
     setfieldValues(newFieldValues);
   }, [valueRange, fieldKey]);
 
-  const handleSubmit = () => {
-    if (fieldKey !== "" && fieldValues[0] !== "" && valueRange !== "") {
-      console.log("ValueRange: " + valueRange);
+  const handleSubmit = (): void => {
+    if (
+      fieldKey.label !== "" &&
+      fieldValues[0] !== "" &&
+      valueRange !== ValueRangeTypes.Undefined
+    ) {
       callback(fieldKey, fieldValues, valueRange);
     }
   };
 
-  const handleAddValueInputField = () => {
+  const handleAddValueInputField = (): void => {
     let newFieldValues: Array<any> = [];
     if (fieldValues.length < 5) {
       newFieldValues = fieldValues.concat("");
       setfieldValues(newFieldValues);
     }
-    console.log("after -> fieldValues: " + fieldValues);
   };
 
-  const handleRemoveValueInputField = () => {
+  const handleRemoveValueInputField = (): void => {
     if (fieldValues.length > 1) {
       const newFieldValues: Array<any> = fieldValues.filter(
         (item, j) => j !== fieldValues.length - 1 && item !== null
       );
-      console.log(
-        "handleRemoveValueInputField -> newFieldValues: " + newFieldValues
-      );
       setfieldValues(newFieldValues);
     }
   };
-  const componentHasFilter = (filters: string[]) => {
+  const componentHasFilter = (filters: string[]): boolean => {
     return filters.length > 0;
   };
 
-  const formatFieldName = (fieldName: string) => {
+  const formatFieldName = (fieldName: string): string => {
     let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
     formatedFieldName =
       formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
@@ -100,7 +167,7 @@ const FilterView = ({
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
-    defaultValue: fieldKey,
+    value: fieldKey.label,
     onChange: handleFieldDropDownChange
   }))`
     padding: 2px;
@@ -109,7 +176,7 @@ const FilterView = ({
   `;
 
   const ValueRangeSelect = styled.select.attrs(() => ({
-    defaultValue: valueRange,
+    value: valueRange,
     onChange: handleValueRangeDropDownChange
   }))`
     padding: 2px;
@@ -118,7 +185,7 @@ const FilterView = ({
   `;
 
   const FilterButton = styled.button.attrs(() => ({
-    onClick: () => handleSubmit()
+    onClick: (): void => handleSubmit()
   }))`
     padding: 2px 5px;
     margin: 5px 39% 8px 37%;
@@ -149,50 +216,91 @@ const FilterView = ({
     text-align: center;
   `;
 
+  const fieldDropDownIsDisabled = (): boolean => {
+    return fieldKey.label !== "";
+  };
+  const valueRangeDropDownIsDisabled = (): boolean => {
+    return valueRange !== ValueRangeTypes.Undefined;
+  };
+
   return (
     // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
-      {componentHasFilter(properties) && (
+      {componentHasFilter(properties.map(property => property.label)) && (
         <div>
           <h3>Filter</h3>
           <FilterLabel>Field:</FilterLabel>
           <FieldSelect>
-            <option key={"default"} value="" disabled selected>
+            <option
+              key={"defaultFieldSelect"}
+              value=""
+              disabled={fieldDropDownIsDisabled()}
+            >
               --Choose field--
             </option>
-            {properties.sort().map(prop => (
-              <option key={prop} value={prop}>
-                {formatFieldName(prop)}
-              </option>
-            ))}
+            {properties
+              .sort((a, b) => (a.label > b.label ? 1 : -1))
+              .map(prop => (
+                <option key={"field" + prop.label} value={prop.label}>
+                  {formatFieldName(prop.label)}
+                </option>
+              ))}
           </FieldSelect>
           <FilterLabel>Value Range:</FilterLabel>
           <ValueRangeSelect>
-            <option key={"default"} value="" disabled selected>
+            <option
+              key={"defaultValueRangeSelect"}
+              value={ValueRangeTypes.Undefined}
+              disabled={valueRangeDropDownIsDisabled()}
+            >
               --Choose value range--
             </option>
-            <option key={"within"} value={"within"}>
+            <option
+              key={"valueRangeWithin"}
+              value={ValueRangeTypes.Within}
+              disabled={!typeIsAString(fieldKey)}
+            >
               Among values
             </option>
-            <option key={"gt"} value={"gt"}>
+            <option
+              key={"valueRangeGt"}
+              value={ValueRangeTypes.Gt}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Greater than value
             </option>
-            <option key={"inside"} value={"inside"}>
+            <option
+              key={"valueRangeInside"}
+              value={ValueRangeTypes.Inside}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Inside range of values
             </option>
-            <option key={"lt"} value={"lt"}>
+            <option
+              key={"valueRangeLt"}
+              value={ValueRangeTypes.Lt}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Less than value
             </option>
-            <option key={"without"} value={"without"}>
+            <option
+              key={"valueRangeWithout"}
+              value={ValueRangeTypes.Without}
+              disabled={!typeIsAString(fieldKey)}
+            >
               Not among values
             </option>
-            <option key={"not"} value={"not"}>
+            <option key={"valueRangeNot"} value={ValueRangeTypes.Not}>
               Not value
             </option>
-            <option key={"outside"} value={"outside"}>
+            <option
+              key={"valueRangeOutside"}
+              value={ValueRangeTypes.Outside}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Outside range of values
             </option>
-            <option key={"normal"} value={"normal"}>
+            <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
               Value
             </option>
           </ValueRangeSelect>
@@ -201,17 +309,19 @@ const FilterView = ({
           {fieldValues.map((value, index) => (
             <>
               <ValueInput
-                key={index}
+                key={"valueInput" + index}
                 defaultValue={value}
                 onChange={e => handleInputChange(e, index)}
                 placeholder="Select a value..."
                 autoFocus={index === 0}
               />
-              {(valueRange === "inside" || valueRange === "outside") &&
+              {(valueRange === ValueRangeTypes.Inside ||
+                valueRange === ValueRangeTypes.Outside) &&
                 index === 0 && <InsideText>-</InsideText>}
             </>
           ))}
-          {(valueRange === "within" || valueRange === "without") && (
+          {(valueRange === ValueRangeTypes.Within ||
+            valueRange === ValueRangeTypes.Without) && (
             <>
               <AddValueInputButton disabled={fieldValues.length === 5}>
                 +

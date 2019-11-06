@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { getSuggestions } from "core";
-import { LabelType, EdgeType, BranchType, QueryType } from "core/dist/types";
+import { LabelType, EdgeType, BranchType, QueryType } from "core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";
 
-const BranchSelector = (props: BranchSelectorPropsType) => {
+const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const getBranchTypeFrom = (
     type: string,
     initialQuery: QueryType
@@ -21,6 +21,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
   const edges = getBranchTypeFrom("edge", props.query);
 
   const [inputValue, setInputValue] = useState("");
+  const [notValue, setNot] = useState(false);
   const [edgeSuggestions, setEdgeSuggestions] = useState<EdgeType[]>([]);
   const [labelSuggestions, setLabelSuggestions] = useState<LabelType[]>([]);
 
@@ -41,7 +42,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     setEdgeSuggestions(edgeSuggestions);
   }, [inputValue, props.query]);
 
-  const renderSuggestion = (suggestion: BranchType) => {
+  const renderSuggestion = (suggestion: BranchType): JSX.Element => {
     if (suggestion.type === "label") {
       return (
         <li key={suggestion.value}>
@@ -57,7 +58,7 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
         </li>
       );
     } else {
-      return "Error: Suggestion not of valid type";
+      throw new Error("Suggestion not of valid type");
     }
   };
 
@@ -74,8 +75,10 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     const label = labels.find(label => {
       return label.type === "label" && label.value === value;
     }) as LabelType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+    setNot(false);
   };
 
   /**
@@ -92,8 +95,20 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     const label = edges.find(label => {
       return label.value === value;
     }) as EdgeType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+    setNot(false);
+  };
+
+  const handleDropDownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (event.target.value === "with") {
+      setNot(false);
+    } else if (event.target.value === "without") {
+      setNot(true);
+    }
   };
 
   // Styled Components
@@ -142,6 +157,18 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
     display: inline;
   `;
 
+  const NotWrap = styled.div`
+    border: 1px solid black;
+    padding 5px;
+  `;
+
+  const FieldSelect = styled.select.attrs(() => ({
+    onChange: handleDropDownChange
+  }))`
+    padding: 2px;
+    width: 200px;
+  `;
+
   return edges.length > 0 || labels.length > 0 ? (
     <BranchSelectorWrap>
       <h1>{props.headline}</h1>
@@ -149,6 +176,14 @@ const BranchSelector = (props: BranchSelectorPropsType) => {
         <FontAwesomeIcon icon={faSearch} />
         <Input placeholder="Start typing..." autoFocus />
       </SearchWrap>
+      <br />
+      <NotWrap>
+        <p>When you select components or references</p>
+        <FieldSelect defaultValue="with">
+          <option value="with">choose selected</option>
+          <option value="without">choose all other than selected</option>
+        </FieldSelect>
+      </NotWrap>
       <br />
       <H3>Components</H3>
       <UnorderedList>{labelSuggestions.map(renderSuggestion)}</UnorderedList>

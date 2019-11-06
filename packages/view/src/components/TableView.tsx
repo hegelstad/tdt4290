@@ -1,24 +1,35 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { TableCallbackType } from "../types";
+import { PropertyType, PropertyTypes } from "core";
 
 const TableView = ({
   properties,
   callback
 }: {
-  properties: string[];
+  properties: PropertyType[];
   callback: TableCallbackType;
 }) => {
-  const [fieldKeys, setFieldKeys] = useState<Array<any>>([""]);
-  const [columnNames, setColumnNames] = useState<Array<any>>([""]);
+  const [fieldKeys, setFieldKeys] = useState<Array<PropertyType>>([
+    {
+      label: "",
+      type: PropertyTypes.String
+    }
+  ]);
+  const [columnNames, setColumnNames] = useState<Array<string>>([""]);
   const [hasColumnNames, setHasColumnNames] = useState<boolean>(false);
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
     key: number
   ) => {
-    const newFieldKeys: Array<any> = fieldKeys;
-    newFieldKeys[key] = event.target.value;
+    const newFieldKeys: Array<PropertyType> = fieldKeys;
+    const property = properties.find(property => {
+      return property.label === event.target.value;
+    });
+    property
+      ? (newFieldKeys[key] = property)
+      : (newFieldKeys[key] = { label: "", type: PropertyTypes.String });
     setFieldKeys(newFieldKeys);
   };
 
@@ -32,7 +43,7 @@ const TableView = ({
   };
 
   const handleSubmit = () => {
-    if (fieldKeys[0] !== "") {
+    if (fieldKeys[0].label !== "") {
       let tableType: string;
       if (fieldKeys.length === 1) {
         tableType = "single";
@@ -48,10 +59,13 @@ const TableView = ({
   };
 
   const handleAddValueInputField = () => {
-    let newFieldKeys: Array<any> = [];
+    let newFieldKeys: Array<PropertyType> = [];
     let newColumnNames: Array<any> = [];
     if (fieldKeys.length < 5 && columnNames.length < 5) {
-      newFieldKeys = fieldKeys.concat("");
+      newFieldKeys = fieldKeys.concat({
+        label: "",
+        type: PropertyTypes.String
+      });
       newColumnNames = columnNames.concat("");
       setFieldKeys(newFieldKeys);
       setColumnNames(newColumnNames);
@@ -85,7 +99,11 @@ const TableView = ({
   };
 
   const fieldIsSelected = (field: string) => {
-    return fieldKeys.includes(field);
+    return fieldKeys.find(property => {
+      return property.label === field;
+    })
+      ? true
+      : false;
   };
   const ColumnNameInput = styled.input.attrs(() => ({
     type: "text"
@@ -151,7 +169,7 @@ const TableView = ({
   return (
     // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
-      {componentHasProperties(properties) && (
+      {componentHasProperties(properties.map(property => property.label)) && (
         <div>
           <h3>Table:</h3>
           <TableWrapper>
@@ -163,19 +181,19 @@ const TableView = ({
                 <>
                   <FieldSelect
                     key={index}
-                    defaultValue={fieldKeys[index]}
+                    defaultValue={fieldKeys[index].label}
                     onChange={e => handleFieldDropDownChange(e, index)}
                   >
-                    <option key={value} value="" disabled selected>
+                    <option key={value.label} value="" disabled selected>
                       --Choose field--
                     </option>
                     {properties.sort().map(prop => (
                       <option
-                        key={prop}
-                        value={prop}
-                        disabled={fieldIsSelected(prop)}
+                        key={prop.label}
+                        value={prop.label}
+                        disabled={fieldIsSelected(prop.label)}
                       >
-                        {formatFieldName(prop)}
+                        {formatFieldName(prop.label)}
                       </option>
                     ))}
                   </FieldSelect>
