@@ -43,7 +43,15 @@ const TableView = ({
   };
 
   const handleSubmit = () => {
-    if (fieldKeys[0].label !== "") {
+    let submitIsReady: boolean = fieldKeys.find(property => {
+      return property.label === "";
+    })
+      ? false
+      : true;
+    if (hasColumnNames && columnNames.includes("")) {
+      submitIsReady = false;
+    }
+    if (submitIsReady) {
       let tableType: string;
       if (fieldKeys.length === 1) {
         tableType = "single";
