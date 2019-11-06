@@ -93,17 +93,23 @@ export const stringifyPath = (
     .reduce((a, b) => a + b, "");
   const aggregationQuery = aggregation
     ? `.properties(${aggregation.properties
-        .map(prop => `"${prop}"`)
+        .map(prop => `'${prop}'`)
         .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
 
   const tableQuery = table
     ? table.hasColumnNames
-      ? `.project(${table.columnNames.map(prop => `"${prop}"`).join(",")})
-      ${table.value.map(prop => `.by("${prop}")`).join("")}`
+      ? `.project(${table.columnNames.map(prop => `'${prop}'`).join(",")})
+      ${table.value
+        .map(
+          prop => `.by(coalesce(
+        values('${prop}'),
+        constant('No value')))`
+        )
+        .join("")}`
       : table.tableType === "single"
-      ? `.values("${table.value[0]}")`
-      : `.valueMap(${table.value.map(prop => `"${prop}"`).join(",")})`
+      ? `.values('${table.value[0]}')`
+      : `.valueMap(${table.value.map(prop => `'${prop}'`).join(",")})`
     : "";
   console.log("stringifyPath -> table: " + table);
   console.log("stringifyPath -> tableQuery: " + tableQuery);

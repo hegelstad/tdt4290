@@ -213,7 +213,7 @@ const TableView = ({
             -
           </RemoveColumnNameButton>
           <TableButton onClick={() => handleToggleColumnNamesInput()}>
-            {hasColumnNames ? "Hide column names" : "Show column Names"}
+            {hasColumnNames ? "Remove column names" : "Add column Names"}
           </TableButton>
           <TableButton
             onClick={() => handleSubmit()}
