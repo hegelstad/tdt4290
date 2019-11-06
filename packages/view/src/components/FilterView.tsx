@@ -99,7 +99,7 @@ const FilterView = ({
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
-    defaultValue: "default",
+    value: fieldKey,
     onChange: handleFieldDropDownChange
   }))`
     padding: 2px;
@@ -108,7 +108,7 @@ const FilterView = ({
   `;
 
   const ValueRangeSelect = styled.select.attrs(() => ({
-    defaultValue: "default",
+    value: valueRange,
     onChange: handleValueRangeDropDownChange
   }))`
     padding: 2px;
