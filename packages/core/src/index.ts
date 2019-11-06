@@ -64,10 +64,27 @@ export const stringifyPath = (
         return `.${step.direction}('${step.value}')`;
       }
       if (step.type === "filter") {
+        const typeIsString = () => {
+          if (
+            step.property.type === PropertyTypes.String ||
+            step.property.type === PropertyTypes.StringArray
+          ) {
+            return true;
+          }
+          return false;
+        };
         if (step.valueRange === "normal") {
-          return `.has('${step.property.label}', '${step.value[0]}')`;
+          return (
+            `.has('${step.property.label}', ` +
+            (typeIsString() ? `'${step.value[0]}'` : `${step.value[0]}`) +
+            `)`
+          );
         } else if (step.valueRange === "not") {
-          return `.not(has('${step.property.label}', '${step.value[0]}'))`;
+          return (
+            `.not(has('${step.property.label}', ` +
+            (typeIsString() ? `'${step.value[0]}'` : `${step.value[0]}`) +
+            `))`
+          );
         } else if (
           step.valueRange === "within" ||
           step.valueRange === "without"

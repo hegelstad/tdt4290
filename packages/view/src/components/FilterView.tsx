@@ -46,6 +46,12 @@ const FilterView = ({
   const typeIsANumber = (props: PropertyType) => {
     return props.type === PropertyTypes.Number;
   };
+  const typeIsAString = (props: PropertyType) => {
+    return (
+      props.type === PropertyTypes.String ||
+      props.type === PropertyTypes.StringArray
+    );
+  };
 
   useEffect(() => {
     let newFieldValues: Array<any> = [];
@@ -55,6 +61,11 @@ const FilterView = ({
         valueRange === "lt" ||
         valueRange === "inside" ||
         valueRange === "outside")
+    ) {
+      setValueRange("");
+    } else if (
+      !typeIsAString(fieldKey) &&
+      (valueRange === "within" || valueRange === "wihtout")
     ) {
       setValueRange("");
     } else if (
@@ -203,7 +214,11 @@ const FilterView = ({
             >
               --Choose value range--
             </option>
-            <option key={"valueRangeWithin"} value={"within"}>
+            <option
+              key={"valueRangeWithin"}
+              value={"within"}
+              disabled={!typeIsAString(fieldKey)}
+            >
               Among values
             </option>
             <option
@@ -227,7 +242,11 @@ const FilterView = ({
             >
               Less than value
             </option>
-            <option key={"valueRangeWithout"} value={"without"}>
+            <option
+              key={"valueRangeWithout"}
+              value={"without"}
+              disabled={!typeIsAString(fieldKey)}
+            >
               Not among values
             </option>
             <option key={"valueRangeNot"} value={"not"}>
