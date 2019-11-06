@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
-import { PropertyType } from "core";
+import { PropertyType, PropertyTypes } from "core";
 
 const FilterView = ({
   properties,
@@ -10,14 +10,22 @@ const FilterView = ({
   properties: PropertyType[];
   callback: FilterCallbackType;
 }): JSX.Element => {
-  const [fieldKey, setFieldKey] = useState("");
+  const [fieldKey, setFieldKey] = useState<PropertyType>({
+    label: "",
+    type: PropertyTypes.String
+  });
   const [fieldValues, setfieldValues] = useState<Array<any>>([]);
   const [valueRange, setValueRange] = useState<string>("");
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    setFieldKey(event.target.value);
+    const property = properties.find(property => {
+      return property.label === event.target.value;
+    });
+    property
+      ? setFieldKey(property)
+      : setFieldKey({ label: "", type: PropertyTypes.String });
   };
 
   const handleValueRangeDropDownChange = (
@@ -53,11 +61,8 @@ const FilterView = ({
   }, [valueRange, fieldKey]);
 
   const handleSubmit = () => {
-    const property = properties.find(property => {
-      return property.label === fieldKey;
-    });
-    if (property && fieldValues[0] !== "" && valueRange !== "") {
-      callback(property, fieldValues, valueRange);
+    if (fieldKey.label !== "" && fieldValues[0] !== "" && valueRange !== "") {
+      callback(fieldKey, fieldValues, valueRange);
     }
   };
 
@@ -100,7 +105,7 @@ const FilterView = ({
 
   const FieldSelect = styled.select.attrs(() => ({
     key: "fieldSelect",
-    value: fieldKey,
+    value: fieldKey.label,
     onChange: handleFieldDropDownChange
   }))`
     padding: 2px;
@@ -165,7 +170,7 @@ const FilterView = ({
             <option
               key={"defaultFieldSelect"}
               value=""
-              disabled={dropDownIsDisabled(fieldKey)}
+              disabled={dropDownIsDisabled(fieldKey.label)}
             >
               --Choose field--
             </option>
