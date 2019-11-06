@@ -14,6 +14,7 @@ export interface AggregationViewPropsType {
 export interface ButtonPropsType {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   floatRight?: boolean;
+  isActive?: boolean;
 }
 
 export interface TextQueryType {
@@ -21,3 +22,8 @@ export interface TextQueryType {
   editFunction: Function; //This function should take the query as a string as argument and send it to a component suitable for editing the query.
 }
 export type FilterCallbackType = (field: PropertyType, value: string) => void;
+
+export enum OperationsType {
+  Filter = "filter",
+  Aggregate = "aggregate"
+}

@@ -230,16 +230,12 @@ export const getSuggestions = (
   source: BranchType[]
 ): BranchType[] => {
   const inputValue = value.trim().toLowerCase();
-  const inputLength = inputValue.length;
-
-  return inputLength === 0
-    ? source.slice(0, 6)
-    : source.filter(label => {
-        return label.value
-          .trim()
-          .toLowerCase()
-          .includes(inputValue);
-      });
+  return source.filter(label => {
+    return label.value
+      .trim()
+      .toLowerCase()
+      .includes(inputValue);
+  });
 };
 
 export * from "./types";

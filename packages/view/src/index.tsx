@@ -16,18 +16,94 @@ import HistoryView from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
 import theme from "./styles/theme";
-import { BranchSelectorPropsType, FilterCallbackType } from "./types";
+import {
+  BranchSelectorPropsType,
+  FilterCallbackType,
+  OperationsType,
+  ButtonPropsType
+} from "./types";
+import { Column, Row } from "./components/elements/Layout";
+import Button from "./components/elements/Button";
+
+/**
+ * STYLED COMPONENTS
+ */
+const MainWrap = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: 10px;
+  display: flex;
+`;
+
+const StateButton = styled(Button)`
+  background-color: ${(props: ButtonPropsType) =>
+    props.isActive ? "grayLight" : "white"};
+  margin: 0 19% 8px 17%;
+`;
+
+const StartupWrap = styled.div`
+        max-width: 300px;
+        margin: 0 auto;
+        
+        display: flex
+        flex-direction: column;
+    `;
+
+/**
+ * Define a separate view for the intitial StartupView, since it has
+ * less elements on the screen at a time
+ */
+const StartUpView = ({
+  query,
+  headline,
+  followBranch
+}: {
+  query: QueryType;
+  headline: string;
+  followBranch: (branch: BranchType) => void;
+}) => {
+  return (
+    <StartupWrap>
+      <ThemeProvider theme={theme}>
+        <BranchSelector
+          query={query}
+          headline={headline}
+          followBranch={followBranch}
+        />
+      </ThemeProvider>
+    </StartupWrap>
+  );
+};
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
+  const [filterOrAggregate, setFilterOrAggregate] = useState<OperationsType>();
+
   const branchSelectorHeadline =
     query.path && query.path.length > 0
-      ? (query.path[query.path.length - 1].value as string)
+      ? "Next step"
       : "Where would you like to start?";
 
-  if (!query.branches && props.query.branches) {
-    setQuery(props.query);
-  }
+  const handleFilterAggregateClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const value = (event.currentTarget.textContent as string).toLowerCase();
+    switch (value) {
+      case OperationsType.Filter: {
+        setFilterOrAggregate(OperationsType.Filter);
+        break;
+      }
+      case OperationsType.Aggregate: {
+        setFilterOrAggregate(OperationsType.Aggregate);
+        break;
+      }
+      default: {
+        throw new Error(
+          "Unkown operation. Expected 'filter' or 'aggregate'. Got: " + value
+        );
+      }
+    }
+  };
 
   const userWantsToFollowBranch = (branch: BranchType): void => {
     followBranch(query, branch).then((newQuery: QueryType) => {
@@ -35,21 +111,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     });
   };
 
-  /**
-   * STYLED COMPONENTS
-   */
-  const MainWrap = styled.div`
-    max-width: 800px;
-    margin: 0 auto;
-    padding-left: 10px;
-    border: 1px solid black;
-    display: flex;
-  `;
-
-  const Column = styled.div`
-    flex: 50%;
-    padding: 10px;
-  `;
   const userWantsToFilterQuery: FilterCallbackType = (field, value) => {
     filterQuery(query, field, value).then(newQuery => {
       setQuery(newQuery);
@@ -67,14 +128,51 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     setQuery(newQuery);
   };
 
-  return (
+  return query.path && query.path.length == 0 ? (
+    <StartUpView
+      query={query}
+      headline={branchSelectorHeadline}
+      followBranch={userWantsToFollowBranch}
+    />
+  ) : (
     <MainWrap>
       <ThemeProvider theme={theme}>
         <Column>
-          <HistoryView
-            history={query.path}
-            handleStepBack={userWantsToStepBack}
-          />
+          <Row>
+            <HistoryView
+              history={query.path}
+              handleStepBack={userWantsToStepBack}
+            />
+          </Row>
+          <Row>
+            <div>
+              <StateButton
+                text="Filter"
+                onClick={handleFilterAggregateClick}
+                isActive={filterOrAggregate === OperationsType.Filter}
+              />
+              <StateButton
+                text="Aggregate"
+                onClick={handleFilterAggregateClick}
+                isActive={filterOrAggregate === OperationsType.Aggregate}
+              />
+            </div>
+          </Row>
+          <Row>
+            {filterOrAggregate === OperationsType.Filter ? (
+              <FilterView
+                properties={query.properties || []}
+                callback={userWantsToFilterQuery}
+              />
+            ) : filterOrAggregate === OperationsType.Aggregate ? (
+              <AggregationView
+                query={query}
+                callback={userWantsToAggregateQuery}
+              />
+            ) : (
+              <div />
+            )}
+          </Row>
         </Column>
       </ThemeProvider>
       <ThemeProvider theme={theme}>
@@ -84,15 +182,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
             headline={branchSelectorHeadline}
             followBranch={userWantsToFollowBranch}
           />
-          <FilterView
-            properties={query.properties || []}
-            callback={userWantsToFilterQuery}
-          />
-        </Column>
-      </ThemeProvider>
-      <ThemeProvider theme={theme}>
-        <Column>
-          <AggregationView query={query} callback={userWantsToAggregateQuery} />
           <TextQuery query={query} editFunction={() => {}} />
         </Column>
       </ThemeProvider>

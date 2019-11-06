@@ -1,5 +1,15 @@
 import React from "react";
+import styled from "styled-components";
 import { BranchType, LabelType, EdgeType, FilterType } from "core";
+import { Row, Column } from "./elements/Layout";
+
+const HistoryWrap = styled.div`
+  max-width: 200px;
+  margin: 0 auto;
+  padding-left 10px;
+  border: 1px solid black;
+  display: flex;
+`;
 
 const LabelBranch = ({
   index,
@@ -49,19 +59,25 @@ const HistoryView = ({
   history: BranchType[];
   handleStepBack: () => void;
 }) => {
-  return (
-    <div>
-      {history.map((branch, i) =>
-        branch.type === "label" ? (
-          <LabelBranch key={i} index={i + 1} branch={branch} />
-        ) : branch.type === "edge" ? (
-          <EdgeBranch key={i} index={i + 1} branch={branch} />
-        ) : (
-          <FilterBranch key={i} index={i + 1} branch={branch} />
-        )
-      )}
+  return history.length > 0 ? (
+    <HistoryWrap>
       {history.length > 0 && <button onClick={handleStepBack}>Undo</button>}
-    </div>
+      {history.map((branch, i) => (
+        <Row key={i}>
+          <Column>
+            {branch.type === "label" ? (
+              <LabelBranch index={i + 1} branch={branch} />
+            ) : branch.type === "edge" ? (
+              <EdgeBranch index={i + 1} branch={branch} />
+            ) : (
+              <FilterBranch index={i + 1} branch={branch} />
+            )}
+          </Column>
+        </Row>
+      ))}
+    </HistoryWrap>
+  ) : (
+    <div />
   );
 };
 

@@ -5,6 +5,7 @@ const white = "#fff";
 const offWhite = "#f7f8fa";
 const purple = "#670867";
 const black = "#000000";
+const blue = "#4682B4";
 
 const theme = {
   colors: {
@@ -22,11 +23,22 @@ const theme = {
     highlight: purple,
     offWhite,
     purple,
-    white
+    white,
+    blue
+  },
+  box: {
+    border: "1px solid black",
+    display: "block",
+    borderRadius: "5px",
+    padding: "10px",
+    margin: "30px",
+    width: "300px"
+  },
+  border: {
+    style: "1px solid black"
   },
   fontFamily: "sans-serif",
   roundRadius: "5px",
-
   spacing: [
     "0px",
     "4px",

@@ -2,14 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { ButtonPropsType } from "../../types";
 
-const ButtonStyled = styled.button.attrs((props: ButtonPropsType) => ({
-  onClick: props.onClick
-}))`
+const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
-  background-color: ${props => props.theme.colors.button.background};
+  background-color: ${(props: ButtonPropsType) =>
+    props.isActive ? "white" : "grayLight"}
   display: ${(props: ButtonPropsType) =>
     props.floatRight ? "inline-block" : ""};
   margin-left: ${(props: ButtonPropsType) => (props.floatRight ? "auto" : "")};
+  height: 30px;
 `;
 
 const defaultProps: {

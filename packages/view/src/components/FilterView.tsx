@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
 import { PropertyType } from "core";
+import Dropdown from "./elements/Dropdown";
+import { Box, Row } from "./elements/Layout";
+import Button from "./elements/Button";
+
+const FloatRightButton = styled(Button)`
+  display: inline-block;
+  display: inline-block;
+  margin-left: auto;
+`;
 
 const FilterView = ({
   properties,
@@ -17,7 +26,6 @@ const FilterView = ({
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     setFieldKey(event.target.value);
-    console.log("FieldKey: " + fieldKey);
   };
 
   const handleInputChange = (
@@ -58,29 +66,15 @@ const FilterView = ({
     width: 60%;
   `;
 
-  const FieldSelect = styled.select.attrs(() => ({
-    defaultValue: fieldKey,
-    onChange: handleDropDownChange
-  }))`
-    padding: 2px;
-    margin: 0 18% 8px 17%;
-    width: 62%;
-  `;
-
-  const FilterButton = styled.button.attrs(() => ({
-    onClick: (): void => handleSubmit()
-  }))`
-    padding: 2px 5px;
-    margin: 0 39% 8px 37%;
-    width: 20%;
-  `;
-
   return (
     <>
       {componentHasFilter(properties.map(property => property.label)) && (
-        <div>
-          <h3>Filter</h3>
-          <FieldSelect>
+        <Box>
+          <Row>
+            <h3>Filter</h3>
+            <FloatRightButton text={"Do"} onClick={handleSubmit} floatRight />
+          </Row>
+          <Dropdown onChange={handleDropDownChange} value={fieldKey}>
             <option key={"default"} value="" disabled>
               --Choose field--
             </option>
@@ -89,10 +83,9 @@ const FilterView = ({
                 {formatFieldName(prop.label)}
               </option>
             ))}
-          </FieldSelect>
+          </Dropdown>
           <ValueInput placeholder="Select a value..." autoFocus />
-          <FilterButton>Filter</FilterButton>
-        </div>
+        </Box>
       )}
     </>
   );

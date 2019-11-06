@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import {
   PropertyType,
   PropertyTypes,
@@ -8,20 +7,9 @@ import {
 } from "core";
 import { AggregationViewPropsType } from "../types";
 import CheckBox from "./elements/Checkbox";
-import RadioButton from "./elements/RadioButton";
 import Button from "./elements/Button";
-import { Row, Column } from "./elements/Layout";
-
-/*
- * STYLED COMPONENTS
- */
-
-const VerticalLine = styled.div`
-  border-left: 2px solid black;
-  height: 500px;
-  margin-left: 5px;
-  margin-right: 5px;
-`;
+import { Row, Column, Box } from "./elements/Layout";
+import Dropdown, { Option } from "./elements/Dropdown";
 
 const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   /**
@@ -32,7 +20,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     PropertyType[]
   >([]);
   const [selectedMethod, setSelectedMethod] = useState<MethodTypes>(
-    MethodTypes.Mean
+    MethodTypes.Sum
   );
   const [selectedProperties, setSelectedProperties] = useState<PropertyType[]>(
     []
@@ -52,10 +40,6 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
    * PRIVATE METHODS
    */
 
-  const methodIsSelected = (methodName: string): boolean => {
-    return selectedMethod === methodName;
-  };
-
   const propertyIsChecked = (propertyName: string): boolean => {
     return (
       selectedProperties.find(selectedProperty => {
@@ -69,7 +53,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
    */
 
   const handleMethodChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const value = event.target.value;
     switch (value) {
@@ -133,60 +117,53 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   };
 
   /**
-   * Count is always shown, but all other methods are only shown when
-   * the number of numerical properties are higher than 0
+   * If we have numerical attributes, show all availiable aggregation methods.
+   * If not show only count.
    */
-  const nonCountMethods =
-    numericalProperties.length > 0 ? (
-      <div>
-        <RadioButton
-          text={MethodTypes.Mean}
-          handler={handleMethodChange}
-          isSelected={methodIsSelected}
-        />
-        <RadioButton
-          text={MethodTypes.Sum}
-          handler={handleMethodChange}
-          isSelected={methodIsSelected}
-        />
-      </div>
-    ) : null;
+
+  const methods = Object.values(MethodTypes).filter(method => {
+    return numericalProperties.length > 0 || method == "count";
+  });
 
   return props.query && props.query.path && props.query.path.length > 0 ? (
-    <div>
+    <Box>
       <Row>
         <h3>Aggregations</h3>
-        <Button text={"Done"} onClick={handleClickDone} floatRight />
+        <Button text={"Do"} onClick={handleClickDone} floatRight />
       </Row>
       <Row>
         <Column>
-          {nonCountMethods}
-          <RadioButton
-            text={MethodTypes.Count}
-            handler={handleMethodChange}
-            isSelected={methodIsSelected}
-          />
+          <h5>Calculate the</h5>
+          <Dropdown onChange={handleMethodChange} value={selectedMethod}>
+            {methods.map(method => {
+              return <Option key={method} text={method} />;
+            })}
+          </Dropdown>
         </Column>
-        <VerticalLine />
+      </Row>
+      <Row>
         <Column>
           {selectedMethod != MethodTypes.Count ? (
-            numericalProperties.map(property => {
-              return (
-                <CheckBox
-                  key={property.label}
-                  unformated-text={property.label}
-                  text={property.label}
-                  handler={handlePropertyChange}
-                  isChecked={propertyIsChecked}
-                />
-              );
-            })
+            <div>
+              <h5>of</h5>
+              {numericalProperties.map(property => {
+                return (
+                  <CheckBox
+                    key={property.label}
+                    unformated-text={property.label}
+                    text={property.label}
+                    handler={handlePropertyChange}
+                    isChecked={propertyIsChecked}
+                  />
+                );
+              })}
+            </div>
           ) : (
             <div />
           )}
         </Column>
       </Row>
-    </div>
+    </Box>
   ) : (
     <div />
   );
