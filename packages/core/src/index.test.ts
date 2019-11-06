@@ -1,7 +1,14 @@
 /* eslint-disable */
 jest.mock("./utils");
 import { callAPI } from "./utils";
-import { initialize, followBranch } from "./index";
+import {
+  initialize,
+  followBranch,
+  stringifyPath,
+  filterQuery,
+  aggregateQuery
+} from "./index";
+import { PropertyTypes, MethodTypes } from "./types";
 
 test("Branches are updated correctly", async () => {
   // Mock api responses
@@ -26,18 +33,102 @@ test("Branches are updated correctly", async () => {
   let query = await initialize({});
 
   expect(query.branches).toEqual([
-    { type: "label", value: "label1" },
-    { type: "label", value: "label2" }
+    { type: "label", value: "label1", notValue: false },
+    { type: "label", value: "label2", notValue: false }
   ]); /* eslint-enable*/
 
-  query = await followBranch(query, { type: "label", value: "label1" });
+  query = await followBranch(query, {
+    type: "label",
+    value: "label1",
+    notValue: false
+  });
 
   expect(query.branches).toEqual([
-    { type: "label", value: "label3" },
-    { type: "label", value: "label4" },
-    { type: "edge", value: "edgeIn1", direction: "in" },
-    { type: "edge", value: "edgeIn2", direction: "in" },
-    { type: "edge", value: "edgeOut1", direction: "out" },
-    { type: "edge", value: "edgeOut2", direction: "out" }
+    { type: "label", value: "label3", notValue: false },
+    { type: "label", value: "label4", notValue: false },
+    { type: "edge", value: "edgeIn1", direction: "in", notValue: false },
+    { type: "edge", value: "edgeIn2", direction: "in", notValue: false },
+    { type: "edge", value: "edgeOut1", direction: "out", notValue: false },
+    { type: "edge", value: "edgeOut2", direction: "out", notValue: false }
   ]);
+});
+
+test("Basic query is buildt correctly", async () => {
+  /*eslint-disable*/
+  callAPI
+    // @ts-ignore
+    .mockImplementation(async a => ({
+      result: [] // Initial labels from initialize
+    }));
+
+  // @ts-ignore
+  let query = await initialize({});
+
+  query = await followBranch(query, {
+    type: "label",
+    value: "label1",
+    notValue: false
+  });
+
+  expect(stringifyPath(query.path)).toEqual("g.V().hasLabel('label1')");
+
+  query = await followBranch(query, {
+    type: "label",
+    value: "label2",
+    notValue: false
+  });
+
+  expect(stringifyPath(query.path)).toEqual(
+    "g.V().hasLabel('label1').both().hasLabel('label2')"
+  );
+});
+
+test("Filter query is buildt correctly", async () => {
+  /*eslint-disable*/
+  callAPI
+    // @ts-ignore
+    .mockImplementation(async a => ({
+      result: [] // Initial labels from initialize
+    }));
+
+  // @ts-ignore
+  let query = await initialize({});
+
+  query = await filterQuery(
+    query,
+    { label: "property1", type: PropertyTypes.String },
+    "value"
+  );
+
+  expect(stringifyPath(query.path)).toEqual("g.V().has('property1', 'value')");
+});
+
+test("Aggregate query is buildt correctly", async () => {
+  /*eslint-disable*/
+  callAPI
+    // @ts-ignore
+    .mockImplementation(async a => ({
+      result: [] // Initial labels from initialize
+    }));
+
+  // @ts-ignore
+  let query = await initialize({});
+
+  query = await aggregateQuery(query, {
+    properties: [
+      {
+        label: "property1",
+        type: PropertyTypes.String
+      },
+      {
+        label: "property2",
+        type: PropertyTypes.String
+      }
+    ],
+    method: MethodTypes.Sum
+  });
+
+  expect(stringifyPath(query.path, query.aggregation)).toEqual(
+    'g.V().properties("property1","property2").group().by(key).by(value().sum())'
+  );
 });
