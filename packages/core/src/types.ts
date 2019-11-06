@@ -13,6 +13,7 @@ export interface QueryType {
 export interface LabelType {
   type: "label";
   value: string;
+  notValue: boolean;
 }
 
 export interface LabelCountType {
@@ -24,13 +25,15 @@ export interface EdgeType {
   type: "edge";
   value: string;
   direction: "in" | "out";
+  notValue: boolean;
 }
 
 export interface FilterType {
   type: "filter";
   // eslint-disable-next-line
-  property: PropertyType;
   value: any;
+  notValue?: boolean;
+  property: PropertyType;
   valueRange: ValueRangeTypes;
 }
 
