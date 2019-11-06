@@ -104,7 +104,7 @@ const FilterView = ({
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
-    defaultValue: fieldKey,
+    defaultValue: "default",
     onChange: handleFieldDropDownChange
   }))`
     padding: 2px;
@@ -113,7 +113,7 @@ const FilterView = ({
   `;
 
   const ValueRangeSelect = styled.select.attrs(() => ({
-    defaultValue: valueRange,
+    defaultValue: "default",
     onChange: handleValueRangeDropDownChange
   }))`
     padding: 2px;
@@ -153,6 +153,10 @@ const FilterView = ({
     text-align: center;
   `;
 
+  const dropDownIsDisabled = (key: string) => {
+    return key !== "";
+  };
+
   return (
     // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
@@ -161,7 +165,11 @@ const FilterView = ({
           <h3>Filter</h3>
           <FilterLabel>Field:</FilterLabel>
           <FieldSelect>
-            <option key={"default"} value="" disabled>
+            <option
+              key={"default"}
+              value=""
+              disabled={dropDownIsDisabled(fieldKey)}
+            >
               --Choose field--
             </option>
             {properties
@@ -174,7 +182,11 @@ const FilterView = ({
           </FieldSelect>
           <FilterLabel>Value Range:</FilterLabel>
           <ValueRangeSelect>
-            <option key={"default"} value="" disabled selected>
+            <option
+              key={"default"}
+              value=""
+              disabled={dropDownIsDisabled(valueRange)}
+            >
               --Choose value range--
             </option>
             <option key={"within"} value={"within"}>
