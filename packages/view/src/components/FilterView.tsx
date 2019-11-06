@@ -99,6 +99,7 @@ const FilterView = ({
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
+    key: "fieldSelect",
     value: fieldKey,
     onChange: handleFieldDropDownChange
   }))`
@@ -108,6 +109,7 @@ const FilterView = ({
   `;
 
   const ValueRangeSelect = styled.select.attrs(() => ({
+    key: "valueRangeSelect",
     value: valueRange,
     onChange: handleValueRangeDropDownChange
   }))`
@@ -161,7 +163,7 @@ const FilterView = ({
           <FilterLabel>Field:</FilterLabel>
           <FieldSelect>
             <option
-              key={"default"}
+              key={"defaultFieldSelect"}
               value=""
               disabled={dropDownIsDisabled(fieldKey)}
             >
@@ -170,7 +172,7 @@ const FilterView = ({
             {properties
               .sort((a, b) => (a.label > b.label ? 1 : -1))
               .map(prop => (
-                <option key={prop.label} value={prop.label}>
+                <option key={"field" + prop.label} value={prop.label}>
                   {formatFieldName(prop.label)}
                 </option>
               ))}
@@ -178,34 +180,34 @@ const FilterView = ({
           <FilterLabel>Value Range:</FilterLabel>
           <ValueRangeSelect>
             <option
-              key={"default"}
+              key={"defaultValueRangeSelect"}
               value=""
               disabled={dropDownIsDisabled(valueRange)}
             >
               --Choose value range--
             </option>
-            <option key={"within"} value={"within"}>
+            <option key={"valueRangeWithin"} value={"within"}>
               Among values
             </option>
-            <option key={"gt"} value={"gt"}>
+            <option key={"valueRangeGt"} value={"gt"}>
               Greater than value
             </option>
-            <option key={"inside"} value={"inside"}>
+            <option key={"valueRangeInside"} value={"inside"}>
               Inside range of values
             </option>
-            <option key={"lt"} value={"lt"}>
+            <option key={"valueRangeLt"} value={"lt"}>
               Less than value
             </option>
-            <option key={"without"} value={"without"}>
+            <option key={"valueRangeWithout"} value={"without"}>
               Not among values
             </option>
-            <option key={"not"} value={"not"}>
+            <option key={"valueRangeNot"} value={"not"}>
               Not value
             </option>
-            <option key={"outside"} value={"outside"}>
+            <option key={"valueRangeOutside"} value={"outside"}>
               Outside range of values
             </option>
-            <option key={"normal"} value={"normal"}>
+            <option key={"valueRangeNormal"} value={"normal"}>
               Value
             </option>
           </ValueRangeSelect>
@@ -214,7 +216,7 @@ const FilterView = ({
           {fieldValues.map((value, index) => (
             <>
               <ValueInput
-                key={index}
+                key={"valueInput" + index}
                 defaultValue={value}
                 onChange={e => handleInputChange(e, index)}
                 placeholder="Select a value..."
