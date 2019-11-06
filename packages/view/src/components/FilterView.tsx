@@ -43,9 +43,21 @@ const FilterView = ({
     setfieldValues(newFieldValues);
   };
 
+  const typeIsANumber = (props: PropertyType) => {
+    return props.type === PropertyTypes.Number;
+  };
+
   useEffect(() => {
     let newFieldValues: Array<any> = [];
     if (
+      !typeIsANumber(fieldKey) &&
+      (valueRange === "gt" ||
+        valueRange === "lt" ||
+        valueRange === "inside" ||
+        valueRange === "outside")
+    ) {
+      setValueRange("");
+    } else if (
       valueRange === "normal" ||
       valueRange === "not" ||
       valueRange === "within" ||
@@ -194,13 +206,25 @@ const FilterView = ({
             <option key={"valueRangeWithin"} value={"within"}>
               Among values
             </option>
-            <option key={"valueRangeGt"} value={"gt"}>
+            <option
+              key={"valueRangeGt"}
+              value={"gt"}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Greater than value
             </option>
-            <option key={"valueRangeInside"} value={"inside"}>
+            <option
+              key={"valueRangeInside"}
+              value={"inside"}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Inside range of values
             </option>
-            <option key={"valueRangeLt"} value={"lt"}>
+            <option
+              key={"valueRangeLt"}
+              value={"lt"}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Less than value
             </option>
             <option key={"valueRangeWithout"} value={"without"}>
@@ -209,7 +233,11 @@ const FilterView = ({
             <option key={"valueRangeNot"} value={"not"}>
               Not value
             </option>
-            <option key={"valueRangeOutside"} value={"outside"}>
+            <option
+              key={"valueRangeOutside"}
+              value={"outside"}
+              disabled={!typeIsANumber(fieldKey)}
+            >
               Outside range of values
             </option>
             <option key={"valueRangeNormal"} value={"normal"}>
