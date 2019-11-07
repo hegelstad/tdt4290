@@ -27,9 +27,11 @@ const TableView = ({
     const property = properties.find(property => {
       return property.label === event.target.value;
     });
+
     property
       ? (newFieldKeys[key] = property)
       : (newFieldKeys[key] = { label: "", type: PropertyTypes.String });
+    console.log("newFieldKeys[" + key + "].label: " + newFieldKeys[key].label);
     setFieldKeys(newFieldKeys);
   };
 
@@ -113,6 +115,7 @@ const TableView = ({
       ? true
       : false;
   };
+
   const ColumnNameInput = styled.input.attrs(() => ({
     type: "text"
   }))`
@@ -186,49 +189,43 @@ const TableView = ({
                 {fieldKeys.length === 1 ? "Field:" : "Fields:"}
               </FieldLabel>
               {fieldKeys.map((value, index) => (
-                <>
-                  <FieldSelect
-                    key={index}
-                    defaultValue={fieldKeys[index].label}
-                    onChange={e => handleFieldDropDownChange(e, index)}
-                  >
-                    <option key={value.label} value="" disabled selected>
-                      --Choose field--
+                <FieldSelect
+                  key={"tableFieldSelect" + value + index}
+                  defaultValue={fieldKeys[index].label}
+                  onChange={e => handleFieldDropDownChange(e, index)}
+                >
+                  <option key={"defaultTableFieldSelect"} value="" disabled>
+                    --Choose field--
+                  </option>
+                  {properties.sort().map(prop => (
+                    <option
+                      key={prop.label}
+                      value={prop.label}
+                      disabled={fieldIsSelected(prop.label)}
+                    >
+                      {formatFieldName(prop.label)}
                     </option>
-                    {properties.sort().map(prop => (
-                      <option
-                        key={prop.label}
-                        value={prop.label}
-                        disabled={fieldIsSelected(prop.label)}
-                      >
-                        {formatFieldName(prop.label)}
-                      </option>
-                    ))}
-                  </FieldSelect>
-                </>
+                  ))}
+                </FieldSelect>
               ))}
             </FieldWrapper>
 
             {hasColumnNames && (
               <ColumnNameWrapper>
-                <>
-                  <ColumnNameLabel>
-                    {columnNames.length === 1
-                      ? "Column name:"
-                      : "Column names:"}
-                  </ColumnNameLabel>
-                  {columnNames.map((value, index) => (
-                    <>
-                      <ColumnNameInput
-                        key={index}
-                        defaultValue={value}
-                        onChange={e => handleInputChange(e, index)}
-                        placeholder="Select a value..."
-                        autoFocus={index === 0}
-                      />
-                    </>
-                  ))}
-                </>
+                <ColumnNameLabel>
+                  {columnNames.length === 1 ? "Column name:" : "Column names:"}
+                </ColumnNameLabel>
+                {columnNames.map((value, index) => (
+                  <React.Fragment key={"ColumnNameInputFragment" + index}>
+                    <ColumnNameInput
+                      key={"ColumnNameInput" + index}
+                      defaultValue={value}
+                      onChange={e => handleInputChange(e, index)}
+                      placeholder="Select a value..."
+                      autoFocus={index === 0}
+                    />
+                  </React.Fragment>
+                ))}
               </ColumnNameWrapper>
             )}
           </TableWrapper>

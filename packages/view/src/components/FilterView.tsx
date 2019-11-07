@@ -327,7 +327,7 @@ const FilterView = ({
             </FilterLabel>
           )}
           {fieldValues.map((value, index) => (
-            <React.Fragment key={"valueInputDiv" + index}>
+            <React.Fragment key={"valueInputFragment" + index}>
               <ValueInput
                 key={"valueInput" + index}
                 defaultValue={value}
