@@ -18,6 +18,16 @@ const FilterView = ({
   const [valueRange, setValueRange] = useState<ValueRangeTypes>(
     ValueRangeTypes.Undefined
   );
+  const [fieldsAreFilled, setFieldsAreFilled] = useState<boolean>(false);
+  const [autoFocusIndex, setAutoFocusIndex] = useState<number>(0);
+
+  const menusAndFieldsAreFilled = () => {
+    const newFieldsAreFilled: boolean =
+      fieldKey.label !== "" &&
+      !fieldValues.includes("") &&
+      valueRange !== ValueRangeTypes.Undefined;
+    setFieldsAreFilled(newFieldsAreFilled);
+  };
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -73,6 +83,8 @@ const FilterView = ({
     const newFieldValues: Array<any> = fieldValues;
     newFieldValues[key] = event.target.value;
     setfieldValues(newFieldValues);
+    setAutoFocusIndex(key);
+    menusAndFieldsAreFilled();
   };
 
   const typeIsANumber = (props: PropertyType): boolean => {
@@ -84,6 +96,10 @@ const FilterView = ({
       props.type === PropertyTypes.StringArray
     );
   };
+
+  useEffect((): void => {
+    menusAndFieldsAreFilled();
+  }, [fieldValues]);
 
   useEffect((): void => {
     let newFieldValues: Array<any> = [];
@@ -117,14 +133,11 @@ const FilterView = ({
       newFieldValues = ["", ""];
     }
     setfieldValues(newFieldValues);
+    setAutoFocusIndex(0);
   }, [valueRange, fieldKey]);
 
   const handleSubmit = (): void => {
-    if (
-      fieldKey.label !== "" &&
-      fieldValues[0] !== "" &&
-      valueRange !== ValueRangeTypes.Undefined
-    ) {
+    if (fieldsAreFilled) {
       callback(fieldKey, fieldValues, valueRange);
     }
   };
@@ -134,6 +147,8 @@ const FilterView = ({
     if (fieldValues.length < 5) {
       newFieldValues = fieldValues.concat("");
       setfieldValues(newFieldValues);
+      setAutoFocusIndex(fieldValues.length);
+      //menusAndFieldsAreFilled();
     }
   };
 
@@ -143,6 +158,8 @@ const FilterView = ({
         (item, j) => j !== fieldValues.length - 1 && item !== null
       );
       setfieldValues(newFieldValues);
+      setAutoFocusIndex(fieldValues.length - 2);
+      //menusAndFieldsAreFilled();
     }
   };
   const componentHasFilter = (filters: string[]): boolean => {
@@ -307,18 +324,18 @@ const FilterView = ({
           {fieldValues.length === 1 && <FilterLabel>Value:</FilterLabel>}
           {fieldValues.length > 1 && <FilterLabel>Values:</FilterLabel>}
           {fieldValues.map((value, index) => (
-            <div key={"valueInputDiv" + index}>
+            <React.Fragment key={"valueInputDiv" + index}>
               <ValueInput
                 key={"valueInput" + index}
                 defaultValue={value}
                 onChange={e => handleInputChange(e, index)}
                 placeholder="Select a value..."
-                autoFocus={index === 0}
+                autoFocus={index === autoFocusIndex}
               />
               {(valueRange === ValueRangeTypes.Inside ||
                 valueRange === ValueRangeTypes.Outside) &&
                 index === 0 && <InsideText>-</InsideText>}
-            </div>
+            </React.Fragment>
           ))}
           {(valueRange === ValueRangeTypes.Within ||
             valueRange === ValueRangeTypes.Without) && (
@@ -331,7 +348,7 @@ const FilterView = ({
               </RemoveValueInputButton>
             </>
           )}
-          <FilterButton disabled={fieldValues.length < 1}>Filter</FilterButton>
+          <FilterButton disabled={!fieldsAreFilled}>Filter</FilterButton>
         </div>
       )}
     </>
