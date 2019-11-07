@@ -307,7 +307,7 @@ const FilterView = ({
           {fieldValues.length === 1 && <FilterLabel>Value:</FilterLabel>}
           {fieldValues.length > 1 && <FilterLabel>Values:</FilterLabel>}
           {fieldValues.map((value, index) => (
-            <>
+            <div key={"valueInputDiv" + index}>
               <ValueInput
                 key={"valueInput" + index}
                 defaultValue={value}
@@ -318,7 +318,7 @@ const FilterView = ({
               {(valueRange === ValueRangeTypes.Inside ||
                 valueRange === ValueRangeTypes.Outside) &&
                 index === 0 && <InsideText>-</InsideText>}
-            </>
+            </div>
           ))}
           {(valueRange === ValueRangeTypes.Within ||
             valueRange === ValueRangeTypes.Without) && (
