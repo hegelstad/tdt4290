@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TableCallbackType } from "../types";
 import { PropertyType, PropertyTypes } from "core";
@@ -18,6 +18,20 @@ const TableView = ({
   ]);
   const [columnNames, setColumnNames] = useState<Array<string>>([""]);
   const [hasColumnNames, setHasColumnNames] = useState<boolean>(false);
+  const [autoFocusIndex, setAutoFocusIndex] = useState<number>(0);
+  const [fieldsAreFilled, setFieldsAreFilled] = useState<boolean>(false);
+
+  const menusAndFieldsAreFilled = () => {
+    let newFieldsAreFilled: boolean = fieldKeys.find(property => {
+      return property.label === "";
+    })
+      ? false
+      : true;
+    if (hasColumnNames && columnNames.includes("")) {
+      newFieldsAreFilled = false;
+    }
+    setFieldsAreFilled(newFieldsAreFilled);
+  };
 
   const handleFieldDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -31,8 +45,9 @@ const TableView = ({
     property
       ? (newFieldKeys[key] = property)
       : (newFieldKeys[key] = { label: "", type: PropertyTypes.String });
-    console.log("newFieldKeys[" + key + "].label: " + newFieldKeys[key].label);
     setFieldKeys(newFieldKeys);
+    setAutoFocusIndex(key);
+    menusAndFieldsAreFilled();
   };
 
   const handleInputChange = (
@@ -42,18 +57,28 @@ const TableView = ({
     const newColumnNames: Array<any> = columnNames;
     newColumnNames[key] = event.target.value;
     setColumnNames(newColumnNames);
+    setAutoFocusIndex(key);
+    menusAndFieldsAreFilled();
   };
 
-  const handleSubmit = () => {
-    let submitIsReady: boolean = fieldKeys.find(property => {
-      return property.label === "";
-    })
-      ? false
-      : true;
-    if (hasColumnNames && columnNames.includes("")) {
-      submitIsReady = false;
+  const resetColumnNames = () => {
+    const newColumnNames: Array<string> = [];
+    for (let i = 0; i < columnNames.length; i++) {
+      newColumnNames[i] = "";
     }
-    if (submitIsReady) {
+    setColumnNames(newColumnNames);
+  };
+
+  useEffect((): void => {
+    menusAndFieldsAreFilled();
+  }, [columnNames]);
+  /*
+  useEffect(():void =>{
+    setAutoFocusIndex(0);
+  }, [fieldKeys]);*/
+
+  const handleSubmit = () => {
+    if (fieldsAreFilled) {
       let tableType: string;
       if (fieldKeys.length === 1) {
         tableType = "single";
@@ -65,6 +90,9 @@ const TableView = ({
   };
 
   const handleToggleColumnNamesInput = () => {
+    resetColumnNames();
+    setAutoFocusIndex(0);
+    menusAndFieldsAreFilled();
     hasColumnNames ? setHasColumnNames(false) : setHasColumnNames(true);
   };
 
@@ -79,6 +107,9 @@ const TableView = ({
       newColumnNames = columnNames.concat("");
       setFieldKeys(newFieldKeys);
       setColumnNames(newColumnNames);
+      if (hasColumnNames) {
+        setAutoFocusIndex(columnNames.length);
+      }
     }
   };
 
@@ -92,6 +123,7 @@ const TableView = ({
       );
       setFieldKeys(newFieldKeys);
       setColumnNames(newColumnNames);
+      setAutoFocusIndex(columnNames.length - 2);
     }
   };
 
@@ -222,7 +254,7 @@ const TableView = ({
                       defaultValue={value}
                       onChange={e => handleInputChange(e, index)}
                       placeholder="Select a value..."
-                      autoFocus={index === 0}
+                      autoFocus={index === autoFocusIndex}
                     />
                   </React.Fragment>
                 ))}
@@ -240,7 +272,7 @@ const TableView = ({
           </TableButton>
           <TableButton
             onClick={() => handleSubmit()}
-            disabled={fieldKeys.length < 1}
+            disabled={!fieldsAreFilled}
           >
             Create table query
           </TableButton>
