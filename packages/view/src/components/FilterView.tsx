@@ -148,7 +148,6 @@ const FilterView = ({
       newFieldValues = fieldValues.concat("");
       setfieldValues(newFieldValues);
       setAutoFocusIndex(fieldValues.length);
-      //menusAndFieldsAreFilled();
     }
   };
 
@@ -159,7 +158,6 @@ const FilterView = ({
       );
       setfieldValues(newFieldValues);
       setAutoFocusIndex(fieldValues.length - 2);
-      //menusAndFieldsAreFilled();
     }
   };
   const componentHasFilter = (filters: string[]): boolean => {

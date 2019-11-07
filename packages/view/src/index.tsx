@@ -78,18 +78,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     properties,
     columnNames
   ) => {
-    console.log("userWantsToTableQuery:");
-    console.log(
-      "tableType: " +
-        tableType +
-        ", hasColumnNames: " +
-        hasColumnNames +
-        ", properties: " +
-        properties +
-        ", columnNames: " +
-        columnNames
-    );
-
     createTableQuery(
       query,
       tableType,

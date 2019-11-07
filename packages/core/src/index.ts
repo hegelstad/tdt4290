@@ -150,8 +150,6 @@ export const stringifyPath = (
       ? `.values('${table.value[0].label}')`
       : `.valueMap(${table.value.map(prop => `'${prop.label}'`).join(",")})`
     : "";
-  console.log("stringifyPath -> table: " + table);
-  console.log("stringifyPath -> tableQuery: " + tableQuery);
 
   return baseQuery + pathQuery + aggregationQuery + tableQuery;
 };
