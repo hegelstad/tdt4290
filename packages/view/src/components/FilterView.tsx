@@ -321,8 +321,11 @@ const FilterView = ({
               Value
             </option>
           </ValueRangeSelect>
-          {fieldValues.length === 1 && <FilterLabel>Value:</FilterLabel>}
-          {fieldValues.length > 1 && <FilterLabel>Values:</FilterLabel>}
+          {fieldValues.length > 0 && (
+            <FilterLabel>
+              {fieldValues.length === 1 ? "Value:" : "Values:"}
+            </FilterLabel>
+          )}
           {fieldValues.map((value, index) => (
             <React.Fragment key={"valueInputDiv" + index}>
               <ValueInput
