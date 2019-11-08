@@ -34,6 +34,7 @@ export interface FilterType {
   value: any;
   notValue?: boolean;
   property: PropertyType;
+  valueRange: ValueRangeTypes;
 }
 
 export interface AggregationType {
@@ -65,4 +66,16 @@ export enum MethodTypes {
   Sum = "sum",
   Mean = "mean",
   Count = "count"
+}
+
+export enum ValueRangeTypes {
+  Gt = "gt",
+  Inside = "inside",
+  Lt = "lt",
+  Normal = "normal",
+  Not = "not",
+  Outside = "outside",
+  Within = "within",
+  Without = "without",
+  Undefined = "undefined"
 }

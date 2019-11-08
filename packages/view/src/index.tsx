@@ -56,8 +56,12 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     flex: 50%;
     padding: 10px;
   `;
-  const userWantsToFilterQuery: FilterCallbackType = (field, value) => {
-    filterQuery(query, field, value).then(newQuery => {
+  const userWantsToFilterQuery: FilterCallbackType = (
+    field,
+    value,
+    valueRange
+  ) => {
+    filterQuery(query, field, value, valueRange).then(newQuery => {
       setQuery(newQuery);
     });
   };

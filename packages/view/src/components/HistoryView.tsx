@@ -36,7 +36,7 @@ const FilterBranch = ({
     <div>
       <div>Step: {index}</div>
       <div>
-        Filtering the field {branch.property} on value {branch.value}
+        Filtering the field {branch.property.label} on value {branch.value}
       </div>
     </div>
   );

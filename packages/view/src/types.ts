@@ -1,4 +1,10 @@
-import { QueryType, BranchType, PropertyType, AggregationType } from "core";
+import {
+  QueryType,
+  BranchType,
+  PropertyType,
+  AggregationType,
+  ValueRangeTypes
+} from "core";
 
 export interface BranchSelectorPropsType {
   query: QueryType;
@@ -20,4 +26,9 @@ export interface TextQueryType {
   query: QueryType;
   editFunction: Function; //This function should take the query as a string as argument and send it to a component suitable for editing the query.
 }
-export type FilterCallbackType = (field: PropertyType, value: string) => void;
+
+export type FilterCallbackType = (
+  field: PropertyType,
+  value: any,
+  valueRange: ValueRangeTypes
+) => void;
