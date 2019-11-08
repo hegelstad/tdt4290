@@ -4,17 +4,12 @@ import { getSuggestions } from "core";
 import { LabelType, EdgeType, BranchType, QueryType } from "core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { BranchSelectorPropsType, ButtonPropsType } from "../types";
-import { Column, Box } from "./elements/Layout";
+import { BranchSelectorPropsType } from "../types";
+import { Column, Box, HorizontalLine } from "./elements/Layout";
+import { ListItemButton } from "./elements/Button";
+import { H3 } from "./elements/Text";
 
 const MAX_SUGGESTIONS = 8;
-
-const Button = styled.button.attrs((props: ButtonPropsType) => ({
-  onClick: props.onClick
-}))`
-  border-radius: 5px;
-  background-color: light-grey;
-`;
 
 const SearchWrap = styled.div`
   display: inline;
@@ -27,17 +22,7 @@ const UnorderedList = styled.ul`
 
 const H4 = styled.h4`
   display: inline;
-`;
-
-const HorizontalLine = styled.div`
-  border-top: ${props => props.theme.border.style};
-  width: 250;
-  margin-bottom: 30px;
-`;
-
-const Headline = styled.h3`
-  font-family: Noto Serif;
-  font-size: 12;
+  margin-bottom: 10px;
 `;
 
 const ClickableText = ({
@@ -75,6 +60,11 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   };
   const labels = getBranchTypeFrom("label", props.query);
   const edges = getBranchTypeFrom("edge", props.query);
+
+  const currentBranch =
+    props.query && props.query.path
+      ? props.query.path[props.query.path.length - 1]
+      : undefined;
 
   const [showMoreLabels, setShowMoreLabels] = useState(false);
   const [showMoreEdges, setShowMoreEdges] = useState(false);
@@ -116,8 +106,16 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     const valueWithDirection = event.currentTarget.textContent;
     let value = "";
     if (valueWithDirection) {
-      value = valueWithDirection.slice(0, valueWithDirection.indexOf("(") - 1);
+      if (valueWithDirection.indexOf("[") > 0) {
+        value = valueWithDirection.slice(
+          0,
+          valueWithDirection.indexOf("[") - 1
+        );
+      } else {
+        value = valueWithDirection.slice(valueWithDirection.indexOf("]") + 2);
+      }
     }
+    console.log(value);
     const label = edges.find(label => {
       return label.value === value;
     }) as EdgeType;
@@ -128,17 +126,39 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const renderSuggestion = (suggestion: BranchType): JSX.Element => {
     if (suggestion.type === "label") {
       return (
-        <li key={suggestion.value}>
-          <Button onClick={onClickOnLabel}>{suggestion.value}</Button>
-        </li>
+        <ListItemButton
+          key={suggestion.value}
+          text={suggestion.value}
+          onClick={onClickOnLabel}
+        />
       );
     } else if (suggestion.type === "edge") {
+      let edgeText = suggestion.value;
+      if (currentBranch && currentBranch.type !== "edge") {
+        switch (suggestion.direction) {
+          case "in":
+            edgeText = edgeText + " [" + currentBranch.value + "]";
+            break;
+          case "out":
+            edgeText = "[" + currentBranch.value + "] " + edgeText;
+            break;
+        }
+      } else if (currentBranch) {
+        switch (suggestion.direction) {
+          case "in":
+            edgeText = edgeText + " [incoming]";
+            break;
+          case "out":
+            edgeText = "[outgoing] " + edgeText;
+            break;
+        }
+      }
       return (
-        <li key={suggestion.value + " (" + suggestion.direction + ")"}>
-          <Button onClick={onClickOnEdge}>
-            {suggestion.value + " (" + suggestion.direction + ")"}
-          </Button>
-        </li>
+        <ListItemButton
+          key={edgeText}
+          text={edgeText}
+          onClick={onClickOnEdge}
+        />
       );
     } else {
       throw new Error("Suggestion not of valid type");
@@ -170,14 +190,14 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   if (edges.length > 0 || labels.length > 0) {
     return (
       <Box>
-        <Headline>{props.headline}</Headline>
+        <H3>{props.headline}</H3>
         <HorizontalLine />
         <SearchWrap>
           <FontAwesomeIcon icon={faSearch} />
           <Input placeholder="Start typing..." autoFocus />
         </SearchWrap>
         <br />
-        <H4>Components</H4>
+        <H4> Select all components of type</H4>
         <UnorderedList>
           {showMoreLabels
             ? labelSuggestions.map(renderSuggestion)
@@ -191,7 +211,11 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         </ClickableText>
         {edgeSuggestions.length > 0 ? (
           <Column>
-            <H4>References</H4>
+            <H4>
+              {currentBranch && currentBranch.type === "label"
+                ? "Select components that:"
+                : "Follow reference"}
+            </H4>
             <UnorderedList>
               {showMoreEdges
                 ? edgeSuggestions.map(renderSuggestion)

@@ -1,42 +1,30 @@
 import React from "react";
 import { BranchType, LabelType, EdgeType, FilterType } from "core";
-import { Row, Column } from "./elements/Layout";
+import { Row, Column, HorizontalLine } from "./elements/Layout";
+import { H3, H4, H5 } from "./elements/Text";
 import Button from "./elements/Button";
 
-const LabelBranch = ({
-  index,
-  branch
-}: {
-  index: number;
-  branch: LabelType;
-}) => {
+const LabelBranch = ({ branch }: { branch: LabelType }) => {
   return (
     <div>
-      <div>Step: {index}</div>
-      <div>All related components with type: {branch.value}</div>
+      <H5>Selected component:</H5>
+      <p>{branch.value}</p>
     </div>
   );
 };
 
-const EdgeBranch = ({ index, branch }: { index: number; branch: EdgeType }) => {
+const EdgeBranch = ({ branch }: { branch: EdgeType }) => {
   return (
     <div>
-      <div>Step: {index}</div>
-      <div>Follow reference: {branch.value}</div>
+      <H5>Followed reference:</H5>
+      <p>{branch.value}</p>
     </div>
   );
 };
 
-const FilterBranch = ({
-  index,
-  branch
-}: {
-  index: number;
-  branch: FilterType;
-}) => {
+const FilterBranch = ({ branch }: { branch: FilterType }) => {
   return (
     <div>
-      <div>Step: {index}</div>
       <div>
         Filtering the field {branch.property} on value {branch.value}
       </div>
@@ -47,27 +35,35 @@ const FilterBranch = ({
 const HistoryView = ({
   historyStep,
   index,
-  handleStepBack
+  handleStepBack,
+  button
 }: {
   historyStep: BranchType;
   index: number;
   handleStepBack: () => void;
+  button?: boolean;
 }) => {
   return (
     <div key={index}>
-      <Row>
-        {history.length > 0 && (
-          <Button text={"X"} onClick={handleStepBack} floatRight />
-        )}
-      </Row>
+      {button ? (
+        <Row>
+          <H3>{"Current step"}</H3>
+          <Button text={"Undo"} onClick={handleStepBack} floatRight />
+        </Row>
+      ) : (
+        <Row>
+          <H4>{"Past step"}</H4>
+        </Row>
+      )}
       <Row>
         <Column>
+          <HorizontalLine />
           {historyStep.type === "label" ? (
-            <LabelBranch index={index + 1} branch={historyStep} />
+            <LabelBranch branch={historyStep} />
           ) : historyStep.type === "edge" ? (
-            <EdgeBranch index={index + 1} branch={historyStep} />
+            <EdgeBranch branch={historyStep} />
           ) : (
-            <FilterBranch index={index + 1} branch={historyStep} />
+            <FilterBranch branch={historyStep} />
           )}
         </Column>
       </Row>

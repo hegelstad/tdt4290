@@ -4,11 +4,11 @@ import { ButtonPropsType } from "../../types";
 
 const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
-  background-color: ${props => props.theme.colors.button.background};
+  background-color: lightGray;
   display: ${(props: ButtonPropsType) =>
     props.floatRight ? "inline-block" : ""};
   margin-left: ${(props: ButtonPropsType) => (props.floatRight ? "auto" : "")};
-  height: 30px;
+  margin-bottom: 2px;
 `;
 
 const defaultProps: {
@@ -49,7 +49,7 @@ export const ListItemButton = ({
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <li>
+    <li key={text}>
       <Button text={text} onClick={onClick} />
     </li>
   );

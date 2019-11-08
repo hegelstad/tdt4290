@@ -3,6 +3,7 @@ export const Row = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  width: 100%;
 `;
 
 export const Column = styled.div`
@@ -17,4 +18,9 @@ export const Box = styled.div`
   padding: ${props => props.theme.box.padding};
   margin: ${props => props.theme.box.margin};
   width: ${props => props.theme.box.width};
+`;
+
+export const HorizontalLine = styled.div`
+  border-top: ${props => props.theme.border.style};
+  margin-bottom: 15px;
 `;

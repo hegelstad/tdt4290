@@ -25,5 +25,7 @@ export type FilterCallbackType = (field: PropertyType, value: string) => void;
 
 export enum OperationsType {
   Filter = "filter",
-  Aggregate = "aggregate"
+  Aggregate = "aggregate",
+  Show = "show query",
+  Table = "table"
 }

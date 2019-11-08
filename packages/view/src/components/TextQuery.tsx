@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { stringifyPath } from "core";
 import { TextQueryType } from "../types";
+import Button from "./elements/Button";
+import { Box, Row } from "./elements/Layout";
 
 //This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
 const TextQuery = (props: TextQueryType): JSX.Element => {
   const [query, setQuery] = useState("");
-  const [showQuery, setShowQuery] = useState(false);
 
   //Listens to the query coming from props, updates visualisation of text query when it changes.
   useEffect(() => {
-    if (props.query.path !== undefined) {
+    console.log("Query changed");
+    props.query.path &&
       setQuery(stringifyPath(props.query.path, props.query.aggregation));
-    }
   }, [props.query]);
-
-  //Show/hide current query
-  const onShowButtonClick = () => {
-    setShowQuery(!showQuery);
-    setQuery(stringifyPath(props.query.path, props.query.aggregation));
-  };
 
   //Copy current query to clipboard
   const onCopyClipBoardButtonClick = () => {
@@ -40,66 +34,19 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
     props.editFunction(query);
   };
 
-  //Styled components
-  const ShowQueryButton = styled.button.attrs(() => ({
-    onClick: onShowButtonClick
-  }))`
-    font-size: 0.8em;
-    margin: 0.8em;
-    padding: 0.25em 1em;
-    border: 2px solid;
-    border-radius: 3px;
-  `;
-
-  const CopyToClipBoardButton = styled.button.attrs(() => ({
-    onClick: onCopyClipBoardButtonClick
-  }))`
-    font-size: 0.8em;
-    margin: 0.8em;
-    padding: 0.25em 1em;
-    border: 2px solid;
-    border-radius: 3px;
-  `;
-
-  const EditQueryButton = styled.button.attrs(() => ({
-    onClick: onEditButtonClick
-  }))`
-    font-size: 0.8em;
-    margin: 0.8em;
-    padding: 0.25em 1em;
-    border: 2px solid;
-    border-radius: 3px;
-  `;
-
-  const TextQueryWrap = styled.div`
-        max-width: 400px;
-        margin: 0 auto;
-        
-        padding: 20px;
-        display: flex
-        flex-direction: column;
-        text-align: center
-    `;
-
-  return showQuery ? (
-    <TextQueryWrap>
-      <div>
-        <ShowQueryButton>Hide Gremlin query</ShowQueryButton>
-      </div>
-      <div>
+  return (
+    <Box>
+      <Row>
         <p>{query}</p>
-      </div>
-      <div>
-        <CopyToClipBoardButton>Copy to clipboard</CopyToClipBoardButton>
-        <EditQueryButton>Edit query</EditQueryButton>
-      </div>
-    </TextQueryWrap>
-  ) : (
-    <TextQueryWrap>
-      <div>
-        <ShowQueryButton>Show Gremlin query</ShowQueryButton>
-      </div>
-    </TextQueryWrap>
+      </Row>
+      <Row>
+        <Button
+          text={"Copy to clipboard"}
+          onClick={onCopyClipBoardButtonClick}
+        />
+        <Button text={"Edit query"} onClick={onEditButtonClick} />
+      </Row>
+    </Box>
   );
 };
 

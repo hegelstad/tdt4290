@@ -29,10 +29,15 @@ import Button from "./components/elements/Button";
  * STYLED COMPONENTS
  */
 const MainWrap = styled.div`
-  max-width: 800px;
   margin: 0 auto;
-  padding-left: 10px;
   display: flex;
+  flex-direction: row
+  overflow: scroll;
+  max-width: 800px;
+`;
+
+const HistoryRow = styled(Row)`
+  max-height: ${props => props.theme.box.historyHeight};
 `;
 
 const StateButton = styled(Button)`
@@ -79,13 +84,23 @@ const StartUpView = ({
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
-  const [filterOrAggregate, setFilterOrAggregate] = useState<OperationsType>();
+  const [operation, setOperation] = useState<OperationsType>();
 
   /**
-   * Hide the filter / aggregate box when the query is updated.
+   * If the last operation was a filter or aggregation, show the
+   * query. If not, hide it
    */
   useEffect(() => {
-    setFilterOrAggregate(undefined);
+    if (
+      (query.path &&
+        query.path.length > 0 &&
+        query.path[query.path.length - 1].type === "filter") ||
+      query.aggregation
+    ) {
+      setOperation(OperationsType.Show);
+    } else {
+      setOperation(undefined);
+    }
   }, [query]);
 
   const branchSelectorHeadline =
@@ -99,16 +114,21 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     const value = (event.currentTarget.textContent as string).toLowerCase();
     switch (value) {
       case OperationsType.Filter: {
-        setFilterOrAggregate(OperationsType.Filter);
+        setOperation(OperationsType.Filter);
         break;
       }
       case OperationsType.Aggregate: {
-        setFilterOrAggregate(OperationsType.Aggregate);
+        setOperation(OperationsType.Aggregate);
+        break;
+      }
+      case OperationsType.Show: {
+        setOperation(OperationsType.Show);
         break;
       }
       default: {
         throw new Error(
-          "Unkown operation. Expected 'filter' or 'aggregate'. Got: " + value
+          "Unkown operation. Expected 'filter', 'aggregate' or 'show query'. Got: " +
+            value
         );
       }
     }
@@ -129,6 +149,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const userWantsToAggregateQuery = (aggregation: AggregationType): void => {
     aggregateQuery(query, aggregation).then((newQuery: QueryType) => {
       setQuery(newQuery);
+      console.log("Query aggregated");
     });
   };
 
@@ -146,6 +167,28 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   ) : (
     <MainWrap>
       <ThemeProvider theme={theme}>
+        <Row>
+          {query.path &&
+            query.path
+              .filter((step, index) => {
+                return step && index < query.path.length - 1;
+              })
+              .map((step, index) => {
+                return (
+                  <HistoryRow key={"History" + step.value}>
+                    <Box>
+                      <HistoryView
+                        historyStep={step}
+                        index={index}
+                        handleStepBack={userWantsToStepBack}
+                      />
+                    </Box>
+                  </HistoryRow>
+                );
+              })}
+        </Row>
+      </ThemeProvider>
+      <ThemeProvider theme={theme}>
         <Column>
           <Box>
             <Row>
@@ -154,6 +197,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                   historyStep={query.path[query.path.length - 1]}
                   index={query.path.length - 1}
                   handleStepBack={userWantsToStepBack}
+                  button
                 />
               )}
             </Row>
@@ -162,27 +206,39 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                 <StateButton
                   text="Filter"
                   onClick={handleFilterAggregateClick}
-                  isActive={filterOrAggregate === OperationsType.Filter}
+                  isActive={operation === OperationsType.Filter}
                 />
                 <StateButton
                   text="Aggregate"
                   onClick={handleFilterAggregateClick}
-                  isActive={filterOrAggregate === OperationsType.Aggregate}
+                  isActive={operation === OperationsType.Aggregate}
+                />
+                <StateButton
+                  text="Show Query"
+                  onClick={handleFilterAggregateClick}
+                  isActive={operation === OperationsType.Show}
+                />
+                <StateButton
+                  text="To Table"
+                  onClick={handleFilterAggregateClick}
+                  isActive={operation === OperationsType.Table}
                 />
               </div>
             </Row>
           </Box>
           <Row>
-            {filterOrAggregate === OperationsType.Filter ? (
+            {operation === OperationsType.Filter ? (
               <FilterView
                 properties={query.properties || []}
                 callback={userWantsToFilterQuery}
               />
-            ) : filterOrAggregate === OperationsType.Aggregate ? (
+            ) : operation === OperationsType.Aggregate ? (
               <AggregationView
                 query={query}
                 callback={userWantsToAggregateQuery}
               />
+            ) : operation === OperationsType.Show ? (
+              <TextQuery query={query} editFunction={() => {}} />
             ) : (
               <div />
             )}
@@ -196,7 +252,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
             headline={branchSelectorHeadline}
             followBranch={userWantsToFollowBranch}
           />
-          <TextQuery query={query} editFunction={() => {}} />
         </Column>
       </ThemeProvider>
     </MainWrap>

@@ -20,7 +20,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     PropertyType[]
   >([]);
   const [selectedMethod, setSelectedMethod] = useState<MethodTypes>(
-    MethodTypes.Sum
+    MethodTypes.Count
   );
   const [selectedProperties, setSelectedProperties] = useState<PropertyType[]>(
     []
@@ -35,6 +35,12 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
       );
     }
   }, [props.query]);
+
+  useEffect(() => {
+    if (numericalProperties.length > 0) {
+      setSelectedMethod(MethodTypes.Sum);
+    }
+  }, [numericalProperties]);
 
   /**
    * PRIVATE METHODS

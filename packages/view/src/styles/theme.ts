@@ -32,12 +32,20 @@ const theme = {
     borderRadius: "5px",
     padding: "10px",
     margin: "30px",
-    width: "300px"
+    width: "300px",
+    historyHeight: "220px"
   },
   border: {
     style: "1px solid black"
   },
-  fontFamily: "sans-serif",
+  fontFamily: "Noto Serif",
+  fontSize: {
+    h1: 20,
+    h2: 15,
+    h3: 12,
+    h4: 9,
+    h5: 7
+  },
   roundRadius: "5px",
   spacing: [
     "0px",
