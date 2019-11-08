@@ -1,5 +1,11 @@
 import React from "react";
-import { BranchType, LabelType, EdgeType, FilterType } from "core";
+import {
+  BranchType,
+  LabelType,
+  EdgeType,
+  FilterType,
+  ValueRangeTypes
+} from "core";
 
 const LabelBranch = ({
   index,
@@ -25,6 +31,36 @@ const EdgeBranch = ({ index, branch }: { index: number; branch: EdgeType }) => {
   );
 };
 
+const findValueRangeText = (valueRange: ValueRangeTypes): string => {
+  if (valueRange === ValueRangeTypes.Gt) {
+    return "s greater than";
+  } else if (valueRange === ValueRangeTypes.Inside) {
+    return "s inside range";
+  } else if (valueRange === ValueRangeTypes.Lt) {
+    return "s less than";
+  } else if (valueRange === ValueRangeTypes.Normal) {
+    return "";
+  } else if (valueRange === ValueRangeTypes.Not) {
+    return "s not";
+  } else if (valueRange === ValueRangeTypes.Outside) {
+    return "s outside range";
+  } else if (valueRange === ValueRangeTypes.Within) {
+    return "s among:";
+  } else if (valueRange === ValueRangeTypes.Without) {
+    return "s not among:";
+  }
+  return "";
+};
+
+const findValueSeparator = (valueRange: ValueRangeTypes): string => {
+  if (
+    valueRange === ValueRangeTypes.Inside ||
+    valueRange === ValueRangeTypes.Outside
+  ) {
+    return "-";
+  }
+  return ", ";
+};
 const FilterBranch = ({
   index,
   branch
@@ -36,7 +72,9 @@ const FilterBranch = ({
     <div>
       <div>Step: {index}</div>
       <div>
-        Filtering the field {branch.property.label} on value {branch.value}
+        Filtering the field {branch.property.label} on value
+        {findValueRangeText(branch.valueRange)}{" "}
+        {branch.value.join(findValueSeparator(branch.valueRange))}
       </div>
     </div>
   );
