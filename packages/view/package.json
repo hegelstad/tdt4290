@@ -20,13 +20,13 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "core": "^1.0.0",
     "@types/node": "^12.7.8",
     "@types/react": "^16.9.3",
     "@types/react-dom": "^16.9.1",
     "@types/styled-components": "^4.1.19",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
+    "core": "^1.0.0",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-json": "^1.4.0",
@@ -46,6 +46,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "@fortawesome/react-fontawesome": "^0.1.5"
+    "@fortawesome/react-fontawesome": "^0.1.5",
+    "eslint-plugin-json": "^2.0.1"
   }
 }
