@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import {
@@ -22,7 +22,7 @@ import {
   OperationsType,
   ButtonPropsType
 } from "./types";
-import { Column, Row } from "./components/elements/Layout";
+import { Column, Row, Box } from "./components/elements/Layout";
 import Button from "./components/elements/Button";
 
 /**
@@ -37,8 +37,10 @@ const MainWrap = styled.div`
 
 const StateButton = styled(Button)`
   background-color: ${(props: ButtonPropsType) =>
-    props.isActive ? "grayLight" : "white"};
-  margin: 0 19% 8px 17%;
+    props.isActive ? "white" : "lightGray"};
+  border-radius: ${props => props.theme.roundRadius};
+  height: 30px;
+  margin: 30px;
 `;
 
 const StartupWrap = styled.div`
@@ -78,6 +80,13 @@ const StartUpView = ({
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
   const [filterOrAggregate, setFilterOrAggregate] = useState<OperationsType>();
+
+  /**
+   * Hide the filter / aggregate box when the query is updated.
+   */
+  useEffect(() => {
+    setFilterOrAggregate(undefined);
+  }, [query]);
 
   const branchSelectorHeadline =
     query.path && query.path.length > 0
@@ -138,26 +147,31 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     <MainWrap>
       <ThemeProvider theme={theme}>
         <Column>
-          <Row>
-            <HistoryView
-              history={query.path}
-              handleStepBack={userWantsToStepBack}
-            />
-          </Row>
-          <Row>
-            <div>
-              <StateButton
-                text="Filter"
-                onClick={handleFilterAggregateClick}
-                isActive={filterOrAggregate === OperationsType.Filter}
-              />
-              <StateButton
-                text="Aggregate"
-                onClick={handleFilterAggregateClick}
-                isActive={filterOrAggregate === OperationsType.Aggregate}
-              />
-            </div>
-          </Row>
+          <Box>
+            <Row>
+              {query.path && (
+                <HistoryView
+                  historyStep={query.path[query.path.length - 1]}
+                  index={query.path.length - 1}
+                  handleStepBack={userWantsToStepBack}
+                />
+              )}
+            </Row>
+            <Row>
+              <div>
+                <StateButton
+                  text="Filter"
+                  onClick={handleFilterAggregateClick}
+                  isActive={filterOrAggregate === OperationsType.Filter}
+                />
+                <StateButton
+                  text="Aggregate"
+                  onClick={handleFilterAggregateClick}
+                  isActive={filterOrAggregate === OperationsType.Aggregate}
+                />
+              </div>
+            </Row>
+          </Box>
           <Row>
             {filterOrAggregate === OperationsType.Filter ? (
               <FilterView

@@ -105,7 +105,6 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
    */
   const onClickOnLabel = (event: React.MouseEvent<HTMLButtonElement>): void => {
     const value = event.currentTarget.textContent;
-    console.log("VALUE: ", value);
     const label = labels.find(label => {
       return label.type === "label" && label.value === value;
     }) as LabelType;

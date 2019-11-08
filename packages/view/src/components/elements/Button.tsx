@@ -4,8 +4,7 @@ import { ButtonPropsType } from "../../types";
 
 const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
-  background-color: ${(props: ButtonPropsType) =>
-    props.isActive ? "white" : "grayLight"}
+  background-color: ${props => props.theme.colors.button.background};
   display: ${(props: ButtonPropsType) =>
     props.floatRight ? "inline-block" : ""};
   margin-left: ${(props: ButtonPropsType) => (props.floatRight ? "auto" : "")};

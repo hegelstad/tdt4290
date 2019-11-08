@@ -1,15 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import { BranchType, LabelType, EdgeType, FilterType } from "core";
 import { Row, Column } from "./elements/Layout";
-
-const HistoryWrap = styled.div`
-  max-width: 200px;
-  margin: 0 auto;
-  padding-left 10px;
-  border: 1px solid black;
-  display: flex;
-`;
+import Button from "./elements/Button";
 
 const LabelBranch = ({
   index,
@@ -53,31 +45,33 @@ const FilterBranch = ({
 };
 
 const HistoryView = ({
-  history,
+  historyStep,
+  index,
   handleStepBack
 }: {
-  history: BranchType[];
+  historyStep: BranchType;
+  index: number;
   handleStepBack: () => void;
 }) => {
-  return history.length > 0 ? (
-    <HistoryWrap>
-      {history.length > 0 && <button onClick={handleStepBack}>Undo</button>}
-      {history.map((branch, i) => (
-        <Row key={i}>
-          <Column>
-            {branch.type === "label" ? (
-              <LabelBranch index={i + 1} branch={branch} />
-            ) : branch.type === "edge" ? (
-              <EdgeBranch index={i + 1} branch={branch} />
-            ) : (
-              <FilterBranch index={i + 1} branch={branch} />
-            )}
-          </Column>
-        </Row>
-      ))}
-    </HistoryWrap>
-  ) : (
-    <div />
+  return (
+    <div key={index}>
+      <Row>
+        {history.length > 0 && (
+          <Button text={"X"} onClick={handleStepBack} floatRight />
+        )}
+      </Row>
+      <Row>
+        <Column>
+          {historyStep.type === "label" ? (
+            <LabelBranch index={index + 1} branch={historyStep} />
+          ) : historyStep.type === "edge" ? (
+            <EdgeBranch index={index + 1} branch={historyStep} />
+          ) : (
+            <FilterBranch index={index + 1} branch={historyStep} />
+          )}
+        </Column>
+      </Row>
+    </div>
   );
 };
 
