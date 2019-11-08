@@ -78,7 +78,6 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
-    setNot(false);
   };
 
   /**
@@ -98,15 +97,14 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
-    setNot(false);
   };
 
   const handleDropDownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    if (event.target.value === "with") {
+    if (event.target.value === "false") {
       setNot(false);
-    } else if (event.target.value === "without") {
+    } else if (event.target.value === "true") {
       setNot(true);
     }
   };
@@ -163,7 +161,8 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   `;
 
   const FieldSelect = styled.select.attrs(() => ({
-    onChange: handleDropDownChange
+    onChange: handleDropDownChange,
+    value: notValue
   }))`
     padding: 2px;
     width: 200px;
@@ -179,9 +178,9 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
       <br />
       <NotWrap>
         <p>When you select components or references</p>
-        <FieldSelect defaultValue="with">
-          <option value="with">choose selected</option>
-          <option value="without">choose all other than selected</option>
+        <FieldSelect>
+          <option value="false">choose selected</option>
+          <option value="true">choose all other than selected</option>
         </FieldSelect>
       </NotWrap>
       <br />
