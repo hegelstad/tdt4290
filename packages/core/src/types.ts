@@ -39,6 +39,7 @@ export interface FilterType {
 }
 
 export interface TableType {
+  type: "table";
   tableType: string;
   hasColumnNames: boolean;
   value: PropertyType[];
@@ -60,7 +61,7 @@ export interface PropertyRawType {
   value: string;
 }
 
-export type BranchType = LabelType | EdgeType | FilterType;
+export type BranchType = LabelType | EdgeType | FilterType | TableType;
 
 export enum PropertyTypes {
   String,

@@ -4,6 +4,7 @@ import {
   LabelType,
   EdgeType,
   FilterType,
+  TableType,
   ValueRangeTypes
 } from "core";
 
@@ -61,6 +62,7 @@ const findValueSeparator = (valueRange: ValueRangeTypes): string => {
   }
   return ", ";
 };
+
 const FilterBranch = ({
   index,
   branch
@@ -80,6 +82,27 @@ const FilterBranch = ({
   );
 };
 
+const TableBranch = ({
+  index,
+  branch
+}: {
+  index: number;
+  branch: TableType;
+}) => {
+  return (
+    <div>
+      <div>Step: {index}</div>
+      <div>
+        Created table on fields:{" "}
+        {branch.value.map(prop => prop.label).join(", ")}{" "}
+        {branch.hasColumnNames
+          ? "with column names: " + branch.columnNames.join(", ")
+          : ""}
+      </div>
+    </div>
+  );
+};
+
 const HistoryView = ({
   history,
   handleStepBack
@@ -94,8 +117,10 @@ const HistoryView = ({
           <LabelBranch key={i} index={i + 1} branch={branch} />
         ) : branch.type === "edge" ? (
           <EdgeBranch key={i} index={i + 1} branch={branch} />
-        ) : (
+        ) : branch.type === "filter" ? (
           <FilterBranch key={i} index={i + 1} branch={branch} />
+        ) : (
+          <TableBranch key={i} index={i + 1} branch={branch} />
         )
       )}
       {history.length > 0 && <button onClick={handleStepBack}>Undo</button>}

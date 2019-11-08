@@ -293,14 +293,18 @@ export const createTableQuery = async (
   value: PropertyType[],
   columnNames: string[]
 ): Promise<QueryType> => {
+  const table: TableType = {
+    type: "table",
+    tableType,
+    hasColumnNames,
+    value,
+    columnNames
+  };
+  const path = [...query.path, table];
   return {
     ...query,
-    table: {
-      tableType,
-      hasColumnNames,
-      value,
-      columnNames
-    }
+    path,
+    table
   };
 };
 export const popPath = async (query: QueryType): Promise<QueryType> => {
