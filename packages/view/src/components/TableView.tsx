@@ -72,10 +72,6 @@ const TableView = ({
   useEffect((): void => {
     menusAndFieldsAreFilled();
   }, [columnNames]);
-  /*
-  useEffect(():void =>{
-    setAutoFocusIndex(0);
-  }, [fieldKeys]);*/
 
   const handleSubmit = () => {
     if (fieldsAreFilled) {
