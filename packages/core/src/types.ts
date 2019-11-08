@@ -44,11 +44,14 @@ export interface TableType {
   hasColumnNames: boolean;
   value: PropertyType[];
   columnNames: string[];
+  notValue?: boolean;
 }
 
 export interface AggregationType {
-  properties: PropertyType[];
+  type: "aggregation";
+  value: PropertyType[];
   method: MethodTypes;
+  notValue?: boolean;
 }
 
 export interface PropertyType {
@@ -61,7 +64,12 @@ export interface PropertyRawType {
   value: string;
 }
 
-export type BranchType = LabelType | EdgeType | FilterType | TableType;
+export type BranchType =
+  | LabelType
+  | EdgeType
+  | FilterType
+  | TableType
+  | AggregationType;
 
 export enum PropertyTypes {
   String,

@@ -5,6 +5,7 @@ import {
   EdgeType,
   FilterType,
   TableType,
+  AggregationType,
   ValueRangeTypes
 } from "core";
 
@@ -93,11 +94,32 @@ const TableBranch = ({
     <div>
       <div>Step: {index}</div>
       <div>
-        Created table on fields:{" "}
+        Created table on {branch.value.length > 1 ? "fields; " : "field "}
         {branch.value.map(prop => prop.label).join(", ")}{" "}
         {branch.hasColumnNames
-          ? "with column names: " + branch.columnNames.join(", ")
+          ? (branch.columnNames.length > 1
+              ? "with column names: "
+              : "with column name ") + branch.columnNames.join(", ")
           : ""}
+      </div>
+    </div>
+  );
+};
+
+const AggregationBranch = ({
+  index,
+  branch
+}: {
+  index: number;
+  branch: AggregationType;
+}) => {
+  return (
+    <div>
+      <div>Step: {index}</div>
+      <div>
+        Aggregated with {branch.method}-method on{" "}
+        {branch.value.length > 1 ? "fields: " : "field: "}
+        {branch.value.map(prop => prop.label).join(", ")}{" "}
       </div>
     </div>
   );
@@ -119,8 +141,10 @@ const HistoryView = ({
           <EdgeBranch key={i} index={i + 1} branch={branch} />
         ) : branch.type === "filter" ? (
           <FilterBranch key={i} index={i + 1} branch={branch} />
-        ) : (
+        ) : branch.type === "table" ? (
           <TableBranch key={i} index={i + 1} branch={branch} />
+        ) : (
+          <AggregationBranch key={i} index={i + 1} branch={branch} />
         )
       )}
       {history.length > 0 && <button onClick={handleStepBack}>Undo</button>}

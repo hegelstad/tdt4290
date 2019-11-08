@@ -125,8 +125,9 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   const handleClickDone = (): void => {
     if (selectedProperties.length > 0 || selectedMethod === MethodTypes.Count) {
       const aggregation: AggregationType = {
+        type: "aggregation",
         method: selectedMethod,
-        properties: selectedProperties
+        value: selectedProperties
       };
       props.callback(aggregation);
     }

@@ -131,7 +131,7 @@ export const stringifyPath = (
   const aggregationQuery = aggregation
     ? aggregation.method === MethodTypes.Count
       ? ".count()"
-      : `.properties(${aggregation.properties
+      : `.properties(${aggregation.value
           .map(prop => `"${prop.label}"`)
           .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
@@ -158,8 +158,10 @@ export const aggregateQuery = async (
   query: QueryType,
   aggregation: AggregationType
 ): Promise<QueryType> => {
+  const path = [...query.path, aggregation];
   return {
     ...query,
+    path,
     aggregation: aggregation
   };
 };
