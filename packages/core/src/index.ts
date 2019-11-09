@@ -11,7 +11,8 @@ import {
   EdgeType,
   LabelCountType,
   PropertyRawType,
-  MethodTypes
+  MethodTypes,
+  ValueRangeTypes
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -23,7 +24,11 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
 
     return {
       path: [],
-      branches: response.result.map(label => ({ type: "label", value: label })),
+      branches: response.result.map(label => ({
+        type: "label",
+        value: label,
+        notValue: false
+      })),
       properties: [], // Shoud we include all properties from the start?
       aggregation: undefined,
       config
@@ -39,7 +44,8 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
     path: [],
     branches: response.result.map(label => ({
       type: "label",
-      value: label.name
+      value: label.name,
+      notValue: false
     })),
     properties: [], // Shoud we include all properties from the start?
     aggregation: undefined,
@@ -55,15 +61,66 @@ export const stringifyPath = (
   const pathQuery = path
     .map((step, i): string => {
       if (step.type === "label") {
-        return i === 0
-          ? `.hasLabel('${step.value}')`
-          : `.both().hasLabel('${step.value}')`;
+        if (step.notValue) {
+          return i === 0
+            ? `.not(hasLabel('${step.value}'))`
+            : `.not(both().hasLabel('${step.value}'))`;
+        } else {
+          return i === 0
+            ? `.hasLabel('${step.value}')`
+            : `.both().hasLabel('${step.value}')`;
+        }
       }
       if (step.type === "edge") {
-        return `.${step.direction}('${step.value}')`;
+        if (step.notValue) {
+          return `.not(__.${step.direction}('${step.value}'))`;
+        } else {
+          return `.${step.direction}('${step.value}')`;
+        }
       }
       if (step.type === "filter") {
-        return `.has('${step.property.label}', '${step.value}')`;
+        const typeIsString = () => {
+          if (
+            step.property.type === PropertyTypes.String ||
+            step.property.type === PropertyTypes.StringArray
+          ) {
+            return true;
+          }
+          return false;
+        };
+        if (step.valueRange === ValueRangeTypes.Normal) {
+          return (
+            `.has('${step.property.label}', ` +
+            (typeIsString() ? `'${step.value[0]}'` : `${step.value[0]}`) +
+            `)`
+          );
+        } else if (step.valueRange === ValueRangeTypes.Not) {
+          return (
+            `.not(has('${step.property.label}', ` +
+            (typeIsString() ? `'${step.value[0]}'` : `${step.value[0]}`) +
+            `))`
+          );
+        } else if (
+          step.valueRange === ValueRangeTypes.Within ||
+          step.valueRange === ValueRangeTypes.Without
+        ) {
+          let filterPart = `.has('${step.property.label}', ${step.valueRange}(`;
+          for (i = 0; i < step.value.length; i++) {
+            filterPart += `'${step.value[i].toString()}', `;
+          }
+          filterPart = filterPart.substring(0, filterPart.length - 2) + `))`;
+          return filterPart;
+        } else if (
+          step.valueRange === ValueRangeTypes.Inside ||
+          step.valueRange === ValueRangeTypes.Outside
+        ) {
+          return `.has('${step.property.label}', ${step.valueRange}(${step.value[0]}, ${step.value[1]}))`;
+        } else if (
+          step.valueRange === ValueRangeTypes.Lt ||
+          step.valueRange === ValueRangeTypes.Gt
+        ) {
+          return `.where(values('${step.property.label}').is(${step.valueRange}(${step.value[0]})))`;
+        }
       }
       return "";
     })
@@ -118,17 +175,20 @@ const getBranches = async (
   ]);
   const labels: LabelType[] = response[0].result.map(label => ({
     type: "label",
-    value: label
+    value: label,
+    notValue: false
   }));
   const edgesIn: EdgeType[] = response[1].result.map(edge => ({
     type: "edge",
     value: edge,
-    direction: "in"
+    direction: "in",
+    notValue: false
   }));
   const edgesOut: EdgeType[] = response[2].result.map(edge => ({
     type: "edge",
     value: edge,
-    direction: "out"
+    direction: "out",
+    notValue: false
   }));
   return [...labels, ...edgesIn, ...edgesOut];
 };
@@ -194,10 +254,10 @@ export const followBranch = async (
 export const filterQuery = async (
   query: QueryType,
   property: PropertyType,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any
+  value: any,
+  valueRange: ValueRangeTypes
 ): Promise<QueryType> => {
-  const filter: FilterType = { type: "filter", property, value };
+  const filter: FilterType = { type: "filter", property, value, valueRange };
   const path = [...query.path, filter];
   return {
     ...query,

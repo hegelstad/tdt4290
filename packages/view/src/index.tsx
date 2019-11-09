@@ -112,6 +112,12 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     query.path && query.path.length > 0
       ? "Next step"
       : "Where would you like to start?";
+  const branchSelectorHeadlinePrefix =
+    query.path &&
+    query.path.length > 0 &&
+    query.path[query.path.length - 1].notValue
+      ? "Everything but "
+      : "";
 
   const handleOperationsClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -145,8 +151,12 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     });
   };
 
-  const userWantsToFilterQuery: FilterCallbackType = (field, value) => {
-    filterQuery(query, field, value).then(newQuery => {
+  const userWantsToFilterQuery: FilterCallbackType = (
+    field,
+    value,
+    valueRange
+  ) => {
+    filterQuery(query, field, value, valueRange).then(newQuery => {
       setQuery(newQuery);
     });
   };
@@ -197,7 +207,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
           <div>
             <BranchSelector
               query={query}
-              headline={branchSelectorHeadline}
+              headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
               followBranch={userWantsToFollowBranch}
             />
           </div>

@@ -7,24 +7,18 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";
 import { Box, HorizontalLine } from "./elements/Layout";
 import { ListItemButton } from "./elements/Button";
-import { H3 } from "./elements/Text";
+import { H3, H4 } from "./elements/Text";
+import Dropdown from "./elements/Dropdown";
 
 const MAX_SUGGESTIONS = 10;
-
-/*
-const SearchWrap = styled.div`
-  display: inline;
-`;
-*/
 
 const UnorderedList = styled.ul`
   list-style: none;
   display: inline;
 `;
 
-const H4 = styled.h4`
-  display: inline;
-  margin-bottom: 10px;
+const NotWrap = styled.div`
+  margin-bottom: 35px;
 `;
 
 const ClickableText = ({
@@ -71,6 +65,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const [showMoreLabels, setShowMoreLabels] = useState(false);
   const [showMoreEdges, setShowMoreEdges] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [notValue, setNot] = useState(false);
   const [edgeSuggestions, setEdgeSuggestions] = useState<EdgeType[]>([]);
   const [labelSuggestions, setLabelSuggestions] = useState<LabelType[]>([]);
 
@@ -101,6 +96,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
       return label.type === "label" && label.value === value;
     }) as LabelType;
     props.followBranch(label);
+    label.notValue = notValue;
     setInputValue("");
   };
 
@@ -120,8 +116,19 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     const label = edges.find(label => {
       return label.value === value;
     }) as EdgeType;
+    label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
+  };
+
+  const handleDropDownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (event.target.value === "false") {
+      setNot(false);
+    } else if (event.target.value === "true") {
+      setNot(true);
+    }
   };
 
   const renderSuggestion = (suggestion: BranchType): JSX.Element => {
@@ -178,6 +185,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     setShowMoreEdges(!showMoreEdges);
   };
 
+  // Styled Components
   const Input = styled.input.attrs(() => ({
     type: "text",
     onInput: onInput,
@@ -193,6 +201,13 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
       <Box>
         <H3>{props.headline}</H3>
         <HorizontalLine />
+        <NotWrap>
+          <p>When selecting</p>
+          <Dropdown onChange={handleDropDownChange} value={String(notValue)}>
+            <option value="false">include selected</option>
+            <option value="true">include everything other than selected</option>
+          </Dropdown>
+        </NotWrap>
         <div>
           <FontAwesomeIcon icon={faSearch} />
           <Input placeholder="Start typing..." autoFocus />
