@@ -5,15 +5,17 @@ import { LabelType, EdgeType, BranchType, QueryType } from "core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";
-import { Column, Box, HorizontalLine } from "./elements/Layout";
+import { Box, HorizontalLine } from "./elements/Layout";
 import { ListItemButton } from "./elements/Button";
 import { H3 } from "./elements/Text";
 
-const MAX_SUGGESTIONS = 8;
+const MAX_SUGGESTIONS = 10;
 
+/*
 const SearchWrap = styled.div`
   display: inline;
 `;
+*/
 
 const UnorderedList = styled.ul`
   list-style: none;
@@ -115,7 +117,6 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         value = valueWithDirection.slice(valueWithDirection.indexOf("]") + 2);
       }
     }
-    console.log(value);
     const label = edges.find(label => {
       return label.value === value;
     }) as EdgeType;
@@ -192,12 +193,12 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
       <Box>
         <H3>{props.headline}</H3>
         <HorizontalLine />
-        <SearchWrap>
+        <div>
           <FontAwesomeIcon icon={faSearch} />
           <Input placeholder="Start typing..." autoFocus />
-        </SearchWrap>
+        </div>
         <br />
-        <H4> Select all components of type</H4>
+        <H4> Select all connected components of type</H4>
         <UnorderedList>
           {showMoreLabels
             ? labelSuggestions.map(renderSuggestion)
@@ -210,7 +211,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
           {showMoreLabels ? "Show less" : "Show more"}
         </ClickableText>
         {edgeSuggestions.length > 0 ? (
-          <Column>
+          <>
             <H4>
               {currentBranch && currentBranch.type === "label"
                 ? "Select components that:"
@@ -229,7 +230,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             >
               {showMoreEdges ? "Show less" : "Show more"}
             </ClickableText>
-          </Column>
+          </>
         ) : null}
       </Box>
     );

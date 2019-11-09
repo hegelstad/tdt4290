@@ -12,7 +12,7 @@ import {
 } from "core";
 import BranchSelector from "./components/BranchSelector";
 import AggregationView from "./components/AggregationView";
-import HistoryView from "./components/HistoryView";
+import { CurrentStep, PastSteps } from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
 import theme from "./styles/theme";
@@ -22,22 +22,17 @@ import {
   OperationsType,
   ButtonPropsType
 } from "./types";
-import { Column, Row, Box } from "./components/elements/Layout";
+import { Row, Box } from "./components/elements/Layout";
 import Button from "./components/elements/Button";
 
 /**
  * STYLED COMPONENTS
  */
 const MainWrap = styled.div`
-  margin: 0 auto;
   display: flex;
-  flex-direction: row
-  overflow: scroll;
-  max-width: 800px;
-`;
-
-const HistoryRow = styled(Row)`
-  max-height: ${props => props.theme.box.historyHeight};
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StateButton = styled(Button)`
@@ -48,43 +43,53 @@ const StateButton = styled(Button)`
   margin: 30px;
 `;
 
-const StartupWrap = styled.div`
-        max-width: 300px;
-        margin: 0 auto;
-        
-        display: flex
-        flex-direction: column;
-    `;
+const renderStateButtons = (
+  handler: (event: React.MouseEvent<HTMLButtonElement>) => void,
+  currentOperation?: OperationsType
+) => {
+  const buttons = [];
+  for (const operation in OperationsType) {
+    const text = operation.charAt(0).toUpperCase() + operation.slice(1);
+    buttons.push(
+      <StateButton
+        key={text}
+        text={text === "Show" ? "Show query" : text}
+        onClick={handler}
+        isActive={currentOperation === operation}
+      />
+    );
+  }
+  return buttons;
+};
 
-/**
- * Define a separate view for the intitial StartupView, since it has
- * less elements on the screen at a time
- */
-const StartUpView = ({
-  query,
-  headline,
-  followBranch
-}: {
-  query: QueryType;
-  headline: string;
-  followBranch: (branch: BranchType) => void;
-}) => {
+const renderOperationsView = (
+  currentOperation: OperationsType,
+  query: QueryType,
+  filterCallback: FilterCallbackType,
+  aggregationCallback: (aggregation: AggregationType) => void,
+  editCallback?: (query: QueryType) => void
+) => {
   return (
-    <StartupWrap>
-      <ThemeProvider theme={theme}>
-        <BranchSelector
-          query={query}
-          headline={headline}
-          followBranch={followBranch}
+    <Row>
+      {currentOperation === OperationsType.Filter ? (
+        <FilterView
+          properties={query.properties || []}
+          callback={filterCallback}
         />
-      </ThemeProvider>
-    </StartupWrap>
+      ) : currentOperation === OperationsType.Aggregate ? (
+        <AggregationView query={query} callback={aggregationCallback} />
+      ) : currentOperation === OperationsType.Show ? (
+        <TextQuery query={query} editFunction={editCallback} />
+      ) : (
+        <div />
+      )}
+    </Row>
   );
 };
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
-  const [operation, setOperation] = useState<OperationsType>();
+  const [currentOperation, setCurrentOperation] = useState<OperationsType>();
 
   /**
    * If the last operation was a filter or aggregation, show the
@@ -97,9 +102,9 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
         query.path[query.path.length - 1].type === "filter") ||
       query.aggregation
     ) {
-      setOperation(OperationsType.Show);
+      setCurrentOperation(OperationsType.Show);
     } else {
-      setOperation(undefined);
+      setCurrentOperation(undefined);
     }
   }, [query]);
 
@@ -108,21 +113,21 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
       ? "Next step"
       : "Where would you like to start?";
 
-  const handleFilterAggregateClick = (
+  const handleOperationsClick = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const value = (event.currentTarget.textContent as string).toLowerCase();
     switch (value) {
       case OperationsType.Filter: {
-        setOperation(OperationsType.Filter);
+        setCurrentOperation(OperationsType.Filter);
         break;
       }
       case OperationsType.Aggregate: {
-        setOperation(OperationsType.Aggregate);
+        setCurrentOperation(OperationsType.Aggregate);
         break;
       }
       case OperationsType.Show: {
-        setOperation(OperationsType.Show);
+        setCurrentOperation(OperationsType.Show);
         break;
       }
       default: {
@@ -149,7 +154,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const userWantsToAggregateQuery = (aggregation: AggregationType): void => {
     aggregateQuery(query, aggregation).then((newQuery: QueryType) => {
       setQuery(newQuery);
-      console.log("Query aggregated");
     });
   };
 
@@ -158,101 +162,46 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     setQuery(newQuery);
   };
 
-  return query.path && query.path.length == 0 ? (
-    <StartUpView
-      query={query}
-      headline={branchSelectorHeadline}
-      followBranch={userWantsToFollowBranch}
-    />
-  ) : (
+  return (
     <MainWrap>
       <ThemeProvider theme={theme}>
-        <Row>
-          {query.path &&
-            query.path
-              .filter((step, index) => {
-                return step && index < query.path.length - 1;
-              })
-              .map((step, index) => {
-                return (
-                  <HistoryRow key={"History" + step.value}>
-                    <Box>
-                      <HistoryView
-                        historyStep={step}
-                        index={index}
-                        handleStepBack={userWantsToStepBack}
-                      />
-                    </Box>
-                  </HistoryRow>
-                );
-              })}
-        </Row>
-      </ThemeProvider>
-      <ThemeProvider theme={theme}>
-        <Column>
-          <Box>
-            <Row>
-              {query.path && (
-                <HistoryView
-                  historyStep={query.path[query.path.length - 1]}
-                  index={query.path.length - 1}
-                  handleStepBack={userWantsToStepBack}
-                  button
-                />
-              )}
-            </Row>
-            <Row>
-              <div>
-                <StateButton
-                  text="Filter"
-                  onClick={handleFilterAggregateClick}
-                  isActive={operation === OperationsType.Filter}
-                />
-                <StateButton
-                  text="Aggregate"
-                  onClick={handleFilterAggregateClick}
-                  isActive={operation === OperationsType.Aggregate}
-                />
-                <StateButton
-                  text="Show Query"
-                  onClick={handleFilterAggregateClick}
-                  isActive={operation === OperationsType.Show}
-                />
-                <StateButton
-                  text="To Table"
-                  onClick={handleFilterAggregateClick}
-                  isActive={operation === OperationsType.Table}
-                />
-              </div>
-            </Row>
-          </Box>
-          <Row>
-            {operation === OperationsType.Filter ? (
-              <FilterView
-                properties={query.properties || []}
-                callback={userWantsToFilterQuery}
-              />
-            ) : operation === OperationsType.Aggregate ? (
-              <AggregationView
-                query={query}
-                callback={userWantsToAggregateQuery}
-              />
-            ) : operation === OperationsType.Show ? (
-              <TextQuery query={query} editFunction={() => {}} />
-            ) : (
-              <div />
-            )}
-          </Row>
-        </Column>
-      </ThemeProvider>
-      <ThemeProvider theme={theme}>
-        <Column>
-          <BranchSelector
-            query={query}
-            headline={branchSelectorHeadline}
-            followBranch={userWantsToFollowBranch}
-          />
-        </Column>
+        <>
+          {query.path && query.path.length > 1 && (
+            <PastSteps path={query.path} handleStepBack={userWantsToStepBack} />
+          )}
+          {query.path && query.path.length > 0 && (
+            <div>
+              <Box>
+                {query.path && (
+                  <>
+                    <CurrentStep
+                      currentStep={query.path[query.path.length - 1]}
+                      index={query.path.length - 1}
+                      handleStepBack={userWantsToStepBack}
+                    />
+                  </>
+                )}
+                <div>
+                  {renderStateButtons(handleOperationsClick, currentOperation)}
+                </div>
+              </Box>
+              {currentOperation &&
+                renderOperationsView(
+                  currentOperation,
+                  query,
+                  userWantsToFilterQuery,
+                  userWantsToAggregateQuery
+                )}
+            </div>
+          )}
+          <div>
+            <BranchSelector
+              query={query}
+              headline={branchSelectorHeadline}
+              followBranch={userWantsToFollowBranch}
+            />
+          </div>
+        </>
       </ThemeProvider>
     </MainWrap>
   );

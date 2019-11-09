@@ -32,7 +32,7 @@ const theme = {
     borderRadius: "5px",
     padding: "10px",
     margin: "30px",
-    width: "300px",
+    width: "350px",
     historyHeight: "220px"
   },
   border: {

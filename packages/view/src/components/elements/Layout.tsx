@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 export const Row = styled.div`
   display: flex;
   flex-direction: row;
@@ -9,6 +10,7 @@ export const Row = styled.div`
 export const Column = styled.div`
   flex: ${(props: { numOfColumns?: number }) =>
     100 / (props.numOfColumns ? props.numOfColumns : 1)}%;
+  justify-content: center;
 `;
 
 export const Box = styled.div`
