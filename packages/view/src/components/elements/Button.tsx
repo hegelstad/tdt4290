@@ -1,14 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { ButtonPropsType } from "../../types";
 
 const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
+  max-height: 30px;
   background-color: lightGray;
-  display: ${(props: ButtonPropsType) =>
-    props.floatRight ? "inline-block" : ""};
-  margin-left: ${(props: ButtonPropsType) => (props.floatRight ? "auto" : "")};
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 `;
 
 const defaultProps: {
@@ -25,18 +22,12 @@ const defaultProps: {
 
 const Button = ({
   text,
-  onClick,
-  floatRight
+  onClick
 }: {
   text: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  floatRight: boolean;
 }) => {
-  return (
-    <ButtonStyled onClick={onClick} floatRight={floatRight}>
-      {text}
-    </ButtonStyled>
-  );
+  return <ButtonStyled onClick={onClick}>{text}</ButtonStyled>;
 };
 
 Button.defaultProps = defaultProps;

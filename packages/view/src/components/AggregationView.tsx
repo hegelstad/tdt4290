@@ -8,7 +8,7 @@ import {
 import { AggregationViewPropsType } from "../types";
 import CheckBox from "./elements/Checkbox";
 import Button from "./elements/Button";
-import { Row, Column, Box } from "./elements/Layout";
+import { Box, FloatRightDiv } from "./elements/Layout";
 import Dropdown, { Option } from "./elements/Dropdown";
 
 const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
@@ -133,42 +133,38 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
 
   return props.query && props.query.path && props.query.path.length > 0 ? (
     <Box>
-      <Row>
+      <FloatRightDiv>
         <h3>Aggregations</h3>
         <Button text={"Do"} onClick={handleClickDone} floatRight />
-      </Row>
-      <Row>
-        <Column>
-          <h5>Calculate the</h5>
-          <Dropdown onChange={handleMethodChange} value={selectedMethod}>
-            {methods.map(method => {
-              return <Option key={method} text={method} />;
+      </FloatRightDiv>
+      <div>
+        <h5>Calculate the</h5>
+        <Dropdown onChange={handleMethodChange} value={selectedMethod}>
+          {methods.map(method => {
+            return <Option key={method} text={method} />;
+          })}
+        </Dropdown>
+      </div>
+      <div>
+        {selectedMethod != MethodTypes.Count ? (
+          <div>
+            <h5>of</h5>
+            {numericalProperties.map(property => {
+              return (
+                <CheckBox
+                  key={property.label}
+                  unformated-text={property.label}
+                  text={property.label}
+                  handler={handlePropertyChange}
+                  isChecked={propertyIsChecked}
+                />
+              );
             })}
-          </Dropdown>
-        </Column>
-      </Row>
-      <Row>
-        <Column>
-          {selectedMethod != MethodTypes.Count ? (
-            <div>
-              <h5>of</h5>
-              {numericalProperties.map(property => {
-                return (
-                  <CheckBox
-                    key={property.label}
-                    unformated-text={property.label}
-                    text={property.label}
-                    handler={handlePropertyChange}
-                    isChecked={propertyIsChecked}
-                  />
-                );
-              })}
-            </div>
-          ) : (
-            <div />
-          )}
-        </Column>
-      </Row>
+          </div>
+        ) : (
+          <div />
+        )}
+      </div>
     </Box>
   ) : (
     <div />

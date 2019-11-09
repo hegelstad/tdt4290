@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { stringifyPath } from "core";
 import { TextQueryType } from "../types";
 import Button from "./elements/Button";
-import { Box, Row } from "./elements/Layout";
+import { Box } from "./elements/Layout";
 import styled from "styled-components";
 
 const TextQueryWrap = styled.div`
@@ -40,7 +40,7 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
 
   //Used to send the query to another component suitable for editing it.
   const onEditButtonClick = () => {
-    props.editFunction(query);
+    props.editFunction && props.editFunction(query);
   };
 
   return (
@@ -48,13 +48,13 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
       <TextQueryWrap>
         <p>{query}</p>
       </TextQueryWrap>
-      <Row>
+      <div>
         <Button
           text={"Copy to clipboard"}
           onClick={onCopyClipBoardButtonClick}
         />
         <Button text={"Edit query"} onClick={onEditButtonClick} />
-      </Row>
+      </div>
     </Box>
   );
 };

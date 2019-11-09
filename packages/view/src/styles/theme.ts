@@ -29,7 +29,7 @@ const theme = {
   box: {
     border: "1px solid black",
     display: "block",
-    borderRadius: "5px",
+    borderRadius: "10px",
     padding: "10px",
     margin: "30px",
     width: "350px",

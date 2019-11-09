@@ -1,16 +1,11 @@
 import styled from "styled-components";
 
-export const Row = styled.div`
+export const FloatRightDiv = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  width: 100%;
-`;
-
-export const Column = styled.div`
-  flex: ${(props: { numOfColumns?: number }) =>
-    100 / (props.numOfColumns ? props.numOfColumns : 1)}%;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  overflow: auto;
 `;
 
 export const Box = styled.div`

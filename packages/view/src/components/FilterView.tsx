@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FilterCallbackType } from "../types";
 import { PropertyType } from "core";
 import Dropdown from "./elements/Dropdown";
-import { Box, Row } from "./elements/Layout";
+import { Box } from "./elements/Layout";
 import Button from "./elements/Button";
 
 const FloatRightButton = styled(Button)`
@@ -70,10 +70,8 @@ const FilterView = ({
     <>
       {componentHasFilter(properties.map(property => property.label)) && (
         <Box>
-          <Row>
-            <h3>Filter</h3>
-            <FloatRightButton text={"Do"} onClick={handleSubmit} floatRight />
-          </Row>
+          <h3>Filter</h3>
+          <FloatRightButton text={"Do"} onClick={handleSubmit} floatRight />
           <Dropdown onChange={handleDropDownChange} value={fieldKey}>
             <option key={"default"} value="" disabled>
               --Choose field--

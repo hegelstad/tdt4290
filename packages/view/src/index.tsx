@@ -22,7 +22,7 @@ import {
   OperationsType,
   ButtonPropsType
 } from "./types";
-import { Row, Box } from "./components/elements/Layout";
+import { Box } from "./components/elements/Layout";
 import Button from "./components/elements/Button";
 
 /**
@@ -67,10 +67,10 @@ const renderOperationsView = (
   query: QueryType,
   filterCallback: FilterCallbackType,
   aggregationCallback: (aggregation: AggregationType) => void,
-  editCallback?: (query: QueryType) => void
+  editCallback?: (query: string) => void
 ) => {
   return (
-    <Row>
+    <>
       {currentOperation === OperationsType.Filter ? (
         <FilterView
           properties={query.properties || []}
@@ -83,7 +83,7 @@ const renderOperationsView = (
       ) : (
         <div />
       )}
-    </Row>
+    </>
   );
 };
 
