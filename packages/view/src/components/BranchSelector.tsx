@@ -212,8 +212,11 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
           <FontAwesomeIcon icon={faSearch} />
           <Input placeholder="Start typing..." autoFocus />
         </div>
-        <br />
-        <H4> Select all connected components of type</H4>
+        <H4>
+          {props.query.path.length > 0
+            ? "Select all connected components of type"
+            : "Select component"}
+        </H4>
         <UnorderedList>
           {showMoreLabels
             ? labelSuggestions.map(renderSuggestion)
