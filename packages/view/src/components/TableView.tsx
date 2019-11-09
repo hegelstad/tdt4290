@@ -79,7 +79,7 @@ const TableView = ({
       if (fieldKeys.length === 1) {
         tableType = "single";
       } else {
-        tableType = "mulitple";
+        tableType = "multiple";
       }
       callback(tableType, hasColumnNames, fieldKeys, columnNames);
     }
