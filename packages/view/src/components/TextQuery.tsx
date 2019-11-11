@@ -22,7 +22,13 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
   //Listens to the query coming from props, updates visualisation of text query when it changes.
   useEffect(() => {
     props.query.path &&
-      setQuery(stringifyPath(props.query.path, props.query.aggregation));
+      setQuery(
+        stringifyPath(
+          props.query.path,
+          props.query.aggregation,
+          props.query.table
+        )
+      );
   }, [props.query]);
 
   //Copy current query to clipboard

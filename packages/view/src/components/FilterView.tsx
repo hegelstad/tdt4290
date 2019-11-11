@@ -149,7 +149,6 @@ const FilterView = ({
       newFieldValues = fieldValues.concat("");
       setfieldValues(newFieldValues);
       setAutoFocusIndex(fieldValues.length);
-      //menusAndFieldsAreFilled();
     }
   };
 
@@ -160,7 +159,6 @@ const FilterView = ({
       );
       setfieldValues(newFieldValues);
       setAutoFocusIndex(fieldValues.length - 2);
-      //menusAndFieldsAreFilled();
     }
   };
   const componentHasFilter = (filters: string[]): boolean => {
@@ -328,7 +326,7 @@ const FilterView = ({
             </FilterLabel>
           )}
           {fieldValues.map((value, index) => (
-            <React.Fragment key={"valueInputDiv" + index}>
+            <React.Fragment key={"valueInputFragment" + index}>
               <ValueInput
                 key={"valueInput" + index}
                 defaultValue={value}

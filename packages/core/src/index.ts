@@ -12,7 +12,8 @@ import {
   LabelCountType,
   PropertyRawType,
   MethodTypes,
-  ValueRangeTypes
+  ValueRangeTypes,
+  TableType
 } from "./types";
 
 export const initialize = async (config: ConfigType): Promise<QueryType> => {
@@ -55,7 +56,8 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
 
 export const stringifyPath = (
   path: BranchType[],
-  aggregation?: AggregationType
+  aggregation?: AggregationType,
+  table?: TableType
 ): string => {
   const baseQuery = "g.V()";
   const pathQuery = path
@@ -122,6 +124,7 @@ export const stringifyPath = (
           return `.where(values('${step.property.label}').is(${step.valueRange}(${step.value[0]})))`;
         }
       }
+
       return "";
     })
     .reduce((a, b) => a + b, "");
@@ -132,7 +135,32 @@ export const stringifyPath = (
           .map(prop => `"${prop.label}"`)
           .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
-  return baseQuery + pathQuery + aggregationQuery;
+
+  const tableQuery = () => {
+    if (table) {
+      if (table.hasColumnNames) {
+        return `.project(${table.columnNames
+          .map(prop => `'${prop}'`)
+          .join(",")})
+        ${table.value
+          .map(
+            prop => `.by(coalesce(
+          values('${prop.label}'),
+          constant('No value')))`
+          )
+          .join("")}`;
+      } else if (table.tableType === "single") {
+        return `.values('${table.value[0].label}')`;
+      } else if (table.tableType === "multiple") {
+        return `.valueMap(${table.value
+          .map(prop => `'${prop.label}'`)
+          .join(",")})`;
+      }
+    }
+    return "";
+  };
+
+  return baseQuery + pathQuery + aggregationQuery + tableQuery();
 };
 
 export const aggregateQuery = async (
@@ -147,7 +175,7 @@ export const aggregateQuery = async (
 
 export const executeQuery = async (query: QueryType): Promise<object> => {
   return (await callAPI(query.config, {
-    query: stringifyPath(query.path, query.aggregation)
+    query: stringifyPath(query.path, query.aggregation, query.table)
   })).result;
 };
 
@@ -267,6 +295,23 @@ export const filterQuery = async (
   };
 };
 
+export const createTableQuery = async (
+  query: QueryType,
+  tableType: string,
+  hasColumnNames: boolean,
+  value: PropertyType[],
+  columnNames: string[]
+): Promise<QueryType> => {
+  return {
+    ...query,
+    table: {
+      tableType,
+      hasColumnNames,
+      value,
+      columnNames
+    }
+  };
+};
 export const popPath = async (query: QueryType): Promise<QueryType> => {
   if (query.path.length === 0) {
     return query;

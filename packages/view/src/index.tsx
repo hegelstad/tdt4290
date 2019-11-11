@@ -5,6 +5,7 @@ import {
   followBranch,
   filterQuery,
   aggregateQuery,
+  createTableQuery,
   popPath,
   AggregationType,
   QueryType,
@@ -15,10 +16,12 @@ import AggregationView from "./components/AggregationView";
 import { CurrentStep, PastSteps } from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
+import TableView from "./components/TableView";
 import theme from "./styles/theme";
 import {
   BranchSelectorPropsType,
   FilterCallbackType,
+  TableCallbackType,
   OperationsType,
   ButtonPropsType
 } from "./types";
@@ -66,6 +69,7 @@ const renderOperationsView = (
   currentOperation: OperationsType,
   query: QueryType,
   filterCallback: FilterCallbackType,
+  tableCallback: TableCallbackType,
   aggregationCallback: (aggregation: AggregationType) => void,
   editCallback?: (query: string) => void
 ) => {
@@ -75,6 +79,11 @@ const renderOperationsView = (
         <FilterView
           properties={query.properties || []}
           callback={filterCallback}
+        />
+      ) : currentOperation === OperationsType.Table ? (
+        <TableView
+          properties={query.properties || []}
+          callback={tableCallback}
         />
       ) : currentOperation === OperationsType.Aggregate ? (
         <AggregationView query={query} callback={aggregationCallback} />
@@ -136,6 +145,10 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
         setCurrentOperation(OperationsType.Show);
         break;
       }
+      case OperationsType.Table: {
+        setCurrentOperation(OperationsType.Table);
+        break;
+      }
       default: {
         throw new Error(
           "Unkown operation. Expected 'filter', 'aggregate' or 'show query'. Got: " +
@@ -157,6 +170,23 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     valueRange
   ) => {
     filterQuery(query, field, value, valueRange).then(newQuery => {
+      setQuery(newQuery);
+    });
+  };
+
+  const userWantsToTableQuery: TableCallbackType = (
+    tableType,
+    hasColumnNames,
+    properties,
+    columnNames
+  ) => {
+    createTableQuery(
+      query,
+      tableType,
+      hasColumnNames,
+      properties,
+      columnNames
+    ).then(newQuery => {
       setQuery(newQuery);
     });
   };
@@ -200,6 +230,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                   currentOperation,
                   query,
                   userWantsToFilterQuery,
+                  userWantsToTableQuery,
                   userWantsToAggregateQuery
                 )}
             </div>
