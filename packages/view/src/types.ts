@@ -32,3 +32,10 @@ export type FilterCallbackType = (
   value: any,
   valueRange: ValueRangeTypes
 ) => void;
+
+export type TableCallbackType = (
+  tableType: string,
+  hasColumnNames: boolean,
+  properties: PropertyType[],
+  columnNames: string[]
+) => void;

@@ -5,6 +5,7 @@ import {
   followBranch,
   filterQuery,
   aggregateQuery,
+  createTableQuery,
   popPath,
   AggregationType,
   QueryType,
@@ -15,8 +16,13 @@ import AggregationView from "./components/AggregationView";
 import HistoryView from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
+import TableView from "./components/TableView";
 import theme from "./styles/theme";
-import { BranchSelectorPropsType, FilterCallbackType } from "./types";
+import {
+  BranchSelectorPropsType,
+  FilterCallbackType,
+  TableCallbackType
+} from "./types";
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
@@ -66,6 +72,23 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     });
   };
 
+  const userWantsToTableQuery: TableCallbackType = (
+    tableType,
+    hasColumnNames,
+    properties,
+    columnNames
+  ) => {
+    createTableQuery(
+      query,
+      tableType,
+      hasColumnNames,
+      properties,
+      columnNames
+    ).then(newQuery => {
+      setQuery(newQuery);
+    });
+  };
+
   const userWantsToAggregateQuery = (aggregation: AggregationType): void => {
     aggregateQuery(query, aggregation).then((newQuery: QueryType) => {
       setQuery(newQuery);
@@ -98,8 +121,13 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
             properties={query.properties || []}
             callback={userWantsToFilterQuery}
           />
+          <TableView
+            properties={query.properties || []}
+            callback={userWantsToTableQuery}
+          />
         </Column>
       </ThemeProvider>
+
       <ThemeProvider theme={theme}>
         <Column>
           <AggregationView query={query} callback={userWantsToAggregateQuery} />

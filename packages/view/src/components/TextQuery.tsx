@@ -11,14 +11,26 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
   //Listens to the query coming from props, updates visualisation of text query when it changes.
   useEffect(() => {
     if (props.query.path !== undefined) {
-      setQuery(stringifyPath(props.query.path, props.query.aggregation));
+      setQuery(
+        stringifyPath(
+          props.query.path,
+          props.query.aggregation,
+          props.query.table
+        )
+      );
     }
   }, [props.query]);
 
   //Show/hide current query
   const onShowButtonClick = () => {
     setShowQuery(!showQuery);
-    setQuery(stringifyPath(props.query.path, props.query.aggregation));
+    setQuery(
+      stringifyPath(
+        props.query.path,
+        props.query.aggregation,
+        props.query.table
+      )
+    );
   };
 
   //Copy current query to clipboard

@@ -9,6 +9,7 @@ export interface QueryType {
   config: ConfigType;
   properties: PropertyType[];
   aggregation?: AggregationType;
+  table?: TableType;
 }
 export interface LabelType {
   type: "label";
@@ -35,6 +36,13 @@ export interface FilterType {
   notValue?: boolean;
   property: PropertyType;
   valueRange: ValueRangeTypes;
+}
+
+export interface TableType {
+  tableType: string;
+  hasColumnNames: boolean;
+  value: PropertyType[];
+  columnNames: string[];
 }
 
 export interface AggregationType {
