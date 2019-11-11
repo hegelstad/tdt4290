@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TableCallbackType } from "../types";
 import { PropertyType, PropertyTypes } from "core";
+import { Box } from "./elements/Layout";
 
 const TableView = ({
   properties,
@@ -209,7 +210,7 @@ const TableView = ({
     // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
       {componentHasProperties(properties.map(property => property.label)) && (
-        <div>
+        <Box>
           <h3>Table:</h3>
           <TableWrapper>
             <FieldWrapper>
@@ -272,7 +273,7 @@ const TableView = ({
           >
             Create table query
           </TableButton>
-        </div>
+        </Box>
       )}
     </>
   );
