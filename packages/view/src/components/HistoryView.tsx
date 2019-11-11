@@ -1,6 +1,6 @@
 import React from "react";
 import { BranchType, LabelType, EdgeType, FilterType } from "core";
-import { Box, HorizontalLine } from "./elements/Layout";
+import { Box, HorizontalLine, FloatRightDiv } from "./elements/Layout";
 import { H3, H4, H5 } from "./elements/Text";
 import Button from "./elements/Button";
 import styled from "styled-components";
@@ -65,10 +65,10 @@ const HistoryView = ({
   return historyStep ? (
     <div key={index}>
       {button ? (
-        <div>
+        <FloatRightDiv>
           <H3>{"Current step"}</H3>
-          <Button text={"Undo"} onClick={handleStepBack} floatRight />
-        </div>
+          <Button text={"X"} onClick={handleStepBack} floatRight />
+        </FloatRightDiv>
       ) : (
         <div>
           <H4>{"Past step"}</H4>

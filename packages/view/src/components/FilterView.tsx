@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
 import { PropertyType, PropertyTypes, ValueRangeTypes } from "core";
-import { Box } from "./elements/Layout";
+import { Box, FloatRightDiv } from "./elements/Layout";
+import Dropdown from "./elements/Dropdown";
+import { H3, H5 } from "./elements/Text";
+import Input from "./elements/Input";
+import Button from "./elements/Button";
 
 const FilterView = ({
   properties,
@@ -174,40 +178,6 @@ const FilterView = ({
 
   // styled components
 
-  const ValueInput = styled.input.attrs(() => ({
-    type: "text"
-  }))`
-    padding: 2px;
-    margin: 0 28% 8px 27%;
-    width: 41%;
-  `;
-
-  const FieldSelect = styled.select.attrs(() => ({
-    value: fieldKey.label,
-    onChange: handleFieldDropDownChange
-  }))`
-    padding: 2px;
-    margin: 0 28% 8px 27%;
-    width: 42%;
-  `;
-
-  const ValueRangeSelect = styled.select.attrs(() => ({
-    value: valueRange,
-    onChange: handleValueRangeDropDownChange
-  }))`
-    padding: 2px;
-    margin: 0 28% 8px 27%;
-    width: 42%;
-  `;
-
-  const FilterButton = styled.button.attrs(() => ({
-    onClick: (): void => handleSubmit()
-  }))`
-    padding: 2px 5px;
-    margin: 5px 39% 8px 37%;
-    width: 20%;
-  `;
-
   const AddValueInputButton = styled.button.attrs(() => ({
     onClick: () => handleAddValueInputField()
   }))`
@@ -222,10 +192,6 @@ const FilterView = ({
     margin: 0 37% 0 1%;
   `;
 
-  const FilterLabel = styled.div`
-    width: 20%;
-    margin: 0 0 8px 27%;
-  `;
   const InsideText = styled.div`
     width: 10%;
     margin: -2px 44% 6px 42%;
@@ -244,15 +210,23 @@ const FilterView = ({
     <>
       {componentHasFilter(properties.map(property => property.label)) && (
         <Box>
-          <h3>Filter</h3>
-          <FilterLabel>Field:</FilterLabel>
-          <FieldSelect>
+          <FloatRightDiv>
+            <H3>Filter</H3>
+            <Button
+              text={"Apply"}
+              disabled={!fieldsAreFilled}
+              onClick={handleSubmit}
+              floatRight
+            />
+          </FloatRightDiv>
+          <H5>Choose components where</H5>
+          <Dropdown value={fieldKey.label} onChange={handleFieldDropDownChange}>
             <option
               key={"defaultFieldSelect"}
               value=""
               disabled={fieldDropDownIsDisabled()}
             >
-              --Choose field--
+              --choose field--
             </option>
             {properties
               .sort((a, b) => (a.label > b.label ? 1 : -1))
@@ -261,9 +235,12 @@ const FilterView = ({
                   {formatFieldName(prop.label)}
                 </option>
               ))}
-          </FieldSelect>
-          <FilterLabel>Value Range:</FilterLabel>
-          <ValueRangeSelect>
+          </Dropdown>
+          <H5>is</H5>
+          <Dropdown
+            onChange={handleValueRangeDropDownChange}
+            value={valueRange}
+          >
             <option
               key={"defaultValueRangeSelect"}
               value={ValueRangeTypes.Undefined}
@@ -319,19 +296,17 @@ const FilterView = ({
             <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
               Value
             </option>
-          </ValueRangeSelect>
+          </Dropdown>
           {fieldValues.length > 0 && (
-            <FilterLabel>
-              {fieldValues.length === 1 ? "Value:" : "Values:"}
-            </FilterLabel>
+            <H5>{fieldValues.length === 1 ? "Value:" : "Values:"}</H5>
           )}
           {fieldValues.map((value, index) => (
             <React.Fragment key={"valueInputFragment" + index}>
-              <ValueInput
+              <Input
                 key={"valueInput" + index}
                 defaultValue={value}
                 onChange={e => handleInputChange(e, index)}
-                placeholder="Select a value..."
+                placeholder="Enter a value..."
                 autoFocus={index === autoFocusIndex}
               />
               {(valueRange === ValueRangeTypes.Inside ||
@@ -350,7 +325,6 @@ const FilterView = ({
               </RemoveValueInputButton>
             </>
           )}
-          <FilterButton disabled={!fieldsAreFilled}>Filter</FilterButton>
         </Box>
       )}
     </>

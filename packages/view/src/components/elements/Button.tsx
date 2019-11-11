@@ -22,12 +22,18 @@ const defaultProps: {
 
 const Button = ({
   text,
-  onClick
+  onClick,
+  disabled
 }: {
   text: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
 }) => {
-  return <ButtonStyled onClick={onClick}>{text}</ButtonStyled>;
+  return (
+    <ButtonStyled onClick={onClick} disabled={disabled}>
+      {text}
+    </ButtonStyled>
+  );
 };
 
 Button.defaultProps = defaultProps;

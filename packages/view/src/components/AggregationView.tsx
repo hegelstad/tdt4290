@@ -10,6 +10,7 @@ import CheckBox from "./elements/Checkbox";
 import Button from "./elements/Button";
 import { Box, FloatRightDiv } from "./elements/Layout";
 import Dropdown, { Option } from "./elements/Dropdown";
+import { H3, H5 } from "./elements/Text";
 
 const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   /**
@@ -134,11 +135,11 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   return props.query && props.query.path && props.query.path.length > 0 ? (
     <Box>
       <FloatRightDiv>
-        <h3>Aggregations</h3>
-        <Button text={"Do"} onClick={handleClickDone} floatRight />
+        <H3>Aggregations</H3>
+        <Button text={"Apply"} onClick={handleClickDone} floatRight />
       </FloatRightDiv>
       <div>
-        <h5>Calculate the</h5>
+        <H5>Calculate the</H5>
         <Dropdown onChange={handleMethodChange} value={selectedMethod}>
           {methods.map(method => {
             return <Option key={method} text={method} />;
@@ -148,7 +149,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
       <div>
         {selectedMethod != MethodTypes.Count ? (
           <div>
-            <h5>of</h5>
+            <H5>of</H5>
             {numericalProperties.map(property => {
               return (
                 <CheckBox

@@ -9,6 +9,7 @@ import { Box, HorizontalLine } from "./elements/Layout";
 import { ListItemButton } from "./elements/Button";
 import { H3, H4 } from "./elements/Text";
 import Dropdown from "./elements/Dropdown";
+import Input from "./elements/Input";
 
 const MAX_SUGGESTIONS = 10;
 
@@ -90,7 +91,9 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   /**
    * HANDLERS
    */
-  const onClickOnLabel = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleClickOnLabel = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     const value = event.currentTarget.textContent;
     const label = labels.find(label => {
       return label.type === "label" && label.value === value;
@@ -100,7 +103,9 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     setInputValue("");
   };
 
-  const onClickOnEdge = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleClickOnEdge = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     const valueWithDirection = event.currentTarget.textContent;
     let value = "";
     if (valueWithDirection) {
@@ -137,7 +142,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         <ListItemButton
           key={suggestion.value}
           text={suggestion.value}
-          onClick={onClickOnLabel}
+          onClick={handleClickOnLabel}
         />
       );
     } else if (suggestion.type === "edge") {
@@ -165,7 +170,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         <ListItemButton
           key={edgeText}
           text={edgeText}
-          onClick={onClickOnEdge}
+          onClick={handleClickOnEdge}
         />
       );
     } else {
@@ -173,28 +178,21 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
     }
   };
 
-  const onInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setInputValue(event.target.value);
   };
 
-  const onClickOnShowMoreLabels = (): void => {
+  const handleClickOnShowMoreLabels = (): void => {
     setShowMoreLabels(!showMoreLabels);
   };
 
-  const onClickOnShowMoreEdges = (): void => {
+  const handleClickOnShowMoreEdges = (): void => {
     setShowMoreEdges(!showMoreEdges);
   };
 
   // Styled Components
-  const Input = styled.input.attrs(() => ({
-    type: "text",
-    onInput: onInput,
-    defaultValue: inputValue
-  }))`
-    padding: 2px;
-    margin-bottom: 8px;
-    margin-left: 10px;
-  `;
 
   if (edges.length > 0 || labels.length > 0) {
     return (
@@ -210,7 +208,12 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
         </NotWrap>
         <div>
           <FontAwesomeIcon icon={faSearch} />
-          <Input placeholder="Start typing..." autoFocus />
+          <Input
+            placeholder="Start typing..."
+            autoFocus
+            onInput={handleInputChange}
+            defaultValue={inputValue}
+          />
         </div>
         <H4>
           {props.query.path.length > 0
@@ -223,7 +226,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             : labelSuggestions.slice(0, MAX_SUGGESTIONS).map(renderSuggestion)}
         </UnorderedList>
         <ClickableText
-          onClick={onClickOnShowMoreLabels}
+          onClick={handleClickOnShowMoreLabels}
           shouldBeVisible={labelSuggestions.length > MAX_SUGGESTIONS}
         >
           {showMoreLabels ? "Show less" : "Show more"}
@@ -243,7 +246,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
                     .map(renderSuggestion)}
             </UnorderedList>
             <ClickableText
-              onClick={onClickOnShowMoreEdges}
+              onClick={handleClickOnShowMoreEdges}
               shouldBeVisible={edgeSuggestions.length > MAX_SUGGESTIONS}
             >
               {showMoreEdges ? "Show less" : "Show more"}

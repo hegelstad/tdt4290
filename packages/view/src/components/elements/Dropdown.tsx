@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import styled from "styled-components";
 
 const FieldSelect = styled.select.attrs(props => ({
+  value: props.value,
   onChange: props.onChange
 }))`
   padding: 2px;
