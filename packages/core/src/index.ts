@@ -136,22 +136,31 @@ export const stringifyPath = (
           .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
 
-  const tableQuery = table
-    ? table.hasColumnNames
-      ? `.project(${table.columnNames.map(prop => `'${prop}'`).join(",")})
-      ${table.value
-        .map(
-          prop => `.by(coalesce(
-        values('${prop.label}'),
-        constant('No value')))`
-        )
-        .join("")}`
-      : table.tableType === "single"
-      ? `.values('${table.value[0].label}')`
-      : `.valueMap(${table.value.map(prop => `'${prop.label}'`).join(",")})`
-    : "";
+  const tableQuery = () => {
+    if (table) {
+      if (table.hasColumnNames) {
+        return `.project(${table.columnNames
+          .map(prop => `'${prop}'`)
+          .join(",")})
+        ${table.value
+          .map(
+            prop => `.by(coalesce(
+          values('${prop.label}'),
+          constant('No value')))`
+          )
+          .join("")}`;
+      } else if (table.tableType === "single") {
+        return `.values('${table.value[0].label}')`;
+      } else if (table.tableType === "multiple") {
+        return `.valueMap(${table.value
+          .map(prop => `'${prop.label}'`)
+          .join(",")})`;
+      }
+    }
+    return "";
+  };
 
-  return baseQuery + pathQuery + aggregationQuery + tableQuery;
+  return baseQuery + pathQuery + aggregationQuery + tableQuery();
 };
 
 export const aggregateQuery = async (
