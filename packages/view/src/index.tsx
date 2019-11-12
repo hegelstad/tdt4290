@@ -106,6 +106,8 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
         <Column>
           <HistoryView
             history={query.path}
+            aggregation={query.aggregation}
+            table={query.table}
             handleStepBack={userWantsToStepBack}
           />
         </Column>

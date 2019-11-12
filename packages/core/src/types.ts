@@ -39,17 +39,15 @@ export interface FilterType {
 }
 
 export interface TableType {
-  type: "table";
   tableType: string;
   hasColumnNames: boolean;
-  value: PropertyType[];
+  properties: PropertyType[];
   columnNames: string[];
   notValue?: boolean;
 }
 
 export interface AggregationType {
-  type: "aggregation";
-  value: PropertyType[];
+  properties: PropertyType[];
   method: MethodTypes;
   notValue?: boolean;
 }
@@ -64,12 +62,7 @@ export interface PropertyRawType {
   value: string;
 }
 
-export type BranchType =
-  | LabelType
-  | EdgeType
-  | FilterType
-  | TableType
-  | AggregationType;
+export type BranchType = LabelType | EdgeType | FilterType;
 
 export enum PropertyTypes {
   String,

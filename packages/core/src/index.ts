@@ -131,7 +131,7 @@ export const stringifyPath = (
   const aggregationQuery = aggregation
     ? aggregation.method === MethodTypes.Count
       ? ".count()"
-      : `.properties(${aggregation.value
+      : `.properties(${aggregation.properties
           .map(prop => `"${prop.label}"`)
           .join(",")}).group().by(key).by(value().${aggregation.method}())`
     : "";
@@ -142,7 +142,7 @@ export const stringifyPath = (
         return `.project(${table.columnNames
           .map(prop => `'${prop}'`)
           .join(",")})
-        ${table.value
+        ${table.properties
           .map(
             prop => `.by(coalesce(
           values('${prop.label}'),
@@ -150,9 +150,9 @@ export const stringifyPath = (
           )
           .join("")}`;
       } else if (table.tableType === "single") {
-        return `.values('${table.value[0].label}')`;
+        return `.values('${table.properties[0].label}')`;
       } else if (table.tableType === "multiple") {
-        return `.valueMap(${table.value
+        return `.valueMap(${table.properties
           .map(prop => `'${prop.label}'`)
           .join(",")})`;
       }
@@ -167,10 +167,8 @@ export const aggregateQuery = async (
   query: QueryType,
   aggregation: AggregationType
 ): Promise<QueryType> => {
-  const path = [...query.path, aggregation];
   return {
     ...query,
-    path,
     aggregation: aggregation
   };
 };
@@ -301,28 +299,27 @@ export const createTableQuery = async (
   query: QueryType,
   tableType: string,
   hasColumnNames: boolean,
-  value: PropertyType[],
+  properties: PropertyType[],
   columnNames: string[]
 ): Promise<QueryType> => {
   const table: TableType = {
-    type: "table",
     tableType,
     hasColumnNames,
-    value,
+    properties,
     columnNames
   };
-  const path = [...query.path, table];
   return {
     ...query,
-    path,
     table
   };
 };
 export const popPath = async (query: QueryType): Promise<QueryType> => {
-  if (query.path.length === 0) {
+  let path = query.path;
+  if (path.length === 0) {
     return query;
+  } else if (!(query.aggregation || query.table)) {
+    path = query.path.slice(0, -1);
   }
-  const path = query.path.slice(0, -1);
   return {
     ...query,
     path,

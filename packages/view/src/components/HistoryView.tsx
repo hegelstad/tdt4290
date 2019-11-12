@@ -83,23 +83,17 @@ const FilterBranch = ({
   );
 };
 
-const TableBranch = ({
-  index,
-  branch
-}: {
-  index: number;
-  branch: TableType;
-}) => {
+const TableBranch = ({ index, table }: { index: number; table: TableType }) => {
   return (
     <div>
       <div>Step: {index}</div>
       <div>
-        Created table on {branch.value.length > 1 ? "fields; " : "field "}
-        {branch.value.map(prop => prop.label).join(", ")}{" "}
-        {branch.hasColumnNames
-          ? (branch.columnNames.length > 1
+        Created table on {table.properties.length > 1 ? "fields; " : "field "}
+        {table.properties.map(prop => prop.label).join(", ")}{" "}
+        {table.hasColumnNames
+          ? (table.columnNames.length > 1
               ? "with column names: "
-              : "with column name ") + branch.columnNames.join(", ")
+              : "with column name ") + table.columnNames.join(", ")
           : ""}
       </div>
     </div>
@@ -108,18 +102,18 @@ const TableBranch = ({
 
 const AggregationBranch = ({
   index,
-  branch
+  aggregation
 }: {
   index: number;
-  branch: AggregationType;
+  aggregation: AggregationType;
 }) => {
   return (
     <div>
       <div>Step: {index}</div>
       <div>
-        Aggregated with {branch.method}-method on{" "}
-        {branch.value.length > 1 ? "fields: " : "field: "}
-        {branch.value.map(prop => prop.label).join(", ")}{" "}
+        Aggregated with {aggregation.method}-method on{" "}
+        {aggregation.properties.length > 1 ? "fields: " : "field: "}
+        {aggregation.properties.map(prop => prop.label).join(", ")}{" "}
       </div>
     </div>
   );
@@ -127,9 +121,13 @@ const AggregationBranch = ({
 
 const HistoryView = ({
   history,
+  aggregation,
+  table,
   handleStepBack
 }: {
   history: BranchType[];
+  aggregation?: AggregationType;
+  table?: TableType;
   handleStepBack: () => void;
 }) => {
   return (
@@ -139,13 +137,24 @@ const HistoryView = ({
           <LabelBranch key={i} index={i + 1} branch={branch} />
         ) : branch.type === "edge" ? (
           <EdgeBranch key={i} index={i + 1} branch={branch} />
-        ) : branch.type === "filter" ? (
-          <FilterBranch key={i} index={i + 1} branch={branch} />
-        ) : branch.type === "table" ? (
-          <TableBranch key={i} index={i + 1} branch={branch} />
         ) : (
-          <AggregationBranch key={i} index={i + 1} branch={branch} />
+          <FilterBranch key={i} index={i + 1} branch={branch} />
         )
+      )}
+      {aggregation ? (
+        <AggregationBranch
+          key={history.length}
+          index={history.length + 1}
+          aggregation={aggregation}
+        />
+      ) : table ? (
+        <TableBranch
+          key={history.length}
+          index={history.length + 1}
+          table={table}
+        />
+      ) : (
+        ""
       )}
       {history.length > 0 && <button onClick={handleStepBack}>Undo</button>}
     </div>
