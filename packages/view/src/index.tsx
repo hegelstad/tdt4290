@@ -202,12 +202,19 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     setQuery(newQuery);
   };
 
+  const hasAggregationOrTable =
+    query.aggregation !== undefined || query.table !== undefined;
+
   return (
     <MainWrap>
       <ThemeProvider theme={theme}>
         <>
           {query.path && query.path.length > 1 && (
-            <PastSteps path={query.path} handleStepBack={userWantsToStepBack} />
+            <PastSteps
+              path={query.path}
+              handleStepBack={userWantsToStepBack}
+              renderLastStep={hasAggregationOrTable}
+            />
           )}
           {query.path && query.path.length > 0 && (
             <div>
@@ -215,8 +222,14 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                 {query.path && (
                   <>
                     <CurrentStep
-                      currentStep={query.path[query.path.length - 1]}
+                      currentStep={
+                        hasAggregationOrTable
+                          ? undefined
+                          : query.path[query.path.length - 1]
+                      }
                       index={query.path.length - 1}
+                      aggregation={query.aggregation}
+                      table={query.table}
                       handleStepBack={userWantsToStepBack}
                     />
                   </>
@@ -235,13 +248,15 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                 )}
             </div>
           )}
-          <div>
-            <BranchSelector
-              query={query}
-              headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
-              followBranch={userWantsToFollowBranch}
-            />
-          </div>
+          {!hasAggregationOrTable && (
+            <div>
+              <BranchSelector
+                query={query}
+                headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
+                followBranch={userWantsToFollowBranch}
+              />
+            </div>
+          )}
         </>
       </ThemeProvider>
     </MainWrap>

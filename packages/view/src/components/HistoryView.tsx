@@ -1,19 +1,64 @@
 import React from "react";
-import { BranchType, LabelType, EdgeType, FilterType } from "core";
 import { Box, HorizontalLine, FloatRightDiv } from "./elements/Layout";
 import { H3, H4, H5 } from "./elements/Text";
 import Button from "./elements/Button";
 import styled from "styled-components";
+import {
+  BranchType,
+  LabelType,
+  EdgeType,
+  FilterType,
+  TableType,
+  AggregationType,
+  ValueRangeTypes
+} from "core";
 
 const HistoryRow = styled.div`
   max-height: ${props => props.theme.box.historyHeight};
 `;
 
-/*
-const HistoryWrap = styled.div`
-  width: 100%;
-`;
-*/
+const findValueRangeText = (valueRange: ValueRangeTypes): string => {
+  if (valueRange === ValueRangeTypes.Gt) {
+    return "s greater than";
+  } else if (valueRange === ValueRangeTypes.Inside) {
+    return "s inside range";
+  } else if (valueRange === ValueRangeTypes.Lt) {
+    return "s less than";
+  } else if (valueRange === ValueRangeTypes.Normal) {
+    return "";
+  } else if (valueRange === ValueRangeTypes.Not) {
+    return "s not";
+  } else if (valueRange === ValueRangeTypes.Outside) {
+    return "s outside range";
+  } else if (valueRange === ValueRangeTypes.Within) {
+    return "s among:";
+  } else if (valueRange === ValueRangeTypes.Without) {
+    return "s not among:";
+  }
+  return "";
+};
+
+const findValueSeparator = (valueRange: ValueRangeTypes): string => {
+  if (
+    valueRange === ValueRangeTypes.Inside ||
+    valueRange === ValueRangeTypes.Outside
+  ) {
+    return "-";
+  }
+  return ", ";
+};
+
+const FilterBranch = ({ branch }: { branch: FilterType }) => {
+  return (
+    <div>
+      <div>
+        Filtering the field {branch.property.label} on value
+        {findValueRangeText(branch.valueRange)}{" "}
+        {branch.value.join(findValueSeparator(branch.valueRange))}
+      </div>
+    </div>
+  );
+};
 
 const LabelBranch = ({ branch }: { branch: LabelType }) => {
   return (
@@ -41,11 +86,37 @@ const EdgeBranch = ({ branch }: { branch: EdgeType }) => {
   );
 };
 
-const FilterBranch = ({ branch }: { branch: FilterType }) => {
+const TableBranch = ({ index, table }: { index: number; table: TableType }) => {
   return (
     <div>
+      <div>Step: {index}</div>
       <div>
-        Filtering the field {branch.property.label} on value {branch.value}
+        Created table on {table.properties.length > 1 ? "fields; " : "field "}
+        {table.properties.map(prop => prop.label).join(", ")}{" "}
+        {table.hasColumnNames
+          ? (table.columnNames.length > 1
+              ? "with column names: "
+              : "with column name ") + table.columnNames.join(", ")
+          : ""}
+      </div>
+    </div>
+  );
+};
+
+const AggregationBranch = ({
+  index,
+  aggregation
+}: {
+  index: number;
+  aggregation: AggregationType;
+}) => {
+  return (
+    <div>
+      <div>Step: {index}</div>
+      <div>
+        Aggregated with {aggregation.method}-method on{" "}
+        {aggregation.properties.length > 1 ? "fields: " : "field: "}
+        {aggregation.properties.map(prop => prop.label).join(", ")}{" "}
       </div>
     </div>
   );
@@ -54,11 +125,15 @@ const FilterBranch = ({ branch }: { branch: FilterType }) => {
 const HistoryView = ({
   historyStep,
   index,
+  aggregation,
+  table,
   handleStepBack,
   button
 }: {
-  historyStep: BranchType;
+  historyStep?: BranchType;
   index: number;
+  aggregation?: AggregationType;
+  table?: TableType;
   handleStepBack: () => void;
   button?: boolean;
 }) => {
@@ -85,6 +160,18 @@ const HistoryView = ({
         )}
       </div>
     </div>
+  ) : aggregation ? (
+    <AggregationBranch
+      key={history.length}
+      index={history.length + 1}
+      aggregation={aggregation}
+    />
+  ) : table ? (
+    <TableBranch
+      key={history.length}
+      index={history.length + 1}
+      table={table}
+    />
   ) : (
     <div />
   );
@@ -93,16 +180,23 @@ const HistoryView = ({
 export const CurrentStep = ({
   currentStep,
   index,
+  aggregation,
+  table,
   handleStepBack
 }: {
-  currentStep: BranchType;
+  currentStep?: BranchType;
   index: number;
+  aggregation?: AggregationType;
+  table?: TableType;
   handleStepBack: () => void;
 }) => {
+  console.log("CurrentStep: ", currentStep);
   return (
     <div>
       <HistoryView
         historyStep={currentStep}
+        aggregation={aggregation}
+        table={table}
         index={index}
         handleStepBack={handleStepBack}
         button
@@ -113,16 +207,21 @@ export const CurrentStep = ({
 
 export const PastSteps = ({
   path,
-  handleStepBack
+  handleStepBack,
+  renderLastStep
 }: {
   path: BranchType[];
   handleStepBack: () => void;
+  renderLastStep?: boolean;
 }) => {
   return (
     <>
       {path
         .filter((step, index) => {
-          return step && index < path.length - 1;
+          return (
+            (step && index < path.length - 1) ||
+            (index === path.length - 1 && renderLastStep)
+          );
         })
         .map((step, index) => {
           return (
