@@ -3,17 +3,7 @@ import { stringifyPath } from "core";
 import { TextQueryType } from "../types";
 import Button from "./elements/Button";
 import { Box } from "./elements/Layout";
-import styled from "styled-components";
-
-const TextQueryWrap = styled.div`
-        margin: 0 auto;
-        
-        padding: 20px;
-        display: flex
-        flex-direction: column;
-        text-align: center
-        overflow: auto
-    `;
+import { H5 } from "./elements/Text";
 
 //This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
 const TextQuery = (props: TextQueryType): JSX.Element => {
@@ -51,9 +41,7 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
 
   return (
     <Box>
-      <TextQueryWrap>
-        <p>{query}</p>
-      </TextQueryWrap>
+      <H5>{query}</H5>
       <div>
         <Button
           text={"Copy to clipboard"}

@@ -17,27 +17,27 @@ const HistoryWrap = styled.div`
 
 const LabelBranch = ({ branch }: { branch: LabelType }) => {
   return (
-    <div>
+    <>
       <H5>
         {!branch.notValue
           ? "Selected component:"
           : "Selected everything other than: "}
       </H5>
       <p>{branch.value}</p>
-    </div>
+    </>
   );
 };
 
 const EdgeBranch = ({ branch }: { branch: EdgeType }) => {
   return (
-    <div>
+    <>
       <H5>
         {!branch.notValue
           ? "Followed reference:"
           : "Followed every other reference than: "}
       </H5>
       <p>{branch.value}</p>
-    </div>
+    </>
   );
 };
 

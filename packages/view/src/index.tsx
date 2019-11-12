@@ -74,7 +74,7 @@ const renderOperationsView = (
   editCallback?: (query: string) => void
 ) => {
   return (
-    <>
+    <div>
       {currentOperation === OperationsType.Filter ? (
         <FilterView
           properties={query.properties || []}
@@ -92,7 +92,7 @@ const renderOperationsView = (
       ) : (
         <div />
       )}
-    </>
+    </div>
   );
 };
 

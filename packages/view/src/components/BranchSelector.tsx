@@ -22,6 +22,14 @@ const NotWrap = styled.div`
   margin-bottom: 35px;
 `;
 
+const LinkStyledText = styled.p`
+  cursor: pointer;
+  width: 80px;
+  padding: 2px;
+  border-radius: ${props => props.theme.roundRadius};
+  color: ${props => props.theme.colors.blue};
+`;
+
 const ClickableText = ({
   onClick,
   shouldBeVisible,
@@ -31,14 +39,6 @@ const ClickableText = ({
   shouldBeVisible: boolean;
   children: ReactNode;
 }): JSX.Element | null => {
-  const LinkStyledText = styled.p`
-    cursor: pointer;
-    width: 80px;
-    padding: 2px;
-    border-radius: ${props => props.theme.roundRadius};
-    color: ${props => props.theme.colors.blue};
-  `;
-
   return shouldBeVisible ? (
     <LinkStyledText onClick={onClick}>{children}</LinkStyledText>
   ) : null;
