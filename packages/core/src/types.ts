@@ -41,13 +41,15 @@ export interface FilterType {
 export interface TableType {
   tableType: string;
   hasColumnNames: boolean;
-  value: PropertyType[];
+  properties: PropertyType[];
   columnNames: string[];
+  notValue?: boolean;
 }
 
 export interface AggregationType {
   properties: PropertyType[];
   method: MethodTypes;
+  notValue?: boolean;
 }
 
 export interface PropertyType {

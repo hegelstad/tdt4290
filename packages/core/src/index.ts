@@ -142,7 +142,7 @@ export const stringifyPath = (
         return `.project(${table.columnNames
           .map(prop => `'${prop}'`)
           .join(",")})
-        ${table.value
+        ${table.properties
           .map(
             prop => `.by(coalesce(
           values('${prop.label}'),
@@ -150,9 +150,9 @@ export const stringifyPath = (
           )
           .join("")}`;
       } else if (table.tableType === "single") {
-        return `.values('${table.value[0].label}')`;
+        return `.values('${table.properties[0].label}')`;
       } else if (table.tableType === "multiple") {
-        return `.valueMap(${table.value
+        return `.valueMap(${table.properties
           .map(prop => `'${prop.label}'`)
           .join(",")})`;
       }
@@ -299,28 +299,32 @@ export const createTableQuery = async (
   query: QueryType,
   tableType: string,
   hasColumnNames: boolean,
-  value: PropertyType[],
+  properties: PropertyType[],
   columnNames: string[]
 ): Promise<QueryType> => {
+  const table: TableType = {
+    tableType,
+    hasColumnNames,
+    properties,
+    columnNames
+  };
   return {
     ...query,
-    table: {
-      tableType,
-      hasColumnNames,
-      value,
-      columnNames
-    }
+    table
   };
 };
 export const popPath = async (query: QueryType): Promise<QueryType> => {
-  if (query.path.length === 0) {
+  let path = query.path;
+  if (path.length === 0) {
     return query;
+  } else if (!(query.aggregation || query.table)) {
+    path = query.path.slice(0, -1);
   }
-  const path = query.path.slice(0, -1);
   return {
     ...query,
     path,
     aggregation: undefined,
+    table: undefined,
     branches: await getBranches(query.config, path),
     properties: await getProperties(query.config, path)
   };
