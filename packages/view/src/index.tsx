@@ -64,6 +64,14 @@ const renderStateButtons = (
   return buttons;
 };
 
+const hasReachedEnd = (query: QueryType, operation: OperationsType) => {
+  if (query.aggregation && operation != OperationsType.Aggregate) {
+    return true;
+  } else if (query.table && operation != OperationsType.Table) {
+    return true;
+  }
+  return false;
+};
 const renderOperationsView = (
   currentOperation: OperationsType,
   query: QueryType,
@@ -74,17 +82,20 @@ const renderOperationsView = (
 ) => {
   return (
     <div>
-      {currentOperation === OperationsType.Filter ? (
+      {currentOperation === OperationsType.Filter &&
+      !hasReachedEnd(query, currentOperation) ? (
         <FilterView
           properties={query.properties || []}
           callback={filterCallback}
         />
-      ) : currentOperation === OperationsType.Table ? (
+      ) : currentOperation === OperationsType.Table &&
+        !hasReachedEnd(query, currentOperation) ? (
         <TableView
           properties={query.properties || []}
           callback={tableCallback}
         />
-      ) : currentOperation === OperationsType.Aggregate ? (
+      ) : currentOperation === OperationsType.Aggregate &&
+        !hasReachedEnd(query, currentOperation) ? (
         <AggregationView query={query} callback={aggregationCallback} />
       ) : currentOperation === OperationsType.Show ? (
         <TextQuery query={query} editFunction={editCallback} />

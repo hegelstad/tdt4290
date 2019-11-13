@@ -100,12 +100,12 @@ const TableBranch = ({ table }: { table: TableType }) => {
       {table.hasColumnNames ? (
         table.columnNames.length > 1 ? (
           <>
-            <H4> and set column names: </H4>
+            <H4> and set column names </H4>
             <p>{table.columnNames.join(", ")}</p>
           </>
         ) : (
           <>
-            <H4> and set column name: </H4>
+            <H4> and set column name </H4>
             <p>{table.columnNames.join(", ")}</p>
           </>
         )
