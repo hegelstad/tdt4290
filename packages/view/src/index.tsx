@@ -46,10 +46,23 @@ const PrimaryButton = styled(Button)`
   :hover {
     background-color: ${props => props.theme.colors.button.primaryHover};
   }
+  :disabled {
+    background-color: ${props => props.theme.colors.button.primaryHover};
+  }
 `;
-
+const hasReachedEnd = (query: QueryType, operation: OperationsType) => {
+  if (operation === OperationsType.Show) {
+    return false;
+  } else if (query.aggregation && operation !== OperationsType.Aggregate) {
+    return true;
+  } else if (query.table && operation !== OperationsType.Table) {
+    return true;
+  }
+  return false;
+};
 const renderStateButtons = (
-  handler: (event: React.MouseEvent<HTMLButtonElement>) => void
+  handler: (event: React.MouseEvent<HTMLButtonElement>) => void,
+  query: QueryType
 ) => {
   const buttons = [];
   for (const operation in OperationsType) {
@@ -59,19 +72,28 @@ const renderStateButtons = (
     } else if (text === "Table") {
       text = "Create table";
     }
-    buttons.push(<PrimaryButton key={text} text={text} onClick={handler} />);
+    let op: OperationsType;
+    if (operation.toLowerCase() === OperationsType.Aggregate) {
+      op = OperationsType.Aggregate;
+    } else if (operation.toLowerCase() === OperationsType.Filter) {
+      op = OperationsType.Filter;
+    } else if (operation.toLowerCase() === "table") {
+      op = OperationsType.Table;
+    } else {
+      op = OperationsType.Show;
+    }
+    buttons.push(
+      <PrimaryButton
+        key={text}
+        text={text}
+        onClick={handler}
+        disabled={hasReachedEnd(query, op)}
+      />
+    );
   }
   return buttons;
 };
 
-const hasReachedEnd = (query: QueryType, operation: OperationsType) => {
-  if (query.aggregation && operation != OperationsType.Aggregate) {
-    return true;
-  } else if (query.table && operation != OperationsType.Table) {
-    return true;
-  }
-  return false;
-};
 const renderOperationsView = (
   currentOperation: OperationsType,
   query: QueryType,
@@ -229,7 +251,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                     />
                   </>
                 )}
-                <div>{renderStateButtons(handleOperationsClick)}</div>
+                <div>{renderStateButtons(handleOperationsClick, query)}</div>
               </Box>
               {currentOperation &&
                 renderOperationsView(
