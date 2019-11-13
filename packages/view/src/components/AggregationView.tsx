@@ -55,6 +55,12 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     );
   };
 
+  const aggregationIsReady = (): boolean => {
+    return (
+      selectedProperties.length > 0 || selectedMethod === MethodTypes.Count
+    );
+  };
+
   /**
    * HANDLERS
    */
@@ -114,7 +120,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   };
 
   const handleClickDone = (): void => {
-    if (selectedProperties.length > 0 || selectedMethod === MethodTypes.Count) {
+    if (aggregationIsReady()) {
       const aggregation: AggregationType = {
         method: selectedMethod,
         properties: selectedProperties
@@ -136,7 +142,12 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     <Box>
       <FloatRightDiv>
         <H3>Aggregate</H3>
-        <Button text={"Apply"} onClick={handleClickDone} floatRight />
+        <Button
+          text={"Apply"}
+          onClick={handleClickDone}
+          floatRight
+          disabled={!aggregationIsReady()}
+        />
       </FloatRightDiv>
       <div>
         <H5>Calculate the</H5>

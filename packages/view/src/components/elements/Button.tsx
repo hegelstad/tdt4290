@@ -12,6 +12,9 @@ const ButtonStyled = styled.button`
   :hover {
     background-color: ${props => props.theme.colors.button.secondaryHover};
   }
+  :disabled {
+    background-color: ${props => props.theme.colors.button.secondaryHover};
+  }
 `;
 
 const defaultProps: {
