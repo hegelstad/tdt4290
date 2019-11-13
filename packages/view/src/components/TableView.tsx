@@ -171,15 +171,15 @@ const TableView = ({
   const AddColumnNameButton = styled.button.attrs(() => ({
     onClick: () => handleAddValueInputField()
   }))`
-    width: 20%;
-    margin: 0 3% 0 77%;
+    width: 10%;
+    margin: 0 1% 20px 37%;
   `;
 
   const RemoveColumnNameButton = styled.button.attrs(() => ({
     onClick: () => handleRemoveValueInputField()
   }))`
-    width: 20%;
-    margin: 0 77% 0 3%;
+    width: 10%;
+    margin: 0 37% 20px 2%;
   `;
 
   const FieldLabel = styled.div`
@@ -195,7 +195,7 @@ const TableView = ({
     /*border-style: dotted;
   border-color: #0030F0;*/
     width: 48%;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     margin-left: 1%;
   `;
   const ColumnNameWrapper = styled.div`
@@ -203,7 +203,7 @@ const TableView = ({
   border-color: #50FF00;*/
     width: 48%;
     float: right;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     margin-right: 1%;
   `;
 
@@ -249,9 +249,6 @@ const TableView = ({
                   ))}
                 </FieldSelect>
               ))}
-              <AddColumnNameButton disabled={fieldKeys.length === 5}>
-                +
-              </AddColumnNameButton>
             </FieldWrapper>
 
             {hasColumnNames && (
@@ -270,12 +267,15 @@ const TableView = ({
                     />
                   </React.Fragment>
                 ))}
-                <RemoveColumnNameButton disabled={fieldKeys.length <= 1}>
-                  -
-                </RemoveColumnNameButton>
               </ColumnNameWrapper>
             )}
           </TableWrapper>
+          <AddColumnNameButton disabled={fieldKeys.length === 5}>
+            +
+          </AddColumnNameButton>
+          <RemoveColumnNameButton disabled={fieldKeys.length <= 1}>
+            -
+          </RemoveColumnNameButton>
 
           <TableButton onClick={() => handleToggleColumnNamesInput()}>
             {hasColumnNames ? "Remove column names" : "Add column Names"}
