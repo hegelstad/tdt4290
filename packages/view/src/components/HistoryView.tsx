@@ -26,15 +26,15 @@ const findValueRangeText = (valueRange: ValueRangeTypes): string => {
   } else if (valueRange === ValueRangeTypes.Lt) {
     return "s less than";
   } else if (valueRange === ValueRangeTypes.Normal) {
-    return "";
+    return " equal to";
   } else if (valueRange === ValueRangeTypes.Not) {
-    return "s not";
+    return "s not equal to";
   } else if (valueRange === ValueRangeTypes.Outside) {
     return "s outside range";
   } else if (valueRange === ValueRangeTypes.Within) {
-    return "s among:";
+    return "s which are in the set:";
   } else if (valueRange === ValueRangeTypes.Without) {
-    return "s not among:";
+    return "s which are not in the set:";
   }
   return "";
 };
@@ -54,7 +54,7 @@ const FilterBranch = ({ branch }: { branch: FilterType }) => {
     <>
       <H4>Filtering components where</H4>
       <p>
-        {branch.property.label + " has value "}
+        {branch.property.label + " has value"}
         {findValueRangeText(branch.valueRange) + " "}
         {branch.value.join(findValueSeparator(branch.valueRange))}
       </p>
