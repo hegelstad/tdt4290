@@ -16,6 +16,7 @@ import {
 
 const HistoryRow = styled.div`
   max-height: ${props => props.theme.box.historyHeight};
+  margin-left: auto;
 `;
 
 const findValueRangeText = (valueRange: ValueRangeTypes): string => {

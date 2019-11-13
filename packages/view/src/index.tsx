@@ -30,11 +30,20 @@ import Button from "./components/elements/Button";
 /**
  * STYLED COMPONENTS
  */
-const MainWrap = styled.div`
+const OuterWrap = styled.div`
+  display: flex;
+`;
+
+const InnerWrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const ButtonWrap = styled.div`
+  margin-top: 20px;
 `;
 
 const PrimaryButton = styled(Button)`
@@ -42,6 +51,7 @@ const PrimaryButton = styled(Button)`
   background-color: ${props => props.theme.colors.button.primaryBackground};
   border-radius: ${props => props.theme.roundRadius};
   border-color: ${props => props.theme.colors.button.primaryBackground};
+  margin: 5px;
 
   :hover {
     background-color: ${props => props.theme.colors.button.primaryHover};
@@ -190,9 +200,9 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     query.aggregation !== undefined || query.table !== undefined;
 
   return (
-    <MainWrap>
+    <OuterWrap>
       <ThemeProvider theme={theme}>
-        <>
+        <InnerWrap>
           {query.path && query.path.length > 0 && (
             <PastSteps
               path={query.path}
@@ -218,7 +228,9 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                     />
                   </>
                 )}
-                <div>{renderStateButtons(handleOperationsClick)}</div>
+                <ButtonWrap>
+                  {renderStateButtons(handleOperationsClick)}
+                </ButtonWrap>
               </Box>
               {currentOperation &&
                 renderOperationsView(
@@ -239,9 +251,9 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
               />
             </div>
           )}
-        </>
+        </InnerWrap>
       </ThemeProvider>
-    </MainWrap>
+    </OuterWrap>
   );
 };
 

@@ -92,6 +92,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
 
     setLabelSuggestions(labelSuggestions);
     setEdgeSuggestions(edgeSuggestions);
+    setNot(false);
   }, [inputValue, props.query]);
 
   /**
