@@ -8,6 +8,7 @@ const FieldSelect = styled.select.attrs(props => ({
   padding: 2px;
   margin: 0 5% 8px 5%;
   width: 70%;
+  height: 24px;
 `;
 
 export const Option = ({ text }: { text: string }) => {

@@ -151,50 +151,52 @@ const TableView = ({
     type: "text"
   }))`
     padding: 2px;
-    margin: 0 28% 8px 10%;
-    width: 65%;
+    margin: 0 7% 8px 3%;
+    width: 90%;
   `;
 
   const FieldSelect = styled.select`
     padding: 2px;
-    margin: 0 7% 8px 27%;
-    width: 65%;
+    margin: 0 3% 8px 7%;
+    width: 90%;
+    height: 24px;
   `;
 
   const TableButton = styled.button.attrs(() => ({}))`
     padding: 2px 5px;
-    margin: 5px 39% 8px 37%;
-    width: 20%;
+    margin: 5px 23% 8px 23%;
+    width: 50%;
   `;
 
   const AddColumnNameButton = styled.button.attrs(() => ({
     onClick: () => handleAddValueInputField()
   }))`
-    width: 9%;
-    margin: 0 1% 0 37%;
+    width: 20%;
+    margin: 0 3% 0 77%;
   `;
 
   const RemoveColumnNameButton = styled.button.attrs(() => ({
     onClick: () => handleRemoveValueInputField()
   }))`
-    width: 9%;
-    margin: 0 37% 0 1%;
+    width: 20%;
+    margin: 0 77% 0 3%;
   `;
 
   const FieldLabel = styled.div`
-    width: 30%;
-    margin: 0 0 8px 27%;
+    width: 80%;
+    margin: 0 0 8px 7%;
   `;
 
   const ColumnNameLabel = styled.div`
-    width: 30%;
-    margin: 0 0 8px 10%;
+    width: 80%;
+    margin: 0 0 8px 3%;
   `;
   const FieldWrapper = styled.div`
     /*border-style: dotted;
   border-color: #0030F0;*/
-    width: 46%;
+    width: 48%;
     margin-bottom: 20px;
+    margin-left: 1%;
   `;
   const ColumnNameWrapper = styled.div`
     /*border-style: dotted;
@@ -202,6 +204,7 @@ const TableView = ({
     width: 48%;
     float: right;
     margin-bottom: 20px;
+    margin-right: 1%;
   `;
 
   const TableWrapper = styled.div`
@@ -246,6 +249,9 @@ const TableView = ({
                   ))}
                 </FieldSelect>
               ))}
+              <AddColumnNameButton disabled={fieldKeys.length === 5}>
+                +
+              </AddColumnNameButton>
             </FieldWrapper>
 
             {hasColumnNames && (
@@ -264,15 +270,13 @@ const TableView = ({
                     />
                   </React.Fragment>
                 ))}
+                <RemoveColumnNameButton disabled={fieldKeys.length <= 1}>
+                  -
+                </RemoveColumnNameButton>
               </ColumnNameWrapper>
             )}
           </TableWrapper>
-          <AddColumnNameButton disabled={fieldKeys.length === 5}>
-            +
-          </AddColumnNameButton>
-          <RemoveColumnNameButton disabled={fieldKeys.length <= 1}>
-            -
-          </RemoveColumnNameButton>
+
           <TableButton onClick={() => handleToggleColumnNamesInput()}>
             {hasColumnNames ? "Remove column names" : "Add column Names"}
           </TableButton>
