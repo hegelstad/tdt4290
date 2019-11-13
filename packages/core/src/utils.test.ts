@@ -10,6 +10,10 @@ const config: ConfigType = {
 };
 
 test("The test config works", async () => {
+  if (!(process.env.ORG && process.env.TOKEN)) {
+    console.log("Skipping env test");
+    return;
+  }
   const response = await callAPI(config, {
     query: "g.V().limit(10)"
   });
