@@ -3,7 +3,7 @@ import { stringifyPath } from "core";
 import { TextQueryType } from "../types";
 import Button from "./elements/Button";
 import { Box } from "./elements/Layout";
-import { H5 } from "./elements/Text";
+import { H3, H5 } from "./elements/Text";
 
 //This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
 const TextQuery = (props: TextQueryType): JSX.Element => {
@@ -41,6 +41,7 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
 
   return (
     <Box>
+      <H3>Query</H3>
       <H5>{query}</H5>
       <div>
         <Button

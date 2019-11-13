@@ -135,7 +135,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   return props.query && props.query.path && props.query.path.length > 0 ? (
     <Box>
       <FloatRightDiv>
-        <H3>Aggregations</H3>
+        <H3>Aggregate</H3>
         <Button text={"Apply"} onClick={handleClickDone} floatRight />
       </FloatRightDiv>
       <div>

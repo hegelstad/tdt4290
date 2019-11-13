@@ -4,8 +4,13 @@ import styled from "styled-components";
 const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
   max-height: 30px;
-  background-color: lightGray;
+  background-color: ${props => props.theme.colors.button.background};
+  color: white;
   margin-bottom: 3px;
+
+  :hover {
+    background-color: ${props => props.theme.colors.button.backgroundHover};
+  }
 `;
 
 const defaultProps: {

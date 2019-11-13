@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, HorizontalLine, FloatRightDiv } from "./elements/Layout";
-import { H3, H4, H5 } from "./elements/Text";
+import { H1, H4 } from "./elements/Text";
 import Button from "./elements/Button";
 import styled from "styled-components";
 import {
@@ -10,7 +10,8 @@ import {
   FilterType,
   TableType,
   AggregationType,
-  ValueRangeTypes
+  ValueRangeTypes,
+  MethodTypes
 } from "core";
 
 const HistoryRow = styled.div`
@@ -50,24 +51,25 @@ const findValueSeparator = (valueRange: ValueRangeTypes): string => {
 
 const FilterBranch = ({ branch }: { branch: FilterType }) => {
   return (
-    <div>
-      <div>
-        Filtering the field {branch.property.label} on value
-        {findValueRangeText(branch.valueRange)}{" "}
+    <>
+      <H4>Filtering components where</H4>
+      <p>
+        {branch.property.label + " has value "}
+        {findValueRangeText(branch.valueRange) + " "}
         {branch.value.join(findValueSeparator(branch.valueRange))}
-      </div>
-    </div>
+      </p>
+    </>
   );
 };
 
 const LabelBranch = ({ branch }: { branch: LabelType }) => {
   return (
     <>
-      <H5>
+      <H4>
         {!branch.notValue
           ? "Selected component:"
-          : "Selected everything other than: "}
-      </H5>
+          : "Selected everything that is not: "}
+      </H4>
       <p>{branch.value}</p>
     </>
   );
@@ -76,49 +78,54 @@ const LabelBranch = ({ branch }: { branch: LabelType }) => {
 const EdgeBranch = ({ branch }: { branch: EdgeType }) => {
   return (
     <>
-      <H5>
+      <H4>
         {!branch.notValue
           ? "Followed reference:"
           : "Followed every other reference than: "}
-      </H5>
+      </H4>
       <p>{branch.value}</p>
     </>
   );
 };
 
-const TableBranch = ({ index, table }: { index: number; table: TableType }) => {
+const TableBranch = ({ table }: { table: TableType }) => {
   return (
-    <div>
-      <div>Step: {index}</div>
-      <div>
-        Created table on {table.properties.length > 1 ? "fields; " : "field "}
-        {table.properties.map(prop => prop.label).join(", ")}{" "}
-        {table.hasColumnNames
-          ? (table.columnNames.length > 1
-              ? "with column names: "
-              : "with column name ") + table.columnNames.join(", ")
-          : ""}
-      </div>
-    </div>
+    <>
+      <H4>
+        Created table with {table.properties.length > 1 ? "fields " : "field "}{" "}
+      </H4>
+      {table.properties.map((prop, i) => (
+        <p key={"TableProp" + i}>{prop.label}</p>
+      ))}
+      {table.hasColumnNames
+        ? (table.columnNames.length > 1 ? (
+            <H4> and set column names: </H4>
+          ) : (
+            <H4> and set column name: </H4>
+          )) + table.columnNames.join(", ")
+        : ""}
+    </>
   );
 };
 
 const AggregationBranch = ({
-  index,
   aggregation
 }: {
-  index: number;
   aggregation: AggregationType;
 }) => {
   return (
-    <div>
-      <div>Step: {index}</div>
-      <div>
-        Aggregated with {aggregation.method}-method on{" "}
-        {aggregation.properties.length > 1 ? "fields: " : "field: "}
-        {aggregation.properties.map(prop => prop.label).join(", ")}{" "}
-      </div>
-    </div>
+    <>
+      {aggregation.method === MethodTypes.Count ? (
+        <H4> Calculated the count</H4>
+      ) : (
+        <div>
+          <H4>{"Calculated the " + aggregation.method + " of: "}</H4>
+          {aggregation.properties.map((prop, i) => (
+            <p key={"AggProp" + i}>{prop.label}</p>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
@@ -141,12 +148,12 @@ const HistoryView = ({
     <div key={index}>
       {button ? (
         <FloatRightDiv>
-          <H3>{"Current step"}</H3>
+          <H1>CURRENT STEP</H1>
           <Button text={"X"} onClick={handleStepBack} floatRight />
         </FloatRightDiv>
       ) : (
         <div>
-          <H4>{"Past step"}</H4>
+          <H4>PAST STEP</H4>
         </div>
       )}
       <div>
@@ -161,17 +168,22 @@ const HistoryView = ({
       </div>
     </div>
   ) : aggregation ? (
-    <AggregationBranch
-      key={history.length}
-      index={history.length + 1}
-      aggregation={aggregation}
-    />
+    <div key={index}>
+      <FloatRightDiv>
+        <H1>CURRENT STEP</H1>
+        <Button text={"X"} onClick={handleStepBack} floatRight />
+      </FloatRightDiv>
+      <HorizontalLine />
+      <AggregationBranch key={history.length} aggregation={aggregation} />
+    </div>
   ) : table ? (
-    <TableBranch
-      key={history.length}
-      index={history.length + 1}
-      table={table}
-    />
+    <div key={index}>
+      <FloatRightDiv>
+        <H1>CURRENT STEP</H1>
+        <Button text={"X"} onClick={handleStepBack} floatRight />
+      </FloatRightDiv>
+      <TableBranch key={history.length} table={table} />
+    </div>
   ) : (
     <div />
   );
@@ -190,7 +202,6 @@ export const CurrentStep = ({
   table?: TableType;
   handleStepBack: () => void;
 }) => {
-  console.log("CurrentStep: ", currentStep);
   return (
     <div>
       <HistoryView

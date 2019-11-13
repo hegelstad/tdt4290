@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TableCallbackType } from "../types";
 import { PropertyType, PropertyTypes } from "core";
-import { Box } from "./elements/Layout";
+import { Box, FloatRightDiv } from "./elements/Layout";
+import { H3 } from "./elements/Text";
+import Button from "./elements/Button";
+
+export const formatFieldName = (fieldName: string) => {
+  let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
+  formatedFieldName =
+    formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
+  return formatedFieldName;
+};
 
 const TableView = ({
   properties,
@@ -124,13 +133,6 @@ const TableView = ({
     }
   };
 
-  const formatFieldName = (fieldName: string) => {
-    let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
-    formatedFieldName =
-      formatedFieldName[0].toUpperCase() + formatedFieldName.slice(1);
-    return formatedFieldName;
-  };
-
   // styled components
 
   const componentHasProperties = (properties: string[]) => {
@@ -211,7 +213,14 @@ const TableView = ({
     <>
       {componentHasProperties(properties.map(property => property.label)) && (
         <Box>
-          <h3>Table:</h3>
+          <FloatRightDiv>
+            <H3>Create table</H3>
+            <Button
+              text={"Apply"}
+              onClick={() => handleSubmit()}
+              disabled={!fieldsAreFilled}
+            />
+          </FloatRightDiv>
           <TableWrapper>
             <FieldWrapper>
               <FieldLabel>
@@ -266,12 +275,6 @@ const TableView = ({
           </RemoveColumnNameButton>
           <TableButton onClick={() => handleToggleColumnNamesInput()}>
             {hasColumnNames ? "Remove column names" : "Add column Names"}
-          </TableButton>
-          <TableButton
-            onClick={() => handleSubmit()}
-            disabled={!fieldsAreFilled}
-          >
-            Create table query
           </TableButton>
         </Box>
       )}

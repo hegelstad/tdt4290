@@ -1,5 +1,4 @@
 const grayDark = "#373737";
-const grayLight = "light-grey";
 const gray = "#d6d9e1";
 const white = "#fff";
 const offWhite = "#f7f8fa";
@@ -13,7 +12,12 @@ const theme = {
       border: black
     },
     button: {
-      background: grayLight
+      textColor: "#white",
+      background: "#1574ff",
+      backgroundHover: "#1130bb"
+    },
+    box: {
+      background: "#3E4753"
     },
     radiobutton: {},
     background: white,

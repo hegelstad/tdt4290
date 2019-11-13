@@ -10,14 +10,14 @@ export const FloatRightDiv = styled.div`
 
 export const Box = styled.div`
   display: ${props => props.theme.box.display};
-  border: ${props => props.theme.box.border};
-  border-radius: ${props => props.theme.box.borderRadius};
+  border: 1px solid ${props => props.theme.colors.box.background};
   padding: ${props => props.theme.box.padding};
+  border-radius: ${props => props.theme.box.borderRadius};
   margin: ${props => props.theme.box.margin};
   width: ${props => props.theme.box.width};
 `;
 
 export const HorizontalLine = styled.div`
-  border-top: ${props => props.theme.border.style};
+  border-top: 2px solid #670767;
   margin-bottom: 15px;
 `;

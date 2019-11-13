@@ -3,11 +3,15 @@ import styled from "styled-components";
 import { getSuggestions } from "core";
 import { LabelType, EdgeType, BranchType, QueryType } from "core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faPlusCircle,
+  faMinusCircle
+} from "@fortawesome/free-solid-svg-icons";
 import { BranchSelectorPropsType } from "../types";
 import { Box, HorizontalLine } from "./elements/Layout";
 import { ListItemButton } from "./elements/Button";
-import { H3, H4 } from "./elements/Text";
+import { H3, H4, H5 } from "./elements/Text";
 import Dropdown from "./elements/Dropdown";
 import Input from "./elements/Input";
 
@@ -18,16 +22,18 @@ const UnorderedList = styled.ul`
   display: inline;
 `;
 
-const NotWrap = styled.div`
-  margin-bottom: 35px;
+const ClickTextWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const LinkStyledText = styled.p`
   cursor: pointer;
-  width: 80px;
   padding: 2px;
   border-radius: ${props => props.theme.roundRadius};
-  color: ${props => props.theme.colors.blue};
+  color: #3e4753;
+  margin-left: 5px;
 `;
 
 const ClickableText = ({
@@ -199,45 +205,51 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
       <Box>
         <H3>{props.headline}</H3>
         <HorizontalLine />
-        <NotWrap>
-          <p>When selecting</p>
-          <Dropdown onChange={handleDropDownChange} value={String(notValue)}>
-            <option value="false">include selected</option>
-            <option value="true">include everything other than selected</option>
-          </Dropdown>
-        </NotWrap>
         <div>
           <FontAwesomeIcon icon={faSearch} />
           <Input
             placeholder="Start typing..."
             autoFocus
-            onInput={handleInputChange}
-            defaultValue={inputValue}
+            onChange={handleInputChange}
+            value={inputValue}
           />
         </div>
-        <H4>
-          {props.query.path.length > 0
-            ? "Select all connected components of type"
-            : "Select component"}
-        </H4>
+        <H4>COMPONENTS</H4>
+        <Dropdown onChange={handleDropDownChange} value={String(notValue)}>
+          <option value="false">Select</option>
+          <option value="true">Select everything that is not</option>
+        </Dropdown>
         <UnorderedList>
           {showMoreLabels
             ? labelSuggestions.map(renderSuggestion)
             : labelSuggestions.slice(0, MAX_SUGGESTIONS).map(renderSuggestion)}
         </UnorderedList>
-        <ClickableText
-          onClick={handleClickOnShowMoreLabels}
-          shouldBeVisible={labelSuggestions.length > MAX_SUGGESTIONS}
-        >
-          {showMoreLabels ? "Show less" : "Show more"}
-        </ClickableText>
-        {edgeSuggestions.length > 0 ? (
+        {labelSuggestions.length > MAX_SUGGESTIONS ? (
+          <ClickTextWrap>
+            {showMoreLabels ? (
+              <FontAwesomeIcon icon={faMinusCircle} />
+            ) : (
+              <FontAwesomeIcon icon={faPlusCircle} />
+            )}
+            <ClickableText
+              onClick={handleClickOnShowMoreLabels}
+              shouldBeVisible={labelSuggestions.length > MAX_SUGGESTIONS}
+            >
+              {showMoreLabels ? "SHOW LESS" : "SHOW MORE"}
+            </ClickableText>
+          </ClickTextWrap>
+        ) : null}
+        {edgeSuggestions.length > 0 &&
+        props.query &&
+        props.query.path &&
+        props.query.path.length > 0 ? (
           <>
-            <H4>
+            <H4>REFERENCES</H4>
+            <H5>
               {currentBranch && currentBranch.type === "label"
                 ? "Select components that:"
                 : "Follow reference"}
-            </H4>
+            </H5>
             <UnorderedList>
               {showMoreEdges
                 ? edgeSuggestions.map(renderSuggestion)
@@ -245,12 +257,21 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
                     .slice(0, MAX_SUGGESTIONS)
                     .map(renderSuggestion)}
             </UnorderedList>
-            <ClickableText
-              onClick={handleClickOnShowMoreEdges}
-              shouldBeVisible={edgeSuggestions.length > MAX_SUGGESTIONS}
-            >
-              {showMoreEdges ? "Show less" : "Show more"}
-            </ClickableText>
+            {edgeSuggestions.length > MAX_SUGGESTIONS ? (
+              <ClickTextWrap>
+                {showMoreEdges ? (
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                ) : (
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                )}
+                <ClickableText
+                  onClick={handleClickOnShowMoreEdges}
+                  shouldBeVisible={edgeSuggestions.length > MAX_SUGGESTIONS}
+                >
+                  {showMoreEdges ? "SHOW LESS" : "SHOW MORE"}
+                </ClickableText>
+              </ClickTextWrap>
+            ) : null}
           </>
         ) : null}
       </Box>

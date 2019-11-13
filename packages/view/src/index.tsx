@@ -52,11 +52,16 @@ const renderStateButtons = (
 ) => {
   const buttons = [];
   for (const operation in OperationsType) {
-    const text = operation.charAt(0).toUpperCase() + operation.slice(1);
+    let text = operation.charAt(0).toUpperCase() + operation.slice(1);
+    if (text === "Show") {
+      text = "Show query";
+    } else if (text === "Table") {
+      text = "Create table";
+    }
     buttons.push(
       <StateButton
         key={text}
-        text={text === "Show" ? "Show query" : text}
+        text={text}
         onClick={handler}
         isActive={currentOperation === operation}
       />
@@ -101,32 +106,17 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [currentOperation, setCurrentOperation] = useState<OperationsType>();
 
   /**
-   * If the last operation was a filter or aggregation, show the
-   * query. If not, hide it
+   * Unless the current operation is Show, and the query changes,
+   * hide the operation
    */
   useEffect(() => {
-    if (
-      (query.path &&
-        query.path.length > 0 &&
-        query.path[query.path.length - 1].type === "filter") ||
-      query.aggregation
-    ) {
-      setCurrentOperation(OperationsType.Show);
-    } else {
+    if (currentOperation != OperationsType.Show) {
       setCurrentOperation(undefined);
     }
   }, [query]);
 
   const branchSelectorHeadline =
-    query.path && query.path.length > 0
-      ? "Next step"
-      : "Where would you like to start?";
-  const branchSelectorHeadlinePrefix =
-    query.path &&
-    query.path.length > 0 &&
-    query.path[query.path.length - 1].notValue
-      ? "Everything but "
-      : "";
+    query.path && query.path.length > 0 ? "NEXT STEP" : "FIRST STEP";
 
   const handleOperationsClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -151,7 +141,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
       }
       default: {
         throw new Error(
-          "Unkown operation. Expected 'filter', 'aggregate' or 'show query'. Got: " +
+          "Unkown operation. Expected 'filter', 'aggregate', 'create table' or 'show query'. Got: " +
             value
         );
       }
@@ -209,7 +199,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     <MainWrap>
       <ThemeProvider theme={theme}>
         <>
-          {query.path && query.path.length > 1 && (
+          {query.path && query.path.length > 0 && (
             <PastSteps
               path={query.path}
               handleStepBack={userWantsToStepBack}
@@ -252,7 +242,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
             <div>
               <BranchSelector
                 query={query}
-                headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
+                headline={branchSelectorHeadline}
                 followBranch={userWantsToFollowBranch}
               />
             </div>

@@ -32,7 +32,7 @@ export enum OperationsType {
   Filter = "filter",
   Aggregate = "aggregate",
   Show = "show query",
-  Table = "table"
+  Table = "create table"
 }
 
 export type FilterCallbackType = (
