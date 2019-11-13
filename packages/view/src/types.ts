@@ -29,7 +29,7 @@ export interface TextQueryType {
 
 export type FilterCallbackType = (
   field: PropertyType,
-  value: any,
+  value: any[],
   valueRange: ValueRangeTypes
 ) => void;
 

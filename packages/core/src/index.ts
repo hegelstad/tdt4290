@@ -282,7 +282,7 @@ export const followBranch = async (
 export const filterQuery = async (
   query: QueryType,
   property: PropertyType,
-  value: any,
+  value: any[],
   valueRange: ValueRangeTypes
 ): Promise<QueryType> => {
   const filter: FilterType = { type: "filter", property, value, valueRange };
