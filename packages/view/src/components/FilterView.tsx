@@ -182,14 +182,14 @@ const FilterView = ({
     onClick: () => handleAddValueInputField()
   }))`
     width: 9%;
-    margin: 0 1% 0 37%;
+    margin: 5px 1% 0 37%;
   `;
 
   const RemoveValueInputButton = styled.button.attrs(() => ({
     onClick: () => handleRemoveValueInputField()
   }))`
     width: 9%;
-    margin: 0 37% 0 1%;
+    margin: 5px 37% 0 1%;
   `;
 
   const InsideText = styled.div`
