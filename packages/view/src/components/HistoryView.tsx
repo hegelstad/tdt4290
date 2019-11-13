@@ -97,13 +97,21 @@ const TableBranch = ({ table }: { table: TableType }) => {
       {table.properties.map((prop, i) => (
         <p key={"TableProp" + i}>{prop.label}</p>
       ))}
-      {table.hasColumnNames
-        ? (table.columnNames.length > 1 ? (
+      {table.hasColumnNames ? (
+        table.columnNames.length > 1 ? (
+          <>
             <H4> and set column names: </H4>
-          ) : (
+            <p>{table.columnNames.join(", ")}</p>
+          </>
+        ) : (
+          <>
             <H4> and set column name: </H4>
-          )) + table.columnNames.join(", ")
-        : ""}
+            <p>{table.columnNames.join(", ")}</p>
+          </>
+        )
+      ) : (
+        ""
+      )}
     </>
   );
 };
