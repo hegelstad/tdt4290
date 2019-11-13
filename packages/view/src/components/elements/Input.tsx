@@ -8,7 +8,8 @@ const Input = styled.input.attrs(props => ({
 }))`
   padding: 2px;
   margin-bottom: 8px;
-  margin-left: 10px;
+  margin-left: 5%;
+  width: 68%;
 `;
 
 export default Input;
