@@ -4,12 +4,13 @@ import styled from "styled-components";
 const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
   max-height: 30px;
-  background-color: ${props => props.theme.colors.button.background};
-  color: white;
+  background-color: ${props => props.theme.colors.button.secondaryBackground};
+  color: ${props => props.theme.colors.button.secondaryText};
   margin-bottom: 3px;
+  border-style: solid;
 
   :hover {
-    background-color: ${props => props.theme.colors.button.backgroundHover};
+    background-color: ${props => props.theme.colors.button.secondaryHover};
   }
 `;
 
@@ -28,14 +29,16 @@ const defaultProps: {
 const Button = ({
   text,
   onClick,
-  disabled
+  disabled,
+  className
 }: {
   text: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  className?: string;
 }) => {
   return (
-    <ButtonStyled onClick={onClick} disabled={disabled}>
+    <ButtonStyled className={className} onClick={onClick} disabled={disabled}>
       {text}
     </ButtonStyled>
   );

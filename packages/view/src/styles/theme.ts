@@ -12,9 +12,12 @@ const theme = {
       border: black
     },
     button: {
-      textColor: "#white",
-      background: "#1574ff",
-      backgroundHover: "#1130bb"
+      primaryText: "#ffffff",
+      primaryBackground: "#1574ff",
+      primaryHover: "#1130bb",
+      secondaryText: "#3E4753",
+      secondaryBackground: "#EEF1F3",
+      secondaryHover: "#CCD0D1"
     },
     box: {
       background: "#3E4753"

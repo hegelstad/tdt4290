@@ -18,6 +18,6 @@ export const Box = styled.div`
 `;
 
 export const HorizontalLine = styled.div`
-  border-top: 2px solid #670767;
+  border-top: 3px solid #670767;
   margin-bottom: 15px;
 `;

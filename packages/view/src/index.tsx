@@ -22,8 +22,7 @@ import {
   BranchSelectorPropsType,
   FilterCallbackType,
   TableCallbackType,
-  OperationsType,
-  ButtonPropsType
+  OperationsType
 } from "./types";
 import { Box } from "./components/elements/Layout";
 import Button from "./components/elements/Button";
@@ -38,17 +37,19 @@ const MainWrap = styled.div`
   justify-content: center;
 `;
 
-const StateButton = styled(Button)`
-  background-color: ${(props: ButtonPropsType) =>
-    props.isActive ? "white" : "lightGray"};
+const PrimaryButton = styled(Button)`
+  color: ${props => props.theme.colors.button.primaryText};
+  background-color: ${props => props.theme.colors.button.primaryBackground};
   border-radius: ${props => props.theme.roundRadius};
-  height: 30px;
-  margin: 30px;
+  border-color: ${props => props.theme.colors.button.primaryBackground};
+
+  :hover {
+    background-color: ${props => props.theme.colors.button.primaryHover};
+  }
 `;
 
 const renderStateButtons = (
-  handler: (event: React.MouseEvent<HTMLButtonElement>) => void,
-  currentOperation?: OperationsType
+  handler: (event: React.MouseEvent<HTMLButtonElement>) => void
 ) => {
   const buttons = [];
   for (const operation in OperationsType) {
@@ -58,14 +59,7 @@ const renderStateButtons = (
     } else if (text === "Table") {
       text = "Create table";
     }
-    buttons.push(
-      <StateButton
-        key={text}
-        text={text}
-        onClick={handler}
-        isActive={currentOperation === operation}
-      />
-    );
+    buttons.push(<PrimaryButton key={text} text={text} onClick={handler} />);
   }
   return buttons;
 };
@@ -224,9 +218,7 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
                     />
                   </>
                 )}
-                <div>
-                  {renderStateButtons(handleOperationsClick, currentOperation)}
-                </div>
+                <div>{renderStateButtons(handleOperationsClick)}</div>
               </Box>
               {currentOperation &&
                 renderOperationsView(
