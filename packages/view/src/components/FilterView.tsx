@@ -194,7 +194,7 @@ const FilterView = ({
 
   const InsideText = styled.div`
     width: 10%;
-    margin: -2px 44% 6px 42%;
+    margin: -2px 56% 6px 34%;
     text-align: center;
   `;
 
