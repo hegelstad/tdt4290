@@ -25,7 +25,7 @@ import {
   OperationsType
 } from "./types";
 import { Box } from "./components/elements/Layout";
-import Button from "./components/elements/Button";
+import { PrimaryButton } from "./components/elements/Button";
 
 /**
  * STYLED COMPONENTS
@@ -44,18 +44,6 @@ const InnerWrap = styled.div`
 
 const ButtonWrap = styled.div`
   margin-top: 20px;
-`;
-
-const PrimaryButton = styled(Button)`
-  color: ${props => props.theme.colors.button.primaryText};
-  background-color: ${props => props.theme.colors.button.primaryBackground};
-  border-radius: ${props => props.theme.roundRadius};
-  border-color: ${props => props.theme.colors.button.primaryBackground};
-  margin: 5px;
-
-  :hover {
-    background-color: ${props => props.theme.colors.button.primaryHover};
-  }
 `;
 
 const renderStateButtons = (

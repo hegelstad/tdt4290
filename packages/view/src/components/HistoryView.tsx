@@ -1,5 +1,9 @@
 import React from "react";
-import { Box, HorizontalLine, FloatRightDiv } from "./elements/Layout";
+import {
+  Box,
+  HorizontalLine,
+  HeaderAndButtonContainer
+} from "./elements/Layout";
 import { H1, H4 } from "./elements/Text";
 import Button from "./elements/Button";
 import styled from "styled-components";
@@ -148,10 +152,10 @@ const HistoryView = ({
   return historyStep ? (
     <div key={index}>
       {button ? (
-        <FloatRightDiv>
+        <HeaderAndButtonContainer>
           <H1>CURRENT STEP</H1>
           <Button text={"X"} onClick={handleStepBack} floatRight />
-        </FloatRightDiv>
+        </HeaderAndButtonContainer>
       ) : (
         <div>
           <H4>PAST STEP</H4>
@@ -170,19 +174,19 @@ const HistoryView = ({
     </div>
   ) : aggregation ? (
     <div key={index}>
-      <FloatRightDiv>
+      <HeaderAndButtonContainer>
         <H1>CURRENT STEP</H1>
         <Button text={"X"} onClick={handleStepBack} floatRight />
-      </FloatRightDiv>
+      </HeaderAndButtonContainer>
       <HorizontalLine />
       <AggregationBranch key={history.length} aggregation={aggregation} />
     </div>
   ) : table ? (
     <div key={index}>
-      <FloatRightDiv>
+      <HeaderAndButtonContainer>
         <H1>CURRENT STEP</H1>
         <Button text={"X"} onClick={handleStepBack} floatRight />
-      </FloatRightDiv>
+      </HeaderAndButtonContainer>
       <TableBranch key={history.length} table={table} />
     </div>
   ) : (

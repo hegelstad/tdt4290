@@ -1,11 +1,17 @@
 import styled from "styled-components";
 
-export const FloatRightDiv = styled.div`
+export const HeaderAndButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  overflow: auto;
+`;
+
+export const FloatRightButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 export const Box = styled.div`

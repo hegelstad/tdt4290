@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TableCallbackType } from "../types";
 import { PropertyType, PropertyTypes } from "core";
-import { Box, FloatRightDiv } from "./elements/Layout";
+import {
+  Box,
+  HeaderAndButtonContainer,
+  FloatRightButtonContainer
+} from "./elements/Layout";
 import { H3 } from "./elements/Text";
-import Button from "./elements/Button";
+import { PrimaryButton } from "./elements/Button";
 
 export const formatFieldName = (fieldName: string) => {
   let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
@@ -213,14 +217,9 @@ const TableView = ({
     <>
       {componentHasProperties(properties.map(property => property.label)) && (
         <Box>
-          <FloatRightDiv>
+          <HeaderAndButtonContainer>
             <H3>Create table</H3>
-            <Button
-              text={"Apply"}
-              onClick={() => handleSubmit()}
-              disabled={!fieldsAreFilled}
-            />
-          </FloatRightDiv>
+          </HeaderAndButtonContainer>
           <TableWrapper>
             <FieldWrapper>
               <FieldLabel>
@@ -276,6 +275,13 @@ const TableView = ({
           <TableButton onClick={() => handleToggleColumnNamesInput()}>
             {hasColumnNames ? "Remove column names" : "Add column Names"}
           </TableButton>
+          <FloatRightButtonContainer>
+            <PrimaryButton
+              text={"Apply"}
+              onClick={() => handleSubmit()}
+              disabled={!fieldsAreFilled}
+            />
+          </FloatRightButtonContainer>
         </Box>
       )}
     </>

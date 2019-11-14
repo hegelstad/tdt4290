@@ -60,4 +60,16 @@ export const ListItemButton = ({
   );
 };
 
+export const PrimaryButton = styled(Button)`
+  color: ${props => props.theme.colors.button.primaryText};
+  background-color: ${props => props.theme.colors.button.primaryBackground};
+  border-radius: ${props => props.theme.roundRadius};
+  border-color: ${props => props.theme.colors.button.primaryBackground};
+  margin: 5px;
+
+  :hover {
+    background-color: ${props => props.theme.colors.button.primaryHover};
+  }
+`;
+
 export default Button;

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
 import { PropertyType, PropertyTypes, ValueRangeTypes } from "core";
-import { Box, FloatRightDiv } from "./elements/Layout";
+import { Box, FloatRightButtonContainer } from "./elements/Layout";
 import Dropdown from "./elements/Dropdown";
 import { H3, H5 } from "./elements/Text";
 import Input from "./elements/Input";
-import Button from "./elements/Button";
+import { PrimaryButton } from "./elements/Button";
 
 const FilterView = ({
   properties,
@@ -210,15 +210,7 @@ const FilterView = ({
     <>
       {componentHasFilter(properties.map(property => property.label)) && (
         <Box>
-          <FloatRightDiv>
-            <H3>Filter</H3>
-            <Button
-              text={"Apply"}
-              disabled={!fieldsAreFilled}
-              onClick={handleSubmit}
-              floatRight
-            />
-          </FloatRightDiv>
+          <H3>Filter</H3>
           <H5>Choose components where</H5>
           <Dropdown value={fieldKey.label} onChange={handleFieldDropDownChange}>
             <option
@@ -325,6 +317,14 @@ const FilterView = ({
               </RemoveValueInputButton>
             </>
           )}
+          <FloatRightButtonContainer>
+            <PrimaryButton
+              text={"Apply"}
+              disabled={!fieldsAreFilled}
+              onClick={handleSubmit}
+              floatRight
+            />
+          </FloatRightButtonContainer>
         </Box>
       )}
     </>
