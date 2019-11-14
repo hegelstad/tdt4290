@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import {
@@ -13,7 +13,7 @@ import {
 } from "core";
 import BranchSelector from "./components/BranchSelector";
 import AggregationView from "./components/AggregationView";
-import HistoryView from "./components/HistoryView";
+import { CurrentStep, PastSteps } from "./components/HistoryView";
 import TextQuery from "./components/TextQuery";
 import FilterView from "./components/FilterView";
 import TableView from "./components/TableView";
@@ -21,25 +21,136 @@ import theme from "./styles/theme";
 import {
   BranchSelectorPropsType,
   FilterCallbackType,
-  TableCallbackType
+  TableCallbackType,
+  OperationsType
 } from "./types";
+import { Box } from "./components/elements/Layout";
+import Button from "./components/elements/Button";
+
+/**
+ * STYLED COMPONENTS
+ */
+const OuterWrap = styled.div`
+  display: flex;
+`;
+
+const InnerWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const ButtonWrap = styled.div`
+  margin-top: 20px;
+`;
+
+const PrimaryButton = styled(Button)`
+  color: ${props => props.theme.colors.button.primaryText};
+  background-color: ${props => props.theme.colors.button.primaryBackground};
+  border-radius: ${props => props.theme.roundRadius};
+  border-color: ${props => props.theme.colors.button.primaryBackground};
+  margin: 5px;
+
+  :hover {
+    background-color: ${props => props.theme.colors.button.primaryHover};
+  }
+`;
+
+const renderStateButtons = (
+  handler: (event: React.MouseEvent<HTMLButtonElement>) => void
+) => {
+  const buttons = [];
+  for (const operation in OperationsType) {
+    let text = operation.charAt(0).toUpperCase() + operation.slice(1);
+    if (text === "Show") {
+      text = "Show query";
+    } else if (text === "Table") {
+      text = "Create table";
+    }
+    buttons.push(<PrimaryButton key={text} text={text} onClick={handler} />);
+  }
+  return buttons;
+};
+
+const renderOperationsView = (
+  currentOperation: OperationsType,
+  query: QueryType,
+  filterCallback: FilterCallbackType,
+  tableCallback: TableCallbackType,
+  aggregationCallback: (aggregation: AggregationType) => void,
+  editCallback?: (query: string) => void
+) => {
+  return (
+    <div>
+      {currentOperation === OperationsType.Filter ? (
+        <FilterView
+          properties={query.properties || []}
+          callback={filterCallback}
+        />
+      ) : currentOperation === OperationsType.Table ? (
+        <TableView
+          properties={query.properties || []}
+          callback={tableCallback}
+        />
+      ) : currentOperation === OperationsType.Aggregate ? (
+        <AggregationView query={query} callback={aggregationCallback} />
+      ) : currentOperation === OperationsType.Show ? (
+        <TextQuery query={query} editFunction={editCallback} />
+      ) : (
+        <div />
+      )}
+    </div>
+  );
+};
 
 const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
   const [query, setQuery] = useState<QueryType>(props.query);
-  const branchSelectorHeadline =
-    query.path && query.path.length > 0
-      ? (query.path[query.path.length - 1].value as string)
-      : "Where would you like to start?";
-  const branchSelectorHeadlinePrefix =
-    query.path &&
-    query.path.length > 0 &&
-    query.path[query.path.length - 1].notValue
-      ? "Everything but "
-      : "";
+  const [currentOperation, setCurrentOperation] = useState<OperationsType>();
 
-  if (!query.branches && props.query.branches) {
-    setQuery(props.query);
-  }
+  /**
+   * Unless the current operation is Show, and the query changes,
+   * hide the operation
+   */
+  useEffect(() => {
+    if (currentOperation != OperationsType.Show) {
+      setCurrentOperation(undefined);
+    }
+  }, [query]);
+
+  const branchSelectorHeadline =
+    query.path && query.path.length > 0 ? "NEXT STEP" : "FIRST STEP";
+
+  const handleOperationsClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const value = (event.currentTarget.textContent as string).toLowerCase();
+    switch (value) {
+      case OperationsType.Filter: {
+        setCurrentOperation(OperationsType.Filter);
+        break;
+      }
+      case OperationsType.Aggregate: {
+        setCurrentOperation(OperationsType.Aggregate);
+        break;
+      }
+      case OperationsType.Show: {
+        setCurrentOperation(OperationsType.Show);
+        break;
+      }
+      case OperationsType.Table: {
+        setCurrentOperation(OperationsType.Table);
+        break;
+      }
+      default: {
+        throw new Error(
+          "Unkown operation. Expected 'filter', 'aggregate', 'create table' or 'show query'. Got: " +
+            value
+        );
+      }
+    }
+  };
 
   const userWantsToFollowBranch = (branch: BranchType): void => {
     followBranch(query, branch).then((newQuery: QueryType) => {
@@ -47,21 +158,6 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     });
   };
 
-  /**
-   * STYLED COMPONENTS
-   */
-  const MainWrap = styled.div`
-    max-width: 800px;
-    margin: 0 auto;
-    padding-left: 10px;
-    border: 1px solid black;
-    display: flex;
-  `;
-
-  const Column = styled.div`
-    flex: 50%;
-    padding: 10px;
-  `;
   const userWantsToFilterQuery: FilterCallbackType = (
     field,
     value,
@@ -100,43 +196,64 @@ const CoordinatorView = (props: BranchSelectorPropsType): JSX.Element => {
     setQuery(newQuery);
   };
 
-  return (
-    <MainWrap>
-      <ThemeProvider theme={theme}>
-        <Column>
-          <HistoryView
-            history={query.path}
-            aggregation={query.aggregation}
-            table={query.table}
-            handleStepBack={userWantsToStepBack}
-          />
-        </Column>
-      </ThemeProvider>
-      <ThemeProvider theme={theme}>
-        <Column>
-          <BranchSelector
-            query={query}
-            headline={branchSelectorHeadlinePrefix + branchSelectorHeadline}
-            followBranch={userWantsToFollowBranch}
-          />
-          <FilterView
-            properties={query.properties || []}
-            callback={userWantsToFilterQuery}
-          />
-          <TableView
-            properties={query.properties || []}
-            callback={userWantsToTableQuery}
-          />
-        </Column>
-      </ThemeProvider>
+  const hasAggregationOrTable =
+    query.aggregation !== undefined || query.table !== undefined;
 
+  return (
+    <OuterWrap>
       <ThemeProvider theme={theme}>
-        <Column>
-          <AggregationView query={query} callback={userWantsToAggregateQuery} />
-          <TextQuery query={query} editFunction={() => {}} />
-        </Column>
+        <InnerWrap>
+          {query.path && query.path.length > 0 && (
+            <PastSteps
+              path={query.path}
+              handleStepBack={userWantsToStepBack}
+              renderLastStep={hasAggregationOrTable}
+            />
+          )}
+          {query.path && query.path.length > 0 && (
+            <div>
+              <Box>
+                {query.path && (
+                  <>
+                    <CurrentStep
+                      currentStep={
+                        hasAggregationOrTable
+                          ? undefined
+                          : query.path[query.path.length - 1]
+                      }
+                      index={query.path.length - 1}
+                      aggregation={query.aggregation}
+                      table={query.table}
+                      handleStepBack={userWantsToStepBack}
+                    />
+                  </>
+                )}
+                <ButtonWrap>
+                  {renderStateButtons(handleOperationsClick)}
+                </ButtonWrap>
+              </Box>
+              {currentOperation &&
+                renderOperationsView(
+                  currentOperation,
+                  query,
+                  userWantsToFilterQuery,
+                  userWantsToTableQuery,
+                  userWantsToAggregateQuery
+                )}
+            </div>
+          )}
+          {!hasAggregationOrTable && (
+            <div>
+              <BranchSelector
+                query={query}
+                headline={branchSelectorHeadline}
+                followBranch={userWantsToFollowBranch}
+              />
+            </div>
+          )}
+        </InnerWrap>
       </ThemeProvider>
-    </MainWrap>
+    </OuterWrap>
   );
 };
 

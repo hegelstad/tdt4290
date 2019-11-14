@@ -1,15 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import { ButtonPropsType } from "../../types";
 
-const ButtonStyled = styled.button.attrs((props: ButtonPropsType) => ({
-  onClick: props.onClick
-}))`
+const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
-  background-color: ${props => props.theme.colors.button.background};
-  display: ${(props: ButtonPropsType) =>
-    props.floatRight ? "inline-block" : ""};
-  margin-left: ${(props: ButtonPropsType) => (props.floatRight ? "auto" : "")};
+  max-height: 30px;
+  background-color: ${props => props.theme.colors.button.secondaryBackground};
+  color: ${props => props.theme.colors.button.secondaryText};
+  margin-bottom: 3px;
+  border-style: solid;
+
+  :hover {
+    background-color: ${props => props.theme.colors.button.secondaryHover};
+  }
 `;
 
 const defaultProps: {
@@ -27,14 +29,16 @@ const defaultProps: {
 const Button = ({
   text,
   onClick,
-  floatRight
+  disabled,
+  className
 }: {
   text: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  floatRight: boolean;
+  disabled?: boolean;
+  className?: string;
 }) => {
   return (
-    <ButtonStyled onClick={onClick} floatRight={floatRight}>
+    <ButtonStyled className={className} onClick={onClick} disabled={disabled}>
       {text}
     </ButtonStyled>
   );
@@ -50,7 +54,7 @@ export const ListItemButton = ({
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <li>
+    <li key={text}>
       <Button text={text} onClick={onClick} />
     </li>
   );

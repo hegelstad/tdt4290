@@ -1,4 +1,8 @@
 import React from "react";
+import { Box, HorizontalLine, FloatRightDiv } from "./elements/Layout";
+import { H1, H4 } from "./elements/Text";
+import Button from "./elements/Button";
+import styled from "styled-components";
 import {
   BranchType,
   LabelType,
@@ -6,32 +10,14 @@ import {
   FilterType,
   TableType,
   AggregationType,
-  ValueRangeTypes
+  ValueRangeTypes,
+  MethodTypes
 } from "core";
 
-const LabelBranch = ({
-  index,
-  branch
-}: {
-  index: number;
-  branch: LabelType;
-}) => {
-  return (
-    <div>
-      <div>Step: {index}</div>
-      <div>All related components with type: {branch.value}</div>
-    </div>
-  );
-};
-
-const EdgeBranch = ({ index, branch }: { index: number; branch: EdgeType }) => {
-  return (
-    <div>
-      <div>Step: {index}</div>
-      <div>Follow reference: {branch.value}</div>
-    </div>
-  );
-};
+const HistoryRow = styled.div`
+  max-height: ${props => props.theme.box.historyHeight};
+  margin-left: auto;
+`;
 
 const findValueRangeText = (valueRange: ValueRangeTypes): string => {
   if (valueRange === ValueRangeTypes.Gt) {
@@ -64,100 +50,205 @@ const findValueSeparator = (valueRange: ValueRangeTypes): string => {
   return ", ";
 };
 
-const FilterBranch = ({
-  index,
-  branch
-}: {
-  index: number;
-  branch: FilterType;
-}) => {
+const FilterBranch = ({ branch }: { branch: FilterType }) => {
   return (
-    <div>
-      <div>Step: {index}</div>
-      <div>
-        Filtering the field {branch.property.label} on value
-        {findValueRangeText(branch.valueRange)}{" "}
+    <>
+      <H4>Filtering components where</H4>
+      <p>
+        {branch.property.label + " has value "}
+        {findValueRangeText(branch.valueRange) + " "}
         {branch.value.join(findValueSeparator(branch.valueRange))}
-      </div>
-    </div>
+      </p>
+    </>
   );
 };
 
-const TableBranch = ({ index, table }: { index: number; table: TableType }) => {
+const LabelBranch = ({ branch }: { branch: LabelType }) => {
   return (
-    <div>
-      <div>Step: {index}</div>
-      <div>
-        Created table on {table.properties.length > 1 ? "fields; " : "field "}
-        {table.properties.map(prop => prop.label).join(", ")}{" "}
-        {table.hasColumnNames
-          ? (table.columnNames.length > 1
-              ? "with column names: "
-              : "with column name ") + table.columnNames.join(", ")
-          : ""}
-      </div>
-    </div>
+    <>
+      <H4>
+        {!branch.notValue
+          ? "Selected component:"
+          : "Selected everything that is not: "}
+      </H4>
+      <p>{branch.value}</p>
+    </>
+  );
+};
+
+const EdgeBranch = ({ branch }: { branch: EdgeType }) => {
+  return (
+    <>
+      <H4>
+        {!branch.notValue
+          ? "Followed reference:"
+          : "Followed every other reference than: "}
+      </H4>
+      <p>{branch.value}</p>
+    </>
+  );
+};
+
+const TableBranch = ({ table }: { table: TableType }) => {
+  return (
+    <>
+      <H4>
+        Created table with {table.properties.length > 1 ? "fields " : "field "}{" "}
+      </H4>
+      {table.properties.map((prop, i) => (
+        <p key={"TableProp" + i}>{prop.label}</p>
+      ))}
+      {table.hasColumnNames
+        ? (table.columnNames.length > 1 ? (
+            <H4> and set column names: </H4>
+          ) : (
+            <H4> and set column name: </H4>
+          )) + table.columnNames.join(", ")
+        : ""}
+    </>
   );
 };
 
 const AggregationBranch = ({
-  index,
   aggregation
 }: {
-  index: number;
   aggregation: AggregationType;
 }) => {
   return (
-    <div>
-      <div>Step: {index}</div>
-      <div>
-        Aggregated with {aggregation.method}-method on{" "}
-        {aggregation.properties.length > 1 ? "fields: " : "field: "}
-        {aggregation.properties.map(prop => prop.label).join(", ")}{" "}
-      </div>
-    </div>
+    <>
+      {aggregation.method === MethodTypes.Count ? (
+        <H4> Calculated the count</H4>
+      ) : (
+        <div>
+          <H4>{"Calculated the " + aggregation.method + " of: "}</H4>
+          {aggregation.properties.map((prop, i) => (
+            <p key={"AggProp" + i}>{prop.label}</p>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
 const HistoryView = ({
-  history,
+  historyStep,
+  index,
+  aggregation,
+  table,
+  handleStepBack,
+  button
+}: {
+  historyStep?: BranchType;
+  index: number;
+  aggregation?: AggregationType;
+  table?: TableType;
+  handleStepBack: () => void;
+  button?: boolean;
+}) => {
+  return historyStep ? (
+    <div key={index}>
+      {button ? (
+        <FloatRightDiv>
+          <H1>CURRENT STEP</H1>
+          <Button text={"X"} onClick={handleStepBack} floatRight />
+        </FloatRightDiv>
+      ) : (
+        <div>
+          <H4>PAST STEP</H4>
+        </div>
+      )}
+      <div>
+        <HorizontalLine />
+        {historyStep.type === "label" ? (
+          <LabelBranch branch={historyStep} />
+        ) : historyStep.type === "edge" ? (
+          <EdgeBranch branch={historyStep} />
+        ) : (
+          <FilterBranch branch={historyStep} />
+        )}
+      </div>
+    </div>
+  ) : aggregation ? (
+    <div key={index}>
+      <FloatRightDiv>
+        <H1>CURRENT STEP</H1>
+        <Button text={"X"} onClick={handleStepBack} floatRight />
+      </FloatRightDiv>
+      <HorizontalLine />
+      <AggregationBranch key={history.length} aggregation={aggregation} />
+    </div>
+  ) : table ? (
+    <div key={index}>
+      <FloatRightDiv>
+        <H1>CURRENT STEP</H1>
+        <Button text={"X"} onClick={handleStepBack} floatRight />
+      </FloatRightDiv>
+      <TableBranch key={history.length} table={table} />
+    </div>
+  ) : (
+    <div />
+  );
+};
+
+export const CurrentStep = ({
+  currentStep,
+  index,
   aggregation,
   table,
   handleStepBack
 }: {
-  history: BranchType[];
+  currentStep?: BranchType;
+  index: number;
   aggregation?: AggregationType;
   table?: TableType;
   handleStepBack: () => void;
 }) => {
   return (
     <div>
-      {history.map((branch, i) =>
-        branch.type === "label" ? (
-          <LabelBranch key={i} index={i + 1} branch={branch} />
-        ) : branch.type === "edge" ? (
-          <EdgeBranch key={i} index={i + 1} branch={branch} />
-        ) : (
-          <FilterBranch key={i} index={i + 1} branch={branch} />
-        )
-      )}
-      {aggregation ? (
-        <AggregationBranch
-          key={history.length}
-          index={history.length + 1}
-          aggregation={aggregation}
-        />
-      ) : table ? (
-        <TableBranch
-          key={history.length}
-          index={history.length + 1}
-          table={table}
-        />
-      ) : (
-        ""
-      )}
-      {history.length > 0 && <button onClick={handleStepBack}>Undo</button>}
+      <HistoryView
+        historyStep={currentStep}
+        aggregation={aggregation}
+        table={table}
+        index={index}
+        handleStepBack={handleStepBack}
+        button
+      />
     </div>
+  );
+};
+
+export const PastSteps = ({
+  path,
+  handleStepBack,
+  renderLastStep
+}: {
+  path: BranchType[];
+  handleStepBack: () => void;
+  renderLastStep?: boolean;
+}) => {
+  return (
+    <>
+      {path
+        .filter((step, index) => {
+          return (
+            (step && index < path.length - 1) ||
+            (index === path.length - 1 && renderLastStep)
+          );
+        })
+        .map((step, index) => {
+          return (
+            <HistoryRow key={"History" + step.value + index}>
+              <Box>
+                <HistoryView
+                  historyStep={step}
+                  index={index}
+                  handleStepBack={handleStepBack}
+                />
+              </Box>
+            </HistoryRow>
+          );
+        })}
+    </>
   );
 };
 
