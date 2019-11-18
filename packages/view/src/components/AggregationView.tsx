@@ -59,6 +59,12 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
     );
   };
 
+  const aggregationIsReady = (): boolean => {
+    return (
+      selectedProperties.length > 0 || selectedMethod === MethodTypes.Count
+    );
+  };
+
   /**
    * HANDLERS
    */
@@ -118,7 +124,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
   };
 
   const handleClickDone = (): void => {
-    if (selectedProperties.length > 0 || selectedMethod === MethodTypes.Count) {
+    if (aggregationIsReady()) {
       const aggregation: AggregationType = {
         method: selectedMethod,
         properties: selectedProperties
@@ -160,7 +166,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
                   unformated-text={property.label}
                   text={property.label}
                   handler={handlePropertyChange}
-                  isChecked={propertyIsChecked}
+                  isChecked={propertyIsChecked(property.label)}
                 />
               );
             })}
@@ -170,7 +176,12 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
         )}
       </div>
       <FloatRightButtonContainer>
-        <PrimaryButton text={"Apply"} onClick={handleClickDone} floatRight />
+        <PrimaryButton
+          text={"Apply"}
+          onClick={handleClickDone}
+          floatRight
+          disabled={!aggregationIsReady()}
+        />
       </FloatRightButtonContainer>
     </Box>
   ) : (

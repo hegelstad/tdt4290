@@ -182,19 +182,19 @@ const FilterView = ({
     onClick: () => handleAddValueInputField()
   }))`
     width: 9%;
-    margin: 0 1% 0 37%;
+    margin: 5px 1% 0 37%;
   `;
 
   const RemoveValueInputButton = styled.button.attrs(() => ({
     onClick: () => handleRemoveValueInputField()
   }))`
     width: 9%;
-    margin: 0 37% 0 1%;
+    margin: 5px 37% 0 1%;
   `;
 
   const InsideText = styled.div`
     width: 10%;
-    margin: -2px 44% 6px 42%;
+    margin: -2px 56% 6px 34%;
     text-align: center;
   `;
 
@@ -240,12 +240,9 @@ const FilterView = ({
             >
               --Choose value range--
             </option>
-            <option
-              key={"valueRangeWithin"}
-              value={ValueRangeTypes.Within}
-              disabled={!typeIsAString(fieldKey)}
-            >
-              Among values
+
+            <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
+              Equal to value
             </option>
             <option
               key={"valueRangeGt"}
@@ -253,6 +250,13 @@ const FilterView = ({
               disabled={!typeIsANumber(fieldKey)}
             >
               Greater than value
+            </option>
+            <option
+              key={"valueRangeWithin"}
+              value={ValueRangeTypes.Within}
+              disabled={!typeIsAString(fieldKey)}
+            >
+              In a set of values
             </option>
             <option
               key={"valueRangeInside"}
@@ -268,15 +272,15 @@ const FilterView = ({
             >
               Less than value
             </option>
+            <option key={"valueRangeNot"} value={ValueRangeTypes.Not}>
+              Not equal to value
+            </option>
             <option
               key={"valueRangeWithout"}
               value={ValueRangeTypes.Without}
               disabled={!typeIsAString(fieldKey)}
             >
-              Not among values
-            </option>
-            <option key={"valueRangeNot"} value={ValueRangeTypes.Not}>
-              Not value
+              Not in a set of values
             </option>
             <option
               key={"valueRangeOutside"}
@@ -284,9 +288,6 @@ const FilterView = ({
               disabled={!typeIsANumber(fieldKey)}
             >
               Outside range of values
-            </option>
-            <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
-              Value
             </option>
           </Dropdown>
           {fieldValues.length > 0 && (

@@ -3,13 +3,16 @@ import styled from "styled-components";
 
 const ButtonStyled = styled.button`
   border-radius: ${props => props.theme.roundRadius};
-  max-height: 30px;
+  max-height: 40px;
   background-color: ${props => props.theme.colors.button.secondaryBackground};
   color: ${props => props.theme.colors.button.secondaryText};
   margin-bottom: 3px;
   border-style: solid;
 
   :hover {
+    background-color: ${props => props.theme.colors.button.secondaryHover};
+  }
+  :disabled {
     background-color: ${props => props.theme.colors.button.secondaryHover};
   }
 `;
@@ -68,6 +71,9 @@ export const PrimaryButton = styled(Button)`
   margin: 5px;
 
   :hover {
+    background-color: ${props => props.theme.colors.button.primaryHover};
+  }
+  :disabled {
     background-color: ${props => props.theme.colors.button.primaryHover};
   }
 `;
