@@ -7,7 +7,7 @@ import {
   HeaderAndButtonContainer,
   FloatRightButtonContainer
 } from "./elements/Layout";
-import { H3 } from "./elements/Text";
+import { H3, H5 } from "./elements/Text";
 import { PrimaryButton } from "./elements/Button";
 
 export const formatFieldName = (fieldName: string) => {
@@ -186,11 +186,6 @@ const TableView = ({
     margin: 0 37% 20px 2%;
   `;
 
-  const FieldLabel = styled.div`
-    width: 80%;
-    margin: 0 0 8px 7%;
-  `;
-
   const ColumnNameLabel = styled.div`
     width: 80%;
     margin: 0 0 8px 3%;
@@ -221,13 +216,14 @@ const TableView = ({
       {componentHasProperties(properties.map(property => property.label)) && (
         <Box>
           <HeaderAndButtonContainer>
-            <H3>Create table</H3>
+            <H3>Table</H3>
           </HeaderAndButtonContainer>
           <TableWrapper>
             <FieldWrapper>
-              <FieldLabel>
-                {fieldKeys.length === 1 ? "Field:" : "Fields:"}
-              </FieldLabel>
+              <H5>
+                Create a table with
+                {fieldKeys.length === 1 ? " field:" : " fields:"}
+              </H5>
               {fieldKeys.map((value, index) => (
                 <FieldSelect
                   key={"tableFieldSelect" + value + index}
