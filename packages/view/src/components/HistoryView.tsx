@@ -73,7 +73,7 @@ const LabelBranch = ({ branch }: { branch: LabelType }) => {
       <H4>
         {!branch.notValue
           ? "Selected component:"
-          : "Selected everything that is not: "}
+          : "Selected everything else than component:"}
       </H4>
       <p>{branch.value}</p>
     </>

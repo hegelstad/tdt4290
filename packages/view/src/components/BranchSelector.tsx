@@ -12,8 +12,8 @@ import { BranchSelectorPropsType } from "../types";
 import { Box, HorizontalLine } from "./elements/Layout";
 import { ListItemButton } from "./elements/Button";
 import { H3, H4, H5 } from "./elements/Text";
-import Dropdown from "./elements/Dropdown";
 import Input from "./elements/Input";
+import CheckBox from "./elements/Checkbox";
 
 const MAX_SUGGESTIONS = 10;
 
@@ -24,7 +24,6 @@ const UnorderedList = styled.ul`
 
 const ClickTextWrap = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
 `;
 
@@ -72,7 +71,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   const [showMoreLabels, setShowMoreLabels] = useState(false);
   const [showMoreEdges, setShowMoreEdges] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [notValue, setNot] = useState(false);
+  const [notValue, setNotValue] = useState(false);
   const [edgeSuggestions, setEdgeSuggestions] = useState<EdgeType[]>([]);
   const [labelSuggestions, setLabelSuggestions] = useState<LabelType[]>([]);
 
@@ -92,7 +91,7 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
 
     setLabelSuggestions(labelSuggestions);
     setEdgeSuggestions(edgeSuggestions);
-    setNot(false);
+    setNotValue(false);
   }, [inputValue, props.query]);
 
   /**
@@ -115,32 +114,30 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
   ): void => {
     const valueWithDirection = event.currentTarget.textContent;
     let value = "";
+    let direction = "";
     if (valueWithDirection) {
       if (valueWithDirection.indexOf("[") > 0) {
         value = valueWithDirection.slice(
           0,
           valueWithDirection.indexOf("[") - 1
         );
+        direction = "in";
       } else {
         value = valueWithDirection.slice(valueWithDirection.indexOf("]") + 2);
+        direction = "out";
       }
     }
     const label = edges.find(label => {
-      return label.value === value;
+      const edge = label as EdgeType;
+      return edge.value === value && edge.direction === direction;
     }) as EdgeType;
     label.notValue = notValue;
     props.followBranch(label);
     setInputValue("");
   };
 
-  const handleDropDownChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    if (event.target.value === "false") {
-      setNot(false);
-    } else if (event.target.value === "true") {
-      setNot(true);
-    }
+  const handleNotChange = () => {
+    setNotValue(!notValue);
   };
 
   const renderSuggestion = (suggestion: BranchType): JSX.Element => {
@@ -215,11 +212,17 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             value={inputValue}
           />
         </div>
-        <H4>COMPONENTS</H4>
-        <Dropdown onChange={handleDropDownChange} value={String(notValue)}>
-          <option value="false">Select</option>
-          <option value="true">Select everything that is not</option>
-        </Dropdown>
+        <CheckBox text={"Not"} handler={handleNotChange} isChecked={notValue} />
+        <H4>
+          {props.query && props.query.path && props.query.path.length > 0
+            ? "CONNECTED COMPONENTS"
+            : "COMPONENTS"}
+        </H4>
+        <H5>
+          {notValue
+            ? "Select everything else than type:"
+            : "Select everything of type"}
+        </H5>
         <UnorderedList>
           {showMoreLabels
             ? labelSuggestions.map(renderSuggestion)
@@ -248,7 +251,9 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             <H4>REFERENCES</H4>
             <H5>
               {currentBranch && currentBranch.type === "label"
-                ? "Select components that:"
+                ? notValue
+                  ? "Select everything else than components that:"
+                  : "Select components that:"
                 : "Follow reference"}
             </H5>
             <UnorderedList>
