@@ -8,7 +8,7 @@ import {
   filterQuery,
   aggregateQuery
 } from "./index";
-import { PropertyTypes, MethodTypes } from "./types";
+import { PropertyTypes, MethodTypes, ValueRangeTypes } from "./types";
 
 test("Branches are updated correctly", async () => {
   // Mock api responses
@@ -97,7 +97,8 @@ test("Filter query is buildt correctly", async () => {
   query = await filterQuery(
     query,
     { label: "property1", type: PropertyTypes.String },
-    "value"
+    ["value"],
+    ValueRangeTypes.Normal
   );
 
   expect(stringifyPath(query.path)).toEqual("g.V().has('property1', 'value')");
