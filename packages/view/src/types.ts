@@ -31,8 +31,8 @@ export interface TextQueryType {
 export enum OperationsType {
   Filter = "filter",
   Aggregate = "aggregate",
-  Show = "show query",
-  Table = "create table"
+  Table = "create table",
+  Show = "show query"
 }
 
 export type FilterCallbackType = (
