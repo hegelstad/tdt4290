@@ -21,7 +21,7 @@ const FilterView = ({
   });
   const [fieldValues, setfieldValues] = useState<Array<string>>([]);
   const [valueRange, setValueRange] = useState<ValueRangeTypes>(
-    ValueRangeTypes.Undefined
+    ValueRangeTypes.Normal
   );
   const [fieldsAreFilled, setFieldsAreFilled] = useState<boolean>(false);
   const [autoFocusIndex, setAutoFocusIndex] = useState<number>(0);
@@ -182,7 +182,7 @@ const FilterView = ({
     onClick: () => handleAddValueInputField()
   }))`
     width: 9%;
-    margin: 5px 1% 0 37%;
+    margin: 5px 1% 0 30%;
   `;
 
   const RemoveValueInputButton = styled.button.attrs(() => ({
@@ -201,9 +201,6 @@ const FilterView = ({
   const fieldDropDownIsDisabled = (): boolean => {
     return fieldKey.label !== "";
   };
-  const valueRangeDropDownIsDisabled = (): boolean => {
-    return valueRange !== ValueRangeTypes.Undefined;
-  };
 
   return (
     // Put the option values in ValueRangeSelect in a list instead of hard coded
@@ -218,7 +215,7 @@ const FilterView = ({
               value=""
               disabled={fieldDropDownIsDisabled()}
             >
-              --choose field--
+              --Choose field--
             </option>
             {properties
               .sort((a, b) => (a.label > b.label ? 1 : -1))
@@ -233,14 +230,6 @@ const FilterView = ({
             onChange={handleValueRangeDropDownChange}
             value={valueRange}
           >
-            <option
-              key={"defaultValueRangeSelect"}
-              value={ValueRangeTypes.Undefined}
-              disabled={valueRangeDropDownIsDisabled()}
-            >
-              --Choose value range--
-            </option>
-
             <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
               Equal to value
             </option>

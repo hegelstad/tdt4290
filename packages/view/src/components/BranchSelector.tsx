@@ -35,6 +35,10 @@ const LinkStyledText = styled.p`
   margin-left: 5px;
 `;
 
+const ThinHorizontalLine = styled(HorizontalLine)`
+  border-top: 1px solid #670767;
+`;
+
 const ClickableText = ({
   onClick,
   shouldBeVisible,
@@ -212,7 +216,11 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             value={inputValue}
           />
         </div>
-        <CheckBox text={"Not"} handler={handleNotChange} isChecked={notValue} />
+        <CheckBox
+          text={"Next step should not include"}
+          handler={handleNotChange}
+          isChecked={notValue}
+        />
         <H4>
           {props.query && props.query.path && props.query.path.length > 0
             ? "CONNECTED COMPONENTS"
@@ -245,17 +253,21 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             </ClickableText>
           </ClickTextWrap>
         ) : null}
+        <br />
         {edgeSuggestions.length > 0 &&
         props.query &&
         props.query.path &&
         props.query.path.length > 0 ? (
           <>
+            <ThinHorizontalLine />
             <H4>REFERENCES</H4>
             <H5>
               {currentBranch && currentBranch.type === "label"
                 ? notValue
                   ? "Select everything else than components that:"
                   : "Select components that:"
+                : notValue
+                ? "Follow every other reference than:"
                 : "Follow reference"}
             </H5>
             <UnorderedList>

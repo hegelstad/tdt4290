@@ -8,7 +8,7 @@ import {
   FloatRightButtonContainer
 } from "./elements/Layout";
 import { H3, H5 } from "./elements/Text";
-import { PrimaryButton } from "./elements/Button";
+import Button, { PrimaryButton } from "./elements/Button";
 
 export const formatFieldName = (fieldName: string) => {
   let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
@@ -167,24 +167,18 @@ const TableView = ({
     height: 24px;
   `;
 
-  const TableButton = styled.button.attrs(() => ({}))`
-    padding: 2px 5px;
-    margin: 5px 23% 8px 23%;
-    width: 50%;
-  `;
-
-  const AddColumnNameButton = styled.button.attrs(() => ({
-    onClick: () => handleAddValueInputField()
-  }))`
+  const AddColumnNameButton = styled(Button)`
     width: 10%;
     margin: 0 1% 20px 37%;
   `;
 
-  const RemoveColumnNameButton = styled.button.attrs(() => ({
-    onClick: () => handleRemoveValueInputField()
-  }))`
+  const RemoveColumnNameButton = styled(Button)`
     width: 10%;
-    margin: 0 37% 20px 2%;
+    margin: 0 0 20px 2%;
+  `;
+
+  const CenterButton = styled(Button)`
+    margin-left: 25%;
   `;
 
   const FieldWrapper = styled.div`
@@ -219,7 +213,7 @@ const TableView = ({
             <FieldWrapper>
               <H5>
                 Selected
-                {fieldKeys.length === 1 ? " column:" : " columns:"}
+                {fieldKeys.length === 1 ? " column" : " columns"}
               </H5>
               {fieldKeys.map((value, index) => (
                 <FieldSelect
@@ -245,11 +239,7 @@ const TableView = ({
 
             {hasColumnNames && (
               <ColumnNameWrapper>
-                <H5>
-                  {columnNames.length === 1
-                    ? "Custom column name:"
-                    : "Custom column names:"}
-                </H5>
+                <H5>{columnNames.length === 1 ? "Name" : "Names"}</H5>
                 {columnNames.map((value, index) => (
                   <React.Fragment key={"ColumnNameInputFragment" + index}>
                     <ColumnNameInput
@@ -264,16 +254,25 @@ const TableView = ({
               </ColumnNameWrapper>
             )}
           </TableWrapper>
-          <AddColumnNameButton disabled={fieldKeys.length === 5}>
-            +
-          </AddColumnNameButton>
-          <RemoveColumnNameButton disabled={fieldKeys.length <= 1}>
-            -
-          </RemoveColumnNameButton>
-
-          <TableButton onClick={() => handleToggleColumnNamesInput()}>
-            {hasColumnNames ? "Remove column names" : "Add column Names"}
-          </TableButton>
+          <AddColumnNameButton
+            text={"+"}
+            disabled={fieldKeys.length === 5}
+            onClick={handleAddValueInputField}
+          />
+          <RemoveColumnNameButton
+            text={"-"}
+            disabled={fieldKeys.length <= 1}
+            onClick={handleRemoveValueInputField}
+          />
+          <br />
+          <CenterButton
+            onClick={handleToggleColumnNamesInput}
+            text={
+              hasColumnNames
+                ? "Remove custom column names"
+                : "Add custom column names"
+            }
+          />
           <FloatRightButtonContainer>
             <PrimaryButton
               text={"Apply"}

@@ -4,6 +4,12 @@ import { TextQueryType } from "../types";
 import Button from "./elements/Button";
 import { Box } from "./elements/Layout";
 import { H3, H5 } from "./elements/Text";
+import styled from "styled-components";
+
+const ButtonWrap = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
 
 //This component shows the Gremlin query in text, and gives the option to copy it to the clipboard.
 const TextQuery = (props: TextQueryType): JSX.Element => {
@@ -43,13 +49,13 @@ const TextQuery = (props: TextQueryType): JSX.Element => {
     <Box>
       <H3>Query</H3>
       <H5>{query}</H5>
-      <div>
+      <ButtonWrap>
         <Button
           text={"Copy to clipboard"}
           onClick={onCopyClipBoardButtonClick}
         />
         <Button text={"Edit query"} onClick={onEditButtonClick} />
-      </div>
+      </ButtonWrap>
     </Box>
   );
 };
