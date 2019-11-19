@@ -15,7 +15,7 @@ import { H3, H4, H5 } from "./elements/Text";
 import Input from "./elements/Input";
 import CheckBox from "./elements/Checkbox";
 
-const MAX_SUGGESTIONS = 10;
+const MAX_SUGGESTIONS = 8;
 
 const UnorderedList = styled.ul`
   list-style: none;
@@ -219,9 +219,11 @@ const BranchSelector = (props: BranchSelectorPropsType): JSX.Element => {
             : "COMPONENTS"}
         </H4>
         <H5>
-          {notValue
-            ? "Select everything else than type:"
-            : "Select everything of type"}
+          {labelSuggestions.length > 0
+            ? notValue
+              ? "Select everything else than type:"
+              : "Select everything of type"
+            : null}
         </H5>
         <UnorderedList>
           {showMoreLabels

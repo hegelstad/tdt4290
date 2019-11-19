@@ -157,6 +157,7 @@ const TableView = ({
     padding: 2px;
     margin: 0 7% 8px 3%;
     width: 90%;
+    height: 16px;
   `;
 
   const FieldSelect = styled.select`
@@ -186,10 +187,6 @@ const TableView = ({
     margin: 0 37% 20px 2%;
   `;
 
-  const ColumnNameLabel = styled.div`
-    width: 80%;
-    margin: 0 0 8px 3%;
-  `;
   const FieldWrapper = styled.div`
     /*border-style: dotted;
   border-color: #0030F0;*/
@@ -221,8 +218,8 @@ const TableView = ({
           <TableWrapper>
             <FieldWrapper>
               <H5>
-                Create a table with
-                {fieldKeys.length === 1 ? " field:" : " fields:"}
+                Selected
+                {fieldKeys.length === 1 ? " column:" : " columns:"}
               </H5>
               {fieldKeys.map((value, index) => (
                 <FieldSelect
@@ -248,9 +245,11 @@ const TableView = ({
 
             {hasColumnNames && (
               <ColumnNameWrapper>
-                <ColumnNameLabel>
-                  {columnNames.length === 1 ? "Column name:" : "Column names:"}
-                </ColumnNameLabel>
+                <H5>
+                  {columnNames.length === 1
+                    ? "Custom column name:"
+                    : "Custom column names:"}
+                </H5>
                 {columnNames.map((value, index) => (
                   <React.Fragment key={"ColumnNameInputFragment" + index}>
                     <ColumnNameInput

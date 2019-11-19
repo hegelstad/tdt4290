@@ -21,7 +21,7 @@ export const Box = styled.div`
   border-radius: ${props => props.theme.box.borderRadius};
   margin: ${props => props.theme.box.margin};
   width: ${props => props.theme.box.width};
-  overflow: scroll;
+  overflow: auto;
 `;
 
 export const HorizontalLine = styled.div`
