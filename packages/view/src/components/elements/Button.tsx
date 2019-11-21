@@ -2,18 +2,22 @@ import React from "react";
 import styled from "styled-components";
 
 const ButtonStyled = styled.button`
-  border-radius: ${props => props.theme.roundRadius};
+  border-radius: ${props => props.theme.roundRadius.button};
   max-height: 40px;
   background-color: ${props => props.theme.colors.button.secondaryBackground};
   color: ${props => props.theme.colors.button.secondaryText};
-  margin-bottom: 3px;
+  margin-bottom: 5px;
   border-style: solid;
+  font-family: ${props => props.theme.fontFamily};
+  font-size: ${props => props.theme.fontSize.button};
 
   :hover {
     background-color: ${props => props.theme.colors.button.secondaryHover};
   }
   :disabled {
+    opacity: 0.3;
     background-color: ${props => props.theme.colors.button.secondaryHover};
+    border-color: white;
   }
 `;
 
@@ -62,5 +66,24 @@ export const ListItemButton = ({
     </li>
   );
 };
+
+export const PrimaryButton = styled(Button)`
+  color: ${props => props.theme.colors.button.primaryText};
+  background-color: ${props => props.theme.colors.button.primaryBackground};
+  border-radius: ${props => props.theme.roundRadius.button};
+  border-color: ${props => props.theme.colors.button.primaryBackground};
+  margin: 5px;
+  font-family: ${props => props.theme.fontFamily};
+  font-size: ${props => props.theme.fontSize.button};
+
+  :hover {
+    background-color: ${props => props.theme.colors.button.primaryHover};
+  }
+  :disabled {
+    opacity: 0.3;
+    background-color: ${props => props.theme.colors.button.primaryHover}
+    border-color: white;
+  }
+`;
 
 export default Button;

@@ -47,13 +47,17 @@ const theme = {
   },
   fontFamily: "Noto Serif",
   fontSize: {
-    h1: 20,
-    h2: 15,
-    h3: 12,
-    h4: 9,
-    h5: 7
+    h1: "30px",
+    h2: "25px",
+    h3: "22px",
+    h4: "18px",
+    h5: "15px",
+    button: "15px"
   },
-  roundRadius: "5px",
+  roundRadius: {
+    box: "5px",
+    button: "2px"
+  },
   spacing: [
     "0px",
     "4px",

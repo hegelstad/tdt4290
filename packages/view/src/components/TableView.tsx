@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TableCallbackType } from "../types";
 import { PropertyType, PropertyTypes } from "core";
-import { Box, FloatRightDiv } from "./elements/Layout";
-import { H3 } from "./elements/Text";
-import Button from "./elements/Button";
+import {
+  Box,
+  HeaderAndButtonContainer,
+  FloatRightButtonContainer
+} from "./elements/Layout";
+import { H3, H5 } from "./elements/Text";
+import Button, { PrimaryButton } from "./elements/Button";
 
 export const formatFieldName = (fieldName: string) => {
   let formatedFieldName: string = fieldName.split(/(?=[A-Z])|-|_/).join(" ");
@@ -153,6 +157,9 @@ const TableView = ({
     padding: 2px;
     margin: 0 7% 8px 3%;
     width: 90%;
+    height: 16px;
+    font-family: ${props => props.theme.fontFamily};
+    font-size: ${props => props.theme.fontSize.button};
   `;
 
   const FieldSelect = styled.select`
@@ -160,37 +167,24 @@ const TableView = ({
     margin: 0 3% 8px 7%;
     width: 90%;
     height: 24px;
+    font-family: ${props => props.theme.fontFamily};
+    font-size: ${props => props.theme.fontSize.button};
   `;
 
-  const TableButton = styled.button.attrs(() => ({}))`
-    padding: 2px 5px;
-    margin: 5px 23% 8px 23%;
-    width: 50%;
-  `;
-
-  const AddColumnNameButton = styled.button.attrs(() => ({
-    onClick: () => handleAddValueInputField()
-  }))`
+  const AddColumnNameButton = styled(Button)`
     width: 10%;
     margin: 0 1% 20px 37%;
   `;
 
-  const RemoveColumnNameButton = styled.button.attrs(() => ({
-    onClick: () => handleRemoveValueInputField()
-  }))`
+  const RemoveColumnNameButton = styled(Button)`
     width: 10%;
-    margin: 0 37% 20px 2%;
+    margin: 0 0 20px 2%;
   `;
 
-  const FieldLabel = styled.div`
-    width: 80%;
-    margin: 0 0 8px 7%;
+  const CenterButton = styled(Button)`
+    margin-left: 20%;
   `;
 
-  const ColumnNameLabel = styled.div`
-    width: 80%;
-    margin: 0 0 8px 3%;
-  `;
   const FieldWrapper = styled.div`
     /*border-style: dotted;
   border-color: #0030F0;*/
@@ -212,23 +206,18 @@ const TableView = ({
   `;
 
   return (
-    // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
       {componentHasProperties(properties.map(property => property.label)) && (
         <Box>
-          <FloatRightDiv>
-            <H3>Create table</H3>
-            <Button
-              text={"Apply"}
-              onClick={() => handleSubmit()}
-              disabled={!fieldsAreFilled}
-            />
-          </FloatRightDiv>
+          <HeaderAndButtonContainer>
+            <H3>Table</H3>
+          </HeaderAndButtonContainer>
           <TableWrapper>
             <FieldWrapper>
-              <FieldLabel>
-                {fieldKeys.length === 1 ? "Field:" : "Fields:"}
-              </FieldLabel>
+              <H5>
+                Selected
+                {fieldKeys.length === 1 ? " column" : " columns"}
+              </H5>
               {fieldKeys.map((value, index) => (
                 <FieldSelect
                   key={"tableFieldSelect" + value + index}
@@ -253,9 +242,9 @@ const TableView = ({
 
             {hasColumnNames && (
               <ColumnNameWrapper>
-                <ColumnNameLabel>
-                  {columnNames.length === 1 ? "Column name:" : "Column names:"}
-                </ColumnNameLabel>
+                <H5>
+                  {"Custom " + (columnNames.length === 1 ? "name" : "names")}
+                </H5>
                 {columnNames.map((value, index) => (
                   <React.Fragment key={"ColumnNameInputFragment" + index}>
                     <ColumnNameInput
@@ -270,16 +259,32 @@ const TableView = ({
               </ColumnNameWrapper>
             )}
           </TableWrapper>
-          <AddColumnNameButton disabled={fieldKeys.length === 5}>
-            +
-          </AddColumnNameButton>
-          <RemoveColumnNameButton disabled={fieldKeys.length <= 1}>
-            -
-          </RemoveColumnNameButton>
-
-          <TableButton onClick={() => handleToggleColumnNamesInput()}>
-            {hasColumnNames ? "Remove column names" : "Add column Names"}
-          </TableButton>
+          <AddColumnNameButton
+            text={"+"}
+            disabled={fieldKeys.length === 5}
+            onClick={handleAddValueInputField}
+          />
+          <RemoveColumnNameButton
+            text={"-"}
+            disabled={fieldKeys.length <= 1}
+            onClick={handleRemoveValueInputField}
+          />
+          <br />
+          <CenterButton
+            onClick={handleToggleColumnNamesInput}
+            text={
+              hasColumnNames
+                ? "Remove custom column names"
+                : "Add custom column names"
+            }
+          />
+          <FloatRightButtonContainer>
+            <PrimaryButton
+              text={"Apply"}
+              onClick={() => handleSubmit()}
+              disabled={!fieldsAreFilled}
+            />
+          </FloatRightButtonContainer>
         </Box>
       )}
     </>

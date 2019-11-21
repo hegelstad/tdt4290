@@ -1,5 +1,9 @@
 import React from "react";
-import { Box, HorizontalLine, FloatRightDiv } from "./elements/Layout";
+import {
+  Box,
+  HorizontalLine,
+  HeaderAndButtonContainer
+} from "./elements/Layout";
 import { H1, H4 } from "./elements/Text";
 import Button from "./elements/Button";
 import styled from "styled-components";
@@ -69,7 +73,7 @@ const LabelBranch = ({ branch }: { branch: LabelType }) => {
       <H4>
         {!branch.notValue
           ? "Selected component:"
-          : "Selected everything that is not: "}
+          : "Selected everything else than component:"}
       </H4>
       <p>{branch.value}</p>
     </>
@@ -93,23 +97,23 @@ const TableBranch = ({ table }: { table: TableType }) => {
   return (
     <>
       <H4>
-        Created table with {table.properties.length > 1 ? "fields " : "field "}{" "}
+        Created table with{" "}
+        {table.properties.length > 1 ? "columns " : "column "}{" "}
       </H4>
       {table.properties.map((prop, i) => (
         <p key={"TableProp" + i}>{prop.label}</p>
       ))}
       {table.hasColumnNames ? (
-        table.columnNames.length > 1 ? (
-          <>
-            <H4> and set column names </H4>
-            <p>{table.columnNames.join(", ")}</p>
-          </>
-        ) : (
-          <>
-            <H4> and set column name </H4>
-            <p>{table.columnNames.join(", ")}</p>
-          </>
-        )
+        <>
+          <H4>
+            {" "}
+            and set custom column{" "}
+            {table.columnNames.length > 1 ? "names" : "name"}{" "}
+          </H4>
+          {table.columnNames.map((name, i) => {
+            return <p key={"columnName" + i}>{name}</p>;
+          })}
+        </>
       ) : (
         ""
       )}
@@ -156,10 +160,10 @@ const HistoryView = ({
   return historyStep ? (
     <div key={index}>
       {button ? (
-        <FloatRightDiv>
+        <HeaderAndButtonContainer>
           <H1>CURRENT STEP</H1>
           <Button text={"X"} onClick={handleStepBack} floatRight />
-        </FloatRightDiv>
+        </HeaderAndButtonContainer>
       ) : (
         <div>
           <H4>PAST STEP</H4>
@@ -178,19 +182,20 @@ const HistoryView = ({
     </div>
   ) : aggregation ? (
     <div key={index}>
-      <FloatRightDiv>
+      <HeaderAndButtonContainer>
         <H1>CURRENT STEP</H1>
         <Button text={"X"} onClick={handleStepBack} floatRight />
-      </FloatRightDiv>
+      </HeaderAndButtonContainer>
       <HorizontalLine />
       <AggregationBranch key={history.length} aggregation={aggregation} />
     </div>
   ) : table ? (
     <div key={index}>
-      <FloatRightDiv>
+      <HeaderAndButtonContainer>
         <H1>CURRENT STEP</H1>
         <Button text={"X"} onClick={handleStepBack} floatRight />
-      </FloatRightDiv>
+      </HeaderAndButtonContainer>
+      <HorizontalLine />
       <TableBranch key={history.length} table={table} />
     </div>
   ) : (

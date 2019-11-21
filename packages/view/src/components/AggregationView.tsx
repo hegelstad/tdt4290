@@ -7,8 +7,12 @@ import {
 } from "core";
 import { AggregationViewPropsType } from "../types";
 import CheckBox from "./elements/Checkbox";
-import Button from "./elements/Button";
-import { Box, FloatRightDiv } from "./elements/Layout";
+import { PrimaryButton } from "./elements/Button";
+import {
+  Box,
+  HeaderAndButtonContainer,
+  FloatRightButtonContainer
+} from "./elements/Layout";
 import Dropdown, { Option } from "./elements/Dropdown";
 import { H3, H5 } from "./elements/Text";
 
@@ -140,15 +144,9 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
 
   return props.query && props.query.path && props.query.path.length > 0 ? (
     <Box>
-      <FloatRightDiv>
+      <HeaderAndButtonContainer>
         <H3>Aggregate</H3>
-        <Button
-          text={"Apply"}
-          onClick={handleClickDone}
-          floatRight
-          disabled={!aggregationIsReady()}
-        />
-      </FloatRightDiv>
+      </HeaderAndButtonContainer>
       <div>
         <H5>Calculate the</H5>
         <Dropdown onChange={handleMethodChange} value={selectedMethod}>
@@ -168,7 +166,7 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
                   unformated-text={property.label}
                   text={property.label}
                   handler={handlePropertyChange}
-                  isChecked={propertyIsChecked}
+                  isChecked={propertyIsChecked(property.label)}
                 />
               );
             })}
@@ -177,6 +175,14 @@ const AggregationView = (props: AggregationViewPropsType): JSX.Element => {
           <div />
         )}
       </div>
+      <FloatRightButtonContainer>
+        <PrimaryButton
+          text={"Apply"}
+          onClick={handleClickDone}
+          floatRight
+          disabled={!aggregationIsReady()}
+        />
+      </FloatRightButtonContainer>
     </Box>
   ) : (
     <div />

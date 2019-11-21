@@ -30,7 +30,7 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
         value: label,
         notValue: false
       })),
-      properties: [], // Shoud we include all properties from the start?
+      properties: [],
       aggregation: undefined,
       config
     };
@@ -48,7 +48,7 @@ export const initialize = async (config: ConfigType): Promise<QueryType> => {
       value: label.name,
       notValue: false
     })),
-    properties: [], // Shoud we include all properties from the start?
+    properties: [],
     aggregation: undefined,
     config
   };

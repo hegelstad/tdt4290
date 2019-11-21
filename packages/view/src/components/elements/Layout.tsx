@@ -1,11 +1,17 @@
 import styled from "styled-components";
 
-export const FloatRightDiv = styled.div`
+export const HeaderAndButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  overflow: auto;
+`;
+
+export const FloatRightButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 export const Box = styled.div`
@@ -15,6 +21,7 @@ export const Box = styled.div`
   border-radius: ${props => props.theme.box.borderRadius};
   margin: ${props => props.theme.box.margin};
   width: ${props => props.theme.box.width};
+  overflow: auto;
 `;
 
 export const HorizontalLine = styled.div`

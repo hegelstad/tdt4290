@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FilterCallbackType } from "../types";
 import { PropertyType, PropertyTypes, ValueRangeTypes } from "core";
-import { Box, FloatRightDiv } from "./elements/Layout";
+import { Box, FloatRightButtonContainer } from "./elements/Layout";
 import Dropdown from "./elements/Dropdown";
 import { H3, H5 } from "./elements/Text";
 import Input from "./elements/Input";
-import Button from "./elements/Button";
+import Button, { PrimaryButton } from "./elements/Button";
 
 const FilterView = ({
   properties,
@@ -21,7 +21,7 @@ const FilterView = ({
   });
   const [fieldValues, setfieldValues] = useState<Array<string>>([]);
   const [valueRange, setValueRange] = useState<ValueRangeTypes>(
-    ValueRangeTypes.Undefined
+    ValueRangeTypes.Normal
   );
   const [fieldsAreFilled, setFieldsAreFilled] = useState<boolean>(false);
   const [autoFocusIndex, setAutoFocusIndex] = useState<number>(0);
@@ -178,16 +178,12 @@ const FilterView = ({
 
   // styled components
 
-  const AddValueInputButton = styled.button.attrs(() => ({
-    onClick: () => handleAddValueInputField()
-  }))`
+  const AddValueInputButton = styled(Button)`
     width: 9%;
-    margin: 5px 1% 0 37%;
+    margin: 5px 1% 0 30%;
   `;
 
-  const RemoveValueInputButton = styled.button.attrs(() => ({
-    onClick: () => handleRemoveValueInputField()
-  }))`
+  const RemoveValueInputButton = styled(Button)`
     width: 9%;
     margin: 5px 37% 0 1%;
   `;
@@ -201,24 +197,13 @@ const FilterView = ({
   const fieldDropDownIsDisabled = (): boolean => {
     return fieldKey.label !== "";
   };
-  const valueRangeDropDownIsDisabled = (): boolean => {
-    return valueRange !== ValueRangeTypes.Undefined;
-  };
 
   return (
     // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
       {componentHasFilter(properties.map(property => property.label)) && (
         <Box>
-          <FloatRightDiv>
-            <H3>Filter</H3>
-            <Button
-              text={"Apply"}
-              disabled={!fieldsAreFilled}
-              onClick={handleSubmit}
-              floatRight
-            />
-          </FloatRightDiv>
+          <H3>Filter</H3>
           <H5>Choose components where</H5>
           <Dropdown value={fieldKey.label} onChange={handleFieldDropDownChange}>
             <option
@@ -226,7 +211,7 @@ const FilterView = ({
               value=""
               disabled={fieldDropDownIsDisabled()}
             >
-              --choose field--
+              --Choose field--
             </option>
             {properties
               .sort((a, b) => (a.label > b.label ? 1 : -1))
@@ -241,14 +226,6 @@ const FilterView = ({
             onChange={handleValueRangeDropDownChange}
             value={valueRange}
           >
-            <option
-              key={"defaultValueRangeSelect"}
-              value={ValueRangeTypes.Undefined}
-              disabled={valueRangeDropDownIsDisabled()}
-            >
-              --Choose value range--
-            </option>
-
             <option key={"valueRangeNormal"} value={ValueRangeTypes.Normal}>
               Equal to value
             </option>
@@ -318,14 +295,26 @@ const FilterView = ({
           {(valueRange === ValueRangeTypes.Within ||
             valueRange === ValueRangeTypes.Without) && (
             <>
-              <AddValueInputButton disabled={fieldValues.length === 5}>
-                +
-              </AddValueInputButton>
-              <RemoveValueInputButton disabled={fieldValues.length <= 1}>
-                -
-              </RemoveValueInputButton>
+              <AddValueInputButton
+                text={"+"}
+                disabled={fieldValues.length === 5}
+                onClick={handleAddValueInputField}
+              />
+              <RemoveValueInputButton
+                text={"-"}
+                disabled={fieldValues.length <= 1}
+                onClick={handleRemoveValueInputField}
+              />
             </>
           )}
+          <FloatRightButtonContainer>
+            <PrimaryButton
+              text={"Apply"}
+              disabled={!fieldsAreFilled}
+              onClick={handleSubmit}
+              floatRight
+            />
+          </FloatRightButtonContainer>
         </Box>
       )}
     </>

@@ -25,7 +25,7 @@ import {
   OperationsType
 } from "./types";
 import { Box } from "./components/elements/Layout";
-import Button from "./components/elements/Button";
+import { PrimaryButton } from "./components/elements/Button";
 
 /**
  * STYLED COMPONENTS
@@ -46,28 +46,20 @@ const ButtonWrap = styled.div`
   margin-top: 20px;
 `;
 
-const PrimaryButton = styled(Button)`
-  color: ${props => props.theme.colors.button.primaryText};
-  background-color: ${props => props.theme.colors.button.primaryBackground};
-  border-radius: ${props => props.theme.roundRadius};
-  border-color: ${props => props.theme.colors.button.primaryBackground};
-  margin: 5px;
-
-  :hover {
-    background-color: ${props => props.theme.colors.button.primaryHover};
-  }
-  :disabled {
-    background-color: ${props => props.theme.colors.button.primaryHover};
-  }
-`;
 const hasReachedEnd = (query: QueryType, operation: OperationsType) => {
+  console.log("Operation: ", operation);
   if (operation === OperationsType.Show) {
+    console.log("Show");
+    console.log("");
     return false;
-  } else if (query.aggregation && operation !== OperationsType.Aggregate) {
-    return true;
-  } else if (query.table && operation !== OperationsType.Table) {
+  } else if (query.aggregation !== undefined || query.table !== undefined) {
+    console.log("Triggered");
+    console.log("");
+    // Operations buttons are always disabled if we have a Table or Aggregation
     return true;
   }
+  console.log("Nothing");
+  console.log("");
   return false;
 };
 const renderStateButtons = (

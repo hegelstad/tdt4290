@@ -4,9 +4,13 @@ import styled from "styled-components";
 const CheckboxStyled = styled.input.attrs(() => ({
   type: "checkbox"
 }))`
-border: 1px solid ${props => props.theme.colors.checkbox.border};
-display: inline;
 margin 5px;
+`;
+
+const CheckboxWrap = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
 `;
 
 const formatFieldName = (fieldName: string) => {
@@ -23,20 +27,18 @@ const CheckBox = ({
 }: {
   text: string;
   handler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isChecked: (text: string) => boolean;
-  floatRight?: boolean;
+  isChecked: boolean;
 }) => {
   return (
-    <div key={text}>
+    <CheckboxWrap key={text}>
       <CheckboxStyled
         key={text}
         onChange={handler}
         value={text}
-        checked={isChecked(text)}
+        checked={isChecked}
       />
       {" " + formatFieldName(text)}
-      <br />
-    </div>
+    </CheckboxWrap>
   );
 };
 

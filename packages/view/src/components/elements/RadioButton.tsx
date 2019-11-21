@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const RadioButtonStyled = styled.input.attrs(props => ({
   type: "radio",
-  onClick: props.onClick
+  onChange: props.onChange
 }))`
   border-radius: 3px;
   border: 1px solid black;
@@ -19,15 +19,11 @@ const RadioButton = ({
 }: {
   text: string;
   handler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isSelected: (text: string) => boolean;
+  isSelected: boolean;
 }): JSX.Element => {
   return (
     <div key={text}>
-      <RadioButtonStyled
-        onChange={handler}
-        value={text}
-        checked={isSelected(text)}
-      />
+      <RadioButtonStyled onChange={handler} value={text} checked={isSelected} />
       {" " + text}
       <br />
     </div>
