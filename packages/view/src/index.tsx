@@ -47,13 +47,19 @@ const ButtonWrap = styled.div`
 `;
 
 const hasReachedEnd = (query: QueryType, operation: OperationsType) => {
+  console.log("Operation: ", operation);
   if (operation === OperationsType.Show) {
+    console.log("Show");
+    console.log("");
     return false;
-  } else if (query.aggregation && operation !== OperationsType.Aggregate) {
-    return true;
-  } else if (query.table && operation !== OperationsType.Table) {
+  } else if (query.aggregation !== undefined || query.table !== undefined) {
+    console.log("Triggered");
+    console.log("");
+    // Operations buttons are always disabled if we have a Table or Aggregation
     return true;
   }
+  console.log("Nothing");
+  console.log("");
   return false;
 };
 const renderStateButtons = (

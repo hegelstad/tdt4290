@@ -9,6 +9,8 @@ const FieldSelect = styled.select.attrs(props => ({
   margin: 0 5% 8px 5%;
   width: 70%;
   height: 24px;
+  font-family: ${props => props.theme.fontFamily};
+  font-size: ${props => props.theme.fontSize.button};
 `;
 
 export const Option = ({ text }: { text: string }) => {

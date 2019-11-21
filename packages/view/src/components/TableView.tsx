@@ -178,7 +178,7 @@ const TableView = ({
   `;
 
   const CenterButton = styled(Button)`
-    margin-left: 25%;
+    margin-left: 20%;
   `;
 
   const FieldWrapper = styled.div`
@@ -239,7 +239,9 @@ const TableView = ({
 
             {hasColumnNames && (
               <ColumnNameWrapper>
-                <H5>{columnNames.length === 1 ? "Name" : "Names"}</H5>
+                <H5>
+                  {"Custom " + (columnNames.length === 1 ? "name" : "names")}
+                </H5>
                 {columnNames.map((value, index) => (
                   <React.Fragment key={"ColumnNameInputFragment" + index}>
                     <ColumnNameInput

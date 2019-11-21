@@ -15,7 +15,9 @@ const ButtonStyled = styled.button`
     background-color: ${props => props.theme.colors.button.secondaryHover};
   }
   :disabled {
+    opacity: 0.3;
     background-color: ${props => props.theme.colors.button.secondaryHover};
+    border-color: white;
   }
 `;
 
@@ -78,7 +80,9 @@ export const PrimaryButton = styled(Button)`
     background-color: ${props => props.theme.colors.button.primaryHover};
   }
   :disabled {
-    background-color: ${props => props.theme.colors.button.primaryHover};
+    opacity: 0.3;
+    background-color: ${props => props.theme.colors.button.primaryHover}
+    border-color: white;
   }
 `;
 

@@ -97,23 +97,23 @@ const TableBranch = ({ table }: { table: TableType }) => {
   return (
     <>
       <H4>
-        Created table with {table.properties.length > 1 ? "fields " : "field "}{" "}
+        Created table with{" "}
+        {table.properties.length > 1 ? "columns " : "column "}{" "}
       </H4>
       {table.properties.map((prop, i) => (
         <p key={"TableProp" + i}>{prop.label}</p>
       ))}
       {table.hasColumnNames ? (
-        table.columnNames.length > 1 ? (
-          <>
-            <H4> and set column names </H4>
-            <p>{table.columnNames.join(", ")}</p>
-          </>
-        ) : (
-          <>
-            <H4> and set column name </H4>
-            <p>{table.columnNames.join(", ")}</p>
-          </>
-        )
+        <>
+          <H4>
+            {" "}
+            and set custom column{" "}
+            {table.columnNames.length > 1 ? "names" : "name"}{" "}
+          </H4>
+          {table.columnNames.map((name, i) => {
+            return <p key={"columnName" + i}>{name}</p>;
+          })}
+        </>
       ) : (
         ""
       )}
@@ -195,6 +195,7 @@ const HistoryView = ({
         <H1>CURRENT STEP</H1>
         <Button text={"X"} onClick={handleStepBack} floatRight />
       </HeaderAndButtonContainer>
+      <HorizontalLine />
       <TableBranch key={history.length} table={table} />
     </div>
   ) : (

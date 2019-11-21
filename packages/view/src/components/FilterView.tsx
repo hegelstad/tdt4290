@@ -6,7 +6,7 @@ import { Box, FloatRightButtonContainer } from "./elements/Layout";
 import Dropdown from "./elements/Dropdown";
 import { H3, H5 } from "./elements/Text";
 import Input from "./elements/Input";
-import { PrimaryButton } from "./elements/Button";
+import Button, { PrimaryButton } from "./elements/Button";
 
 const FilterView = ({
   properties,
@@ -178,16 +178,12 @@ const FilterView = ({
 
   // styled components
 
-  const AddValueInputButton = styled.button.attrs(() => ({
-    onClick: () => handleAddValueInputField()
-  }))`
+  const AddValueInputButton = styled(Button)`
     width: 9%;
     margin: 5px 1% 0 30%;
   `;
 
-  const RemoveValueInputButton = styled.button.attrs(() => ({
-    onClick: () => handleRemoveValueInputField()
-  }))`
+  const RemoveValueInputButton = styled(Button)`
     width: 9%;
     margin: 5px 37% 0 1%;
   `;
@@ -299,12 +295,16 @@ const FilterView = ({
           {(valueRange === ValueRangeTypes.Within ||
             valueRange === ValueRangeTypes.Without) && (
             <>
-              <AddValueInputButton disabled={fieldValues.length === 5}>
-                +
-              </AddValueInputButton>
-              <RemoveValueInputButton disabled={fieldValues.length <= 1}>
-                -
-              </RemoveValueInputButton>
+              <AddValueInputButton
+                text={"+"}
+                disabled={fieldValues.length === 5}
+                onClick={handleAddValueInputField}
+              />
+              <RemoveValueInputButton
+                text={"-"}
+                disabled={fieldValues.length <= 1}
+                onClick={handleRemoveValueInputField}
+              />
             </>
           )}
           <FloatRightButtonContainer>
