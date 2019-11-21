@@ -158,6 +158,8 @@ const TableView = ({
     margin: 0 7% 8px 3%;
     width: 90%;
     height: 16px;
+    font-family: ${props => props.theme.fontFamily};
+    font-size: ${props => props.theme.fontSize.button};
   `;
 
   const FieldSelect = styled.select`
@@ -204,7 +206,6 @@ const TableView = ({
   `;
 
   return (
-    // Put the option values in ValueRangeSelect in a list instead of hard coded
     <>
       {componentHasProperties(properties.map(property => property.label)) && (
         <Box>
