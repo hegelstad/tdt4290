@@ -27,6 +27,7 @@
       2,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
-    "quotes": [2, "double", "avoid-escape"]
+    "quotes": [2, "double", "avoid-escape"],
+    "@typescript-eslint/explicit-function-return-type": "off"
   }
 }

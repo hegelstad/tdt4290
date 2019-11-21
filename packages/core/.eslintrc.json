@@ -3,12 +3,15 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
+    
   ],
   "plugins": ["@typescript-eslint"],
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
   },
   "settings": {
     "import/parsers": {
@@ -17,5 +20,8 @@
     "import/resolver": {
       "typescript": {}
     }
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off"
   }
 }
