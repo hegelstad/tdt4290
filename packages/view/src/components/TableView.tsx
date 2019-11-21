@@ -165,6 +165,8 @@ const TableView = ({
     margin: 0 3% 8px 7%;
     width: 90%;
     height: 24px;
+    font-family: ${props => props.theme.fontFamily};
+    font-size: ${props => props.theme.fontSize.button};
   `;
 
   const AddColumnNameButton = styled(Button)`
